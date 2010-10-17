@@ -15,15 +15,15 @@ public class AbreURL {
 	 */
 	public static void main(String[] args) {
 		try {
-			//Realizamos conexión con un URL
+			//Realizamos conexión con un URL.
 			URL url = new URL("http://madrid.salir.com/cartelera.html");
 			URLConnection connection = url.openConnection();
 			
-			//Creamos un buffer para el flujo de entrada
+			//Creamos un buffer para el flujo de entrada.
 			InputStream s = connection.getInputStream();
 			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(s));
 			
-			//Recorremos las líneas y las mostramos
+			//Recorremos las líneas y las mostramos.
 			String line = "";
 			while((line = bufferedReader.readLine())!=null){
 			System.out.println(line);
