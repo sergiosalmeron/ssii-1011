@@ -11,13 +11,14 @@ import java.util.ArrayList;
 
 public class AbreURL {
 
-	private ArrayList<String> a;
+	private static ArrayList<String> titulos;
 	
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
 		try {
+			titulos=new ArrayList<String>();
 			//Realizamos conexión con un URL.
 			URL url = new URL("http://www.guiadelocio.com/cartelera/madrid?vista=3");
 			URLConnection connection = url.openConnection();
@@ -34,13 +35,34 @@ public class AbreURL {
 				muestraLugar(line);
 				muestraCine(line);
 			}
+			bufferedReader.close();
+			s.close();
+			
+			//recorremos la lísta de títulos
+			for (int i=0; i<titulos.size(); i++){
+				URL urlPeli= new URL("http://www.imdb.es/find?s=all&q="+titulos.get(i));
+				connection = urlPeli.openConnection();
+				/** NO FUNCIONA ESTO
+				s = connection.getInputStream();
+				bufferedReader = new BufferedReader(new InputStreamReader(s));
+				line = "";
+				boolean encontrado=false;
+				
+				while(((line = bufferedReader.readLine())!=null)|| !encontrado){
+					encontrado=buscaRef(line);
+				}
+				
+				bufferedReader.close();
+				s.close();
+				**/
+				
+			}
 			
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 	}
 	
 	/**
@@ -58,6 +80,7 @@ public class AbreURL {
 			int fin=linea.indexOf(etiqFin, inicio+1);
 			if (fin>-1){
 				System.out.println(linea.substring(inicio, fin));
+				titulos.add(linea.substring(inicio, fin));
 				return true;
 			}
 			
@@ -109,6 +132,10 @@ public class AbreURL {
 			
 		}
 		return false;
+	}
+	
+	private static boolean buscaRef(String linea){
+		return true;
 	}
 	
 
