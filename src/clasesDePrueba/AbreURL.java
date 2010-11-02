@@ -43,8 +43,8 @@ public class AbreURL {
 				URL urlPeli= new URL("http://www.imdb.es/find?s=all&q="+titulos.get(i));
 				connection = urlPeli.openConnection();
 				/** NO FUNCIONA ESTO
-				s = connection.getInputStream();
-				bufferedReader = new BufferedReader(new InputStreamReader(s));
+				InputStream ss = connection.getInputStream();
+				bufferedReader = new BufferedReader(new InputStreamReader(ss));
 				line = "";
 				boolean encontrado=false;
 				
