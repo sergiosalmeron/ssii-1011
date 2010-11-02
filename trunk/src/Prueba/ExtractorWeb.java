@@ -43,7 +43,8 @@ public class ExtractorWeb {
 		try {
 			connection = url.openConnection();
 			connection.setConnectTimeout(10000);
-			connection.setReadTimeout(10000);
+			
+			connection.setReadTimeout(0);
 			connection.addRequestProperty("User-Agent", "Mozilla/5.0 (Windows; U; Windows NT 5.1; es-ES; rv:1.9.0.10) Gecko/2009042316 Firefox/3.0.10");
 
 		} catch (IOException e1) {
