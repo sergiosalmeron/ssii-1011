@@ -12,20 +12,14 @@ public class Principal {
 	 */
 	
 	public static void main(String[] args) throws MalformedURLException {
-	/*	URL url=new URL("http://www.imdb.es/find?q=Amador");
-		String resultado=ExtractorWeb.downloadURL(url);
-		System.out.println(resultado);
-	*/
 		
-		//System.out.println(resultado);
-		
+		//1-Nos bajamos la cartelera
 		ProcesadorCarteleraGDO proce=new ProcesadorCarteleraGDO();
 		ArrayList<Pelicula> pelis=proce.getPeliculas();
 		
-		URL urlPeli= new URL("http://www.imdb.es/find?s=tt&q="+pelis.get(2).getTitulo());
-		//usamos el metodo que nos hace pasarnos por un navegador firefox para que imdb acepte la consulta
-		String resultado=ExtractorWeb.downloadURLFirefox(urlPeli);
-		System.out.println(resultado);
+		//2-Rellenamos la info de las pelis con la IMDB
+		IMDBExtractor imdb=new IMDBExtractor();
+		pelis=imdb.getInfo(pelis);
 	}
 
 }
