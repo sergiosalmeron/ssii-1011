@@ -3,5 +3,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="src/derby.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="Librerias/bcprov-jdk16-145.jar"/>
+	<classpathentry kind="lib" path="Librerias/silvertunnel.org_netlib.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
