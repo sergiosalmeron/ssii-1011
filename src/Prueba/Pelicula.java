@@ -12,6 +12,10 @@ public class Pelicula {
 		this.titulo=tit;
 	}
 
+	public void setDirector(String director) {
+		this.director = director;
+	}
+
 	public void setAnio(int anio) {
 		this.anio = anio;
 	}
