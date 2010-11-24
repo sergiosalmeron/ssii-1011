@@ -15,10 +15,10 @@ import Prueba.ProcesadorCarteleraSalir;
 public class pruebecilla1 {
 
 	public static void main(String[] args) throws IOException {
-		//URL direccion=ExtracTor.getURL("http://mobile.guiadelocio.com/;s=LF2v754AEo6E_tboxLhUs01/?cities=madrid&categories=cine");
+		URL direccion=ExtracTor.getURL("http://www.salir.com/madrid/cartelera.html");
 		ProcesadorCarteleraSalir a=new ProcesadorCarteleraSalir();
 		a.getPeliculas();
-		URL direccion=new URL("http://www.salir.com/madrid/cartelera.html");
+		//URL direccion=new URL("http://www.salir.com/madrid/cartelera.html");
 		Source source=new Source(direccion);
 		System.out.println("-------");
 		System.out.println("-------");
