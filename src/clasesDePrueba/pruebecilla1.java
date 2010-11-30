@@ -10,14 +10,19 @@ import net.htmlparser.jericho.Source;
 
 import Prueba.ExtracTor;
 import Prueba.ExtractorWeb;
+import Prueba.Pelicula;
+import Prueba.ProcesadorCarteleraGDO;
 import Prueba.ProcesadorCarteleraSalir;
+import Prueba.ProvinciasGDO.Provincia;
 
 public class pruebecilla1 {
 
 	public static void main(String[] args) throws IOException {
-		URL direccion=ExtracTor.getURL("http://www.salir.com/madrid/cartelera.html");
+		ProcesadorCarteleraGDO a=new ProcesadorCarteleraGDO();
+		//;
+		/*URL direccion=ExtracTor.getURL("http://www.salir.com/madrid/cartelera.html");
 		ProcesadorCarteleraSalir a=new ProcesadorCarteleraSalir();
-		a.getPeliculas();
+		a.getPeliculas(null);
 		//URL direccion=new URL("http://www.salir.com/madrid/cartelera.html");
 		Source source=new Source(direccion);
 		System.out.println("-------");
@@ -28,7 +33,10 @@ public class pruebecilla1 {
 		for (Segment segment : segments) {
 			System.out.println(segment.getAllElements("a").get(0).getAttributeValue("href"));
 			System.out.println("--");
-		}
+		}*/
+		
+		for (Pelicula peli: a.getPeliculas(Provincia.avila))
+			System.out.println(peli);
 	}
 }
 

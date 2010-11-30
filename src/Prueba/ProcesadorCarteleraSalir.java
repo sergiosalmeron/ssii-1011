@@ -6,6 +6,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import Prueba.ProvinciasGDO.Provincia;
+
 import net.htmlparser.jericho.Element;
 import net.htmlparser.jericho.Segment;
 import net.htmlparser.jericho.Source;
@@ -13,7 +15,7 @@ import net.htmlparser.jericho.Source;
 public class ProcesadorCarteleraSalir implements ProcesadorCartelera {
 
 	@Override
-	public ArrayList<Pelicula> getPeliculas() {
+	public ArrayList<Pelicula> getPeliculas(Provincia provincia) {
 		ArrayList<URL> direcciones=getDirecciones();
 		ArrayList<Pelicula> pelis=new ArrayList<Pelicula>();
 		for (URL direccion : direcciones){
