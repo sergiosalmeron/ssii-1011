@@ -15,7 +15,7 @@ public class Principal {
 		
 		//1-Nos bajamos la cartelera
 		ProcesadorCarteleraGDO proce=new ProcesadorCarteleraGDO();
-		ArrayList<Pelicula> pelis=proce.getPeliculas();
+		ArrayList<Pelicula> pelis=proce.getPeliculas(null);
 		
 		//2-Rellenamos la info de las pelis con la IMDB
 		IMDBExtractor imdb=new IMDBExtractor();

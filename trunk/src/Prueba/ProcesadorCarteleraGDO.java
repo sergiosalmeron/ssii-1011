@@ -1,8 +1,18 @@
 package Prueba;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
+
+
+import net.htmlparser.jericho.Element;
+import net.htmlparser.jericho.Segment;
+import net.htmlparser.jericho.Source;
+
+import Prueba.ProvinciasGDO.Provincia;
 
 
 /**
@@ -16,43 +26,192 @@ public class ProcesadorCarteleraGDO implements ProcesadorCartelera{
 	//Etiqueta Inicio: <div class="gridType06 ftl clear">
 	//Etiqueta Fin (primera etiqueta abierta tras el cierre de la etiqueta de inicio): <div id="footer" class="clear clr">
 	
-	public ArrayList<Pelicula> getPeliculas() {
-		URL url=null;
-		try {
-			url = new URL("http://www.guiadelocio.com/cartelera/madrid?vista=3");
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	public ArrayList<Pelicula> getPeliculas(Provincia provincia) {
+		
+		ArrayList<URL> direcciones=getDirecciones(provincia);
+		ArrayList<Pelicula> pelis=new ArrayList<Pelicula>();
+		for (URL direccion : direcciones){
+			Pelicula peli=getPelicula(direccion);
+			if (peli!=null)
+				pelis.add(peli);
 		}
-		
-		String web=ExtractorWeb.downloadURL(url);
-		
-		int inicio=web.indexOf("gridType06 ftl clear");
-		int fin=web.indexOf("footer");
-		if ( (inicio>0) && (fin>inicio) )
-			return buscaPeliculas(web.substring(inicio, fin));
-		else
-			return null;
-		
-	}
-	
-	private ArrayList<Pelicula> buscaPeliculas (String web){
-		ArrayList<Pelicula> pelis= new ArrayList<Pelicula>();
-		String tagInicioPeli="titulotexto\">";
-		String tagFinPeli="</spam>";
-		int inicioTitulo=web.indexOf(tagInicioPeli);
-		while (inicioTitulo>0){
-			inicioTitulo=inicioTitulo+tagInicioPeli.length();
-			int finTitulo=web.indexOf(tagFinPeli, inicioTitulo);
-			String titulo=web.substring(inicioTitulo, finTitulo);
-			pelis.add(new Pelicula(titulo));
-			//TODO: procesar los cines aqui
-			inicioTitulo=web.indexOf(tagInicioPeli, finTitulo);
-		}
-		
-		
-		
 		return pelis;
 	}
+	
+	
+	/**
+	 * Extrae la url de cada película que se proyecta en la provincia deseada
+	 * @param provincia La provincia de la que se desea obtener las urls de las películas
+	 * @return un arraylist de urls
+	 */
+	private ArrayList<URL> getDirecciones(Provincia provincia){
+		//etiqueta padre de <spam class="titulotexto">
+		//etiqueta nieta de <p class="texto withBolo01"> con enlace
+		URL direccion;
+		Source source=null;
+		try {
+			direccion = new URL("http://www.guiadelocio.com/cartelera/"+ProvinciasGDO.getCodigo(provincia)+"?vista=3");
+			//direccion = ExtracTor.getURL("http://www.guiadelocio.com/cartelera/"+ProvinciasGDO.getCodigo(provincia)+"?vista=3");
+			source=new Source(direccion);
+		} catch (MalformedURLException e) {
+			return null;
+		} catch (IOException e) {
+			return null;
+		}
+		ArrayList <URL> direcciones=new ArrayList<URL>();
+		List<? extends Segment> segments=source.getAllElementsByClass("texto withBolo01");
+		for (Segment segment : segments) {
+			String dire=segment.getFirstElement("a").getAttributeValue("href");
+			if (dire!=null){
+				try {
+					direcciones.add(new URL("http://www.guiadelocio.com"+dire));
+					//direcciones.add(ExtracTor.getURL("http://www.guiadelocio.com"+dire));
+				} catch (MalformedURLException e) {
+				}
+			}
+		}
+		return direcciones;
+	}
+	
+	/**
+	 * Crea un objeto película a partir de la información obtenida de la web
+	 * @param direccion Dirección web de la que se obtendrá la información para generar la película
+	 * @return La película creada
+	 */
+	private Pelicula getPelicula(URL direccion){
+		Source source=null;
+		try {
+			source = new Source(direccion);
+		} catch (IOException e) {
+			return null;
+		}
+		//Título: contenido en el <h1 class="nobg ftl">
+		
+		String titulo=source.getFirstElementByClass("nobg ftl").getTextExtractor().toString();// .getElementById("main-content").getFirstElement("h2").getTextExtractor().toString();
+		
+		//Info:PRIMER elemento contenido en <div class="infoContent">
+		
+		/*Pelicula peli=new Pelicula(titulo);
+		peli.setDirWeb(direccion.toString());
+		System.out.println("-----------");
+		System.out.println(titulo);*/
+		Pelicula peli=creaPelicula(titulo, procesaInfoPelicula(source));
+		peli.setDirWeb(direccion.toString());
+		return peli;
+	}
+	
+	/**
+	 * Crea una tabla hash a partir del cuadro que contiene la información de la peli.
+	 * @param fuente la web de la que se extraerá la información
+	 * @return La tabla hash con la información de la película
+	 */
+	private Hashtable<String, String> procesaInfoPelicula(Source fuente){
+		List <Element> atributos=fuente.getAllElementsByClass("infoContent").get(0).getAllElements("li");
+		//System.out.println("-----------");
+		Hashtable<String, String> tabla = new Hashtable<String, String>();
+		for (Element atri : atributos){
+			String cosa=atri.getTextExtractor().toString();
+			int separador=cosa.indexOf(':');
+			if ((separador>0) && (separador<cosa.length()-1))
+				tabla.put(cosa.substring(0, separador), cosa.substring(separador+1, cosa.length()-1));
+			//System.out.println(cosa);
+		}
+		//System.out.println(" ");
+		return tabla;
+	}
+	
+	/**
+	 * Crea el objeto Película y lo rellena con la información de la tabla hash.
+	 * @param titulo El título de la película
+	 * @param tabla La tabla con el resto de información de la película
+	 * @return El objeto película con toda la información
+	 */
+	private Pelicula creaPelicula(String titulo, Hashtable<String, String> tabla){
+		Pelicula peli=new Pelicula(titulo);
+		Object aux;
+		
+		//procesamos el director
+		aux=tabla.get("Director");
+		if (aux!=null)
+			peli.setDirector(aux.toString());
+		
+		
+		int posicion=0;		
+		//procesamos la duración
+		aux=tabla.get("Duración");
+		if (aux!=null){
+			posicion=aux.toString().indexOf("min");
+			if (posicion>0)
+				peli.setDuracion(Integer.valueOf(aux.toString().substring(0,posicion).trim()));
+		}
+		
+		//procesamos los intérpretes
+		aux=tabla.get("Intérpretes");
+		if (aux!=null)
+			peli.setInterpretes(aux.toString());
+		
+		//procesamos la nacionalidad
+		aux=tabla.get("Nacionalidad y año de producción");
+		if (aux!=null)
+			peli.setNacionalidad(aux.toString());
+		
+		//procesamos el estreno
+		aux=tabla.get("Fecha de estreno");
+		if (aux!=null)
+			peli.setEstreno(aux.toString());
+		
+		//procesamos el Género
+		aux=tabla.get("Género");
+		if (aux!=null)
+			peli.setGenero(aux.toString());
+		
+		aux=tabla.get("Productora");
+		if (aux!=null)
+			peli.setProductora(aux.toString());
+		
+		aux=tabla.get("Guionista");
+		if (aux!=null)
+			peli.setGuionista(aux.toString());
+		
+		aux=tabla.get("Distribuidora");
+		if (aux!=null)
+			peli.setDistribuidora(aux.toString());
+		
+		aux=tabla.get("Calificación");
+		if (aux!=null){
+			boolean puesta=false;
+			if (aux.toString().indexOf("12")>0){
+				peli.setCalificacion(12);
+				puesta=true;
+			}
+			if (aux.toString().indexOf("13")>0){
+				peli.setCalificacion(13);
+				puesta=true;
+			}
+			if (aux.toString().indexOf("16")>0){
+				peli.setCalificacion(16);
+				puesta=true;
+			}
+			if (aux.toString().indexOf("18")>0){
+				peli.setCalificacion(18);
+				puesta=true;
+			}
+			if (aux.toString().indexOf("7")>0){
+				peli.setCalificacion(7);
+				puesta=true;
+			}
+			if (aux.toString().indexOf("Pendiente por calificar")>0){
+				peli.setCalificacion(-1);
+				puesta=true;
+			}
+			if (!puesta)
+				peli.setCalificacion(0);
+			
+		}
+		
+		return peli;
+	}
+
+	
 
 }
