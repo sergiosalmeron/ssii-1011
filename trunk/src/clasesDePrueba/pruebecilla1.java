@@ -3,22 +3,25 @@ package clasesDePrueba;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import net.htmlparser.jericho.Segment;
 import net.htmlparser.jericho.Source;
 
+import Prueba.Cine;
 import Prueba.ExtracTor;
 import Prueba.ExtractorWeb;
 import Prueba.Pelicula;
 import Prueba.ProcesadorCarteleraGDO;
 import Prueba.ProcesadorCarteleraSalir;
+import Prueba.ProcesadorCinesGDO;
 import Prueba.ProvinciasGDO.Provincia;
 
 public class pruebecilla1 {
 
 	public static void main(String[] args) throws IOException {
-		ProcesadorCarteleraGDO a=new ProcesadorCarteleraGDO();
+		//ProcesadorCarteleraGDO a=new ProcesadorCarteleraGDO();
 		//;
 		/*URL direccion=ExtracTor.getURL("http://www.salir.com/madrid/cartelera.html");
 		ProcesadorCarteleraSalir a=new ProcesadorCarteleraSalir();
@@ -35,8 +38,13 @@ public class pruebecilla1 {
 			System.out.println("--");
 		}*/
 		
-		for (Pelicula peli: a.getPeliculas(Provincia.avila))
-			System.out.println(peli);
+		/*for (Pelicula peli: a.getPeliculas(Provincia.avila))
+			System.out.println(peli);*/
+		
+		ProcesadorCinesGDO a=new ProcesadorCinesGDO();
+		ArrayList<Cine> cines=a.getCines(Provincia.avila);
+		for (Cine peli: cines)
+			System.out.println(peli.getDirWebGDO()+" // "+peli.getNombre()+"---"+peli.getZona());
 	}
 }
 
