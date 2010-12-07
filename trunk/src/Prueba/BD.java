@@ -1,61 +1,122 @@
 package Prueba;
 
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.sql.Statement;
+
 
 
 public class BD {
-
-
-	String conexion;
-	private static String nombreDriver="org.apache.derby.jdbc.EmbeddedDriver";
-
-	public BD() {
-		super();
-		//this.conexion = conexion;
-		cargaDriverBD(nombreDriver);
-		setDBSystemDir();
-	}
 	
-	/*Tiene que tener los drivers y la variable de sistema cargado.
-	 * Antes de llamar a esto, siempre hay que invocar a la constructora.
-	 * 
-	 */ 
-	public void creaBD(){
-		Connection dbConnection = null;
-		String strUrl = "jdbc:derby:BBDDPeliculas;create=true";
-		try {
-		    dbConnection = DriverManager.getConnection(strUrl);
-		} catch (SQLException ex) {
-		    ex.printStackTrace();
-		}
-	}
+	private String url; //Url del servidor MySQL
+	private Connection con; //Conexión con el server
+	private Statement stmt; //Instrucción a ejecutar
+	private static String driver="com.mysql.jdbc.Driver";
 	
-	/*
-	 * Obtiene los parámetros de la clase que se pasa, y con 
-	 * ellos se crea la tabla en la bbdd.
+
+	/**
+	 * Conecta a la base de datos ssii con el usuario y contraseña seleccionados. Establece 
+	 * la url y la conexión.
+	 * @param user String con nombre de usuario
+	 * @param pass String con contraseña del usuario
 	 */
-	public void creaTabla(Object o){
-		Class c=o.getClass();
-		Field[] params=c.getDeclaredFields();
-		/*Tengo que guardar los nombres y tipos del atributo en
-		 *un vector para luego ejecutar el comando de creacion de tabla.
-		 */
-		for (int i=0;i<params.length;i++){
-			System.out.print("Parámetro número "+i+":");
-			System.out.print(" Nombre :");
-			System.out.print(params[i].getName());
-			System.out.print(" Tipo :");
-			System.out.println(params[i].getType().getName());
+	public void conecta(String user, String pass){
+		try {
+	    	//Crea la conexión
+			url="jdbc:mysql://localhost:3306/ssii";
+			con = DriverManager.getConnection(url,user, pass);
+			System.out.println("Usuario "+user+" conectado correctamente a "+url);
+		}
+		catch (SQLException e) {
+			// TODO: handle exception
+			System.err.println("Petada al conectar el usuario "+user+" a "+url);
+			System.err.println(e.getMessage().toString());
+		}	
+	}
+	
+	/**
+	 * Cierra la conexión (si existe), estableciendola a null.
+	 */
+	public void desconecta(){
+		try {
+	    	//Cierra la conexión
+			if (con!=null){
+				con.close();
+				con=null;
+				System.out.println("desconectado correctamente");
+			}
+			else
+				System.out.println("No había una conexión realizada");
+		}
+		catch (SQLException e) {
+			// TODO: handle exception
+			System.err.println("Petada al desconectar");
+		}	
+	}
+	
+	/**
+	 * Ejecuta una consulta y devuelve su resultado en un ResultSet. Tiene que haber una conexión creada.
+	 * @param consulta String con la consulta a ejecutar
+	 * @return Resultset con los datos de la consulta.
+	 */
+	private ResultSet ejecuta(String consulta) {
+		ResultSet rs=null;
+		try {
+			stmt=con.createStatement();
+			rs=stmt.executeQuery(consulta);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return rs;
+	}
+	
+	
+	
+	
+	/**
+	 * Crea un usuario con privilegios de administrador para la base de datos,
+	 * en caso de que no exista.
+	 * @param root String con el nombre de usuario del administrador
+	 * @param pass String con la contraseña de root
+	 */
+	public void creaUserDerechos(String root,String pass){
+		
+		System.out.println("Creando usuario con derechos para la base de datos SSII");
+		
+		String nuevoUser="userPrueba";
+		String nuevoPass="passPrueba";
+	    try {
+	    	url="jdbc:mysql://localhost:3306/mysql";
+	    	//Crea la conexión
+			con =
+			      DriverManager.getConnection(
+			                  url,root, pass);
+			
+			System.out.println("URL: " + url);
+		    System.out.println("Conexión: " + con);
+		    
+		    stmt=con.createStatement();
+		    
+		    //Crea nuevo usuario 
+		    stmt.executeUpdate(
+		            "GRANT SELECT,INSERT,UPDATE,DELETE," +
+		            "CREATE,DROP " +
+		            "ON SSII.* TO '"+nuevoUser+"'@'localhost'"+
+		            "IDENTIFIED BY '"+nuevoPass+"';");
+		    
+		    System.out.println("Usuario creado");
+		    con.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	
-	private void cargaDriverBD(String nombreDriver){
+	
+	private static void cargaDriverBD(String nombreDriver){
 		try {
 			Class.forName(nombreDriver);
 		} catch (ClassNotFoundException e) {
@@ -65,30 +126,37 @@ public class BD {
 		}
 	}
 	
-	private void setDBSystemDir() {
-	    // Decide on the db system directory: <userhome>/.addressbook/
-	    //String userHomeDir = System.getProperty("user.home", ".");
+	
+	public static void main(String args[]){
+	    System.out.println("Prueba de conexión");
+
+	    cargaDriverBD(driver);
 		
-		//Obtengo ruta relativa
-	    File f= new File("");
-	    String ruta=null;
+	    BD prueba=new BD();
+	    prueba.desconecta();
+	    prueba.creaUserDerechos("root", "ssiipass");
+	    prueba.conecta("root", "ssiipass");
+	    prueba.desconecta();
+	    prueba.desconecta();
+	    prueba.conecta("userPrueba", "passPrueba");
+	    
+	    String consulta="SELECT ID,TITULO FROM SSII.PELICULA;";
+	    ResultSet rs=prueba.ejecuta(consulta);
 	    try {
-			ruta=f.getCanonicalPath();
-		} catch (IOException e) {
+			while(rs.next()){
+			    int valor= rs.getInt("id");
+			    String tit = rs.getString("titulo");
+			    System.out.println("\t id de película= " + valor
+			                         + "\t Título = " + tit);
+			}
+		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			System.err.println("Error al obtener ruta de la BD");
 		}
-	    //String systemDir = userHomeDir + "/.addressbook";
-		//Establezco la ruta de la BD
-		String dirBD= ruta + "/.peliculas"; 
+	    prueba.desconecta();
+	}//main
 
-	    // Set the db system directory.
-	    //System.setProperty("derby.system.home", systemDir);
-		System.setProperty("derby.system.home", dirBD);
-	}
 
-	
-	
-	
-}
+  
+  
+}//clase
