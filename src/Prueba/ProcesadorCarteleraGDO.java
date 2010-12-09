@@ -112,8 +112,13 @@ public class ProcesadorCarteleraGDO implements ProcesadorCartelera{
 		for (Element atri : atributos){
 			String cosa=atri.getTextExtractor().toString();
 			int separador=cosa.indexOf(':');
-			if ((separador>0) && (separador<cosa.length()-1))
-				tabla.put(cosa.substring(0, separador), cosa.substring(separador+1, cosa.length()-1));
+			if ((separador>0) && (separador<cosa.length()-1)){
+				String valorAtt=cosa.substring(separador+1, cosa.length()).trim();
+				if (valorAtt.endsWith(".")){
+					valorAtt=valorAtt.substring(0, valorAtt.length()-1).trim();
+				}
+				tabla.put(cosa.substring(0, separador), valorAtt);
+			}
 			//System.out.println(cosa);
 		}
 		//System.out.println(" ");
@@ -157,8 +162,19 @@ public class ProcesadorCarteleraGDO implements ProcesadorCartelera{
 		
 		//procesamos el estreno
 		aux=tabla.get("Fecha de estreno");
-		if (aux!=null)
+		if (aux!=null){
 			peli.setEstreno(aux.toString());
+			try{
+				//formato dd / mm / aaaa.
+				int anio=Integer.valueOf(aux.toString().split("/")[2].trim());
+				peli.setAnio(anio);
+			}
+			catch (Exception e){
+				System.err.println("No se pudo extraer el año de la fecha de estreno de la película "+titulo);
+			}
+			
+			
+		}
 		
 		//procesamos el Género
 		aux=tabla.get("Género");
