@@ -2,9 +2,11 @@ package clasesDePrueba;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import Prueba.Cine;
-import Prueba.ProcesadorCinesGDO;
-import Prueba.ProvinciasGDO.Provincia;
+
+import extractores.cines.ProcesadorCinesGDO;
+
+import tads.Cine;
+import tads.ProvinciasGDO.Provincia;
 
 public class pruebecilla1 {
 
