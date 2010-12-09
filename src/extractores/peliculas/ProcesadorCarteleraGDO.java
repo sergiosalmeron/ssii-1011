@@ -119,6 +119,7 @@ public class ProcesadorCarteleraGDO implements ProcesadorCartelera{
 		System.out.println(titulo);*/
 		Pelicula peli=creaPelicula(titulo, procesaInfoPelicula(source));
 		peli.setDirWeb(direccion.toString());
+		setSinopsis(peli, source);
 		return peli;
 	}
 	
@@ -248,6 +249,12 @@ public class ProcesadorCarteleraGDO implements ProcesadorCartelera{
 		}
 		
 		return peli;
+	}
+	
+	private void setSinopsis(Pelicula peli, Source pag){
+		Element e=pag.getFirstElementByClass("wysiwyg");
+		String sino=e.getTextExtractor().toString();
+		peli.setSinopsis(sino);
 	}
 
 	

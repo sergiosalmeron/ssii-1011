@@ -18,7 +18,16 @@ public class Pelicula {
 	//Si es 0: todos los públicos
 	//Si es -1: película pendiente de calificar
 	private int calificacion;
+	private String sinopsis;
 	
+	public String getSinopsis() {
+		return sinopsis;
+	}
+
+	public void setSinopsis(String sinopsis) {
+		this.sinopsis = sinopsis;
+	}
+
 	public int getCalificacion() {
 		return calificacion;
 	}
