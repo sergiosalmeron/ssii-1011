@@ -14,10 +14,13 @@ public class Cine {
 	private int numSalas;
 	private String tfno;
 	private String webOficial;
+	
+
 	private String direccion;
 	private String zona;
 	private String parking;
 	private String urlCompras;
+	private ArrayList<Proyeccion> pases;
 	
 	
 	
@@ -55,6 +58,7 @@ public class Cine {
 		super();
 		this.dirWebGDO = dirWebGDO;
 		this.nombre = nombre;
+		this.pases=new ArrayList<Proyeccion>();
 	}
 
 
@@ -97,8 +101,34 @@ public class Cine {
 		return nombre;
 	}
 	
+	public boolean addPase(Proyeccion pro){
+		if (pro!=null){
+			pases.add(pro);
+			return true;
+		}
+		else
+			return false;
+	}
 	
+	public Proyeccion getPase(int i){
+		if (i<pases.size())
+			return pases.get(i);
+		else
+			return null;
+	}
 	
+	public int getNumPases(){
+		return pases.size();
+	}
+	
+	@Override
+	public String toString() {
+		String resultado= nombre + ":\n";// + pases + "]";
+		for (Proyeccion pase : pases){
+			resultado=resultado+"  -"+pase+"\n";
+		}
+		return resultado;
+	}
 	
 	
 
