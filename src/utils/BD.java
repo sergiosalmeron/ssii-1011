@@ -191,13 +191,15 @@ public class BD {
 		titulo=titulo.replaceAll("\'", "\\\\'");
 		String anyo=((Integer)peli.getAnio()).toString();
 		String genero=peli.getGenero();
-		String duracion=((Integer)peli.getDuracion()).toString();
+		//String duracion=((Integer)peli.getDuracion()).toString();
+		int duracion=peli.getDuracion(); 
+		String durString=trataDuracion(duracion);
 		//String calificacion=peli.getCalificacion();
 		String calificacion="prueba";
 		//TODO Hacer la calificación para introducirla correctamente en la bbdd.
 		String nacionalidad=peli.getNacionalidad();
 		String consulta="INSERT INTO pelicula (Titulo,Año,Genero,Duracion,Calificacion,Nacionalidad)" +
-				" VALUES ('"+titulo+"','"+anyo+"','"+genero+"','"+duracion+"','"+calificacion+"','"+nacionalidad+"');";
+				" VALUES ('"+titulo+"','"+anyo+"','"+genero+"','"+durString+"','"+calificacion+"','"+nacionalidad+"');";
 		System.out.println(consulta);
 		try{
 			stmt=con.createStatement();
@@ -214,6 +216,13 @@ public class BD {
 	
 
 	
+	private String trataDuracion(int duracion) {
+		Integer horas=duracion/60;
+		Integer minutos=duracion%60;
+		String s=horas.toString()+":"+minutos.toString();
+		return s;
+	}
+
 	/**
 	 * Introduce un cine en la base de datos. Precondición: La conexión está creada.
 	 * @param cine Cine a introducir
