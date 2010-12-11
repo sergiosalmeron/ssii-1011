@@ -13,7 +13,8 @@ public class prueba2 {
 	public static void main(String args[]){
 		BD bd= new BD();
 		ParamsConexionBD p=new ParamsConexionBD("root", "ssiipass", "jdbc:mysql://localhost:3306/mysql");
-		bd.creaNuevoAdministrador(p);
+		ParamsConexionBD p2=new ParamsConexionBD("rootNuevo","passNuevo","");
+		bd.creaNuevoAdministrador(p,p2);
 		bd.creaTablas(p);
 		bd.creaUserDerechos(p, "userSSII", "passSSII");
 		p=new ParamsConexionBD("userSSII","passSSII", "jdbc:mysql://localhost:3306/ssii");

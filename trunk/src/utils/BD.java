@@ -425,10 +425,10 @@ public class BD {
 	 * Crea un usuario con derechos totales sobre la base de datos
 	 * @param p Parámetros de conexión. El usuario debe tener derechos para crear un usuario.
 	 */
-	public void creaNuevoAdministrador(ParamsConexionBD p) {
+	public void creaNuevoAdministrador(ParamsConexionBD p,ParamsConexionBD p2) {
 		System.out.println("Creando usuario con derechos de administrador para la base de datos SSII");
-		String user=p.getUser();
-		String pass=p.getPass();
+		String user=p2.getUser();
+		String pass=p2.getPass();
 		Connection con=dameConexion(p);
 		try{
 			stmt=con.createStatement();
