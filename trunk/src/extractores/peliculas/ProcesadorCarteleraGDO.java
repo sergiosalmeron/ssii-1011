@@ -27,12 +27,18 @@ import net.htmlparser.jericho.Source;
 public class ProcesadorCarteleraGDO implements ProcesadorCartelera{
 	
 	private boolean usandoTor;
-	
+	/**
+	 * Constructora por defecto. No usa conexiones TOR con ConecTor
+	 */
 	public ProcesadorCarteleraGDO() {
 		super();
 		this.usandoTor = false;
 	}
 	
+	/**
+	 * Constructora
+	 * @param usandoTor Indica si las conexiones se realizarán con TOR (true) o sin él (false)
+	 */
 	public ProcesadorCarteleraGDO(boolean usandoTor) {
 		super();
 		this.usandoTor = usandoTor;
@@ -43,6 +49,9 @@ public class ProcesadorCarteleraGDO implements ProcesadorCartelera{
 	//Etiqueta Inicio: <div class="gridType06 ftl clear">
 	//Etiqueta Fin (primera etiqueta abierta tras el cierre de la etiqueta de inicio): <div id="footer" class="clear clr">
 	
+	/**
+	 * Método de obtención de las películas proyectadas en una provincia.
+	 */
 	public ArrayList<Pelicula> getPeliculas(Provincia provincia) {
 		
 		ArrayList<URL> direcciones=getDirecciones(provincia);
@@ -251,6 +260,11 @@ public class ProcesadorCarteleraGDO implements ProcesadorCartelera{
 		return peli;
 	}
 	
+	/**
+	 * Método que añade la sinopsis a la película
+	 * @param peli La película
+	 * @param pag El código de la página de la peli
+	 */
 	private void setSinopsis(Pelicula peli, Source pag){
 		Element e=pag.getFirstElementByClass("wysiwyg");
 		String sino=e.getTextExtractor().toString();

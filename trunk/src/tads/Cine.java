@@ -7,8 +7,7 @@ import tads.ProvinciasGDO.Provincia;
 
 public class Cine {
 	
-	//plantear la opción de crear la clase "pases" (que contenga peli, cine, día de la semaa y hora) si se piensa guardar tambien la hora de cada pase
-	//en ese caso, el arraylist seria de pases y no de pelis
+	//La dirección web del cine en la página de GDO
 	private String dirWebGDO;
 	private String nombre;
 	private Provincia provincia;
@@ -21,6 +20,7 @@ public class Cine {
 	private String zona;
 	private String parking;
 	private String urlCompras;
+	//Arraylist con los pases del cine
 	private ArrayList<Proyeccion> pases;
 	
 	
