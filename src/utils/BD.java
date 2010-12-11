@@ -1,5 +1,9 @@
 package utils;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -7,62 +11,43 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import extractores.peliculas.ProcesadorCarteleraGDO;
-
 import tads.Cine;
+import tads.ParamsConexionBD;
 import tads.Pelicula;
 import tads.ProvinciasGDO;
 import tads.ProvinciasGDO.Provincia;
+import extractores.peliculas.ProcesadorCarteleraGDO;
 
 
 
 public class BD {
 	
-	private String url; //Url del servidor MySQL
 	private Connection con; //Conexión con el server
 	private Statement stmt; //Instrucción a ejecutar
 	private static String driver="com.mysql.jdbc.Driver";
-	
-	private static String userRoot="userPrueba";
-	private static String passRoot="passPrueba";
-	
-	private String userDerechos;
-	private String passDerechos;
 
-	/**
-	 * Conecta a la base de datos ssii con el usuario y contraseña seleccionados. Establece 
-	 * la url y la conexión.
-	 * @param user String con nombre de usuario
-	 * @param pass String con contraseña del usuario
-	 */
-	public void conecta(String user, String pass){
-	    //Crea la conexión
-		url="jdbc:mysql://localhost:3306/ssii";
-		con = dameConexion(user,pass);
-		System.out.println("Usuario "+user+" conectado correctamente a "+url);
-	}
 	
 	/**
-	 * Singleton para gestionar el atributo conexión
-	 * @param user Nombre de usuario que conecta
-	 * @param pass Pass del usuario que conecta
-	 * @return Conexión con la url
+	 * Singleton para gestionar el atributo conexión. Si ya había una conexión, se cierra
+	 * y se abre una nueva con los parámetros pasados.
+	 * @param p Parámetros de conexión
+	 * @return Conexión con la BBDD
 	 */
-	//TODO Tengo dudas de qué pasará si estoy conectado con user limitado e intento conectar con otro.
-	private Connection dameConexion(String user, String pass){
+	private Connection dameConexion(ParamsConexionBD p){
 		Connection conexion=null;
-		if (con==null)
-			try{
-				conexion = DriverManager.getConnection(url,user,pass);
-			}catch (SQLException e) {
+		try{
+			if (con!=null)
+				desconecta();
+			conexion = DriverManager.getConnection(p.getUrl(),p.getUser(),p.getPass());
+			con=conexion;
+		}catch (SQLException e) {
 				// TODO: handle exception
-				System.err.println("Error al obtener la conexión del usuario "+user);
+				System.err.println("Error al obtener la conexión del usuario "+p.getUser());
 				System.err.println(e.getMessage().toString());
-			}	
-		else 
-			conexion=con;
+		}	
 		return conexion;
 	}
+
 	
 	/**
 	 * Cierra la conexión (si existe), estableciendola a null.
@@ -80,16 +65,18 @@ public class BD {
 		}
 		catch (SQLException e) {
 			// TODO: handle exception
-			System.err.println("Petada al desconectar");
+			System.err.println("Error al desconectar");
 		}	
 	}
 	
+	
 	/**
-	 * Ejecuta una consulta y devuelve su resultado en un ResultSet. Tiene que haber una conexión creada.
+	 * Ejecuta una consulta y devuelve su resultado en un ResultSet.
 	 * @param consulta String con la consulta a ejecutar
+	 * @param con Conexión que realiza la consulta
 	 * @return Resultset con los datos de la consulta.
 	 */
-	private ResultSet ejecuta(String consulta) {
+	private ResultSet ejecuta(String consulta, Connection con) {
 		ResultSet rs=null;
 		try {
 			stmt=con.createStatement();
@@ -105,21 +92,20 @@ public class BD {
 	
 	
 	/**
-	 * Crea un usuario con privilegios de administrador para la base de datos,
-	 * en caso de que no exista. Cambia la ruta (URL).
-	 * @param root String con el nombre de usuario del administrador
-	 * @param pass String con la contraseña de root
+	 * Crea un usuario con privilegios de seleccionar, insertar, actualizar y
+	 * borrar registros en la base de datos.
+	 * No puede crear ni eliminar tablas.
+	 * @param p Parámetros de conexión a la base de datos. Debe tener permiso de crear y otorgar derechos a otros usuarios.
 	 * @param newUser String con el login del nuevo usuario
 	 * @param newPass String con la contraseña del nuevo usuario
 	 */
-	public void creaUserDerechos(String root,String pass, String newUser, String newPass){
+	public void creaUserDerechos(ParamsConexionBD p, String newUser, String newPass){
 		System.out.println("Creando usuario con derechos para la base de datos SSII");
-		url="jdbc:mysql://localhost:3306/mysql";
-		con=dameConexion(root,pass);
+		Connection con=dameConexion(p);
 		try{
 			stmt=con.createStatement();
-			String consulta="GRANT SELECT,INSERT,UPDATE,DELETE," +
-            "CREATE,DROP ON SSII.* TO '"+newUser+"'@'localhost'"+
+			String consulta="GRANT SELECT,INSERT,UPDATE,DELETE" +
+            " ON SSII.* TO '"+newUser+"'@'localhost'"+
             "IDENTIFIED BY '"+newPass+"';";
 			stmt.executeUpdate(consulta);
 			System.out.println("Usuario creado");
@@ -127,44 +113,13 @@ public class BD {
 		}catch (SQLException e){
 			e.printStackTrace();
 		}
-		
 	}
 	
-	/*public void creaUserDerechos(String root,String pass, String newUser, String newPass){
-		
-		System.out.println("Creando usuario con derechos para la base de datos SSII");
-		
-		String nuevoUser=newUser;
-		String nuevoPass=newPass;
-	    try {
-	    	url="jdbc:mysql://localhost:3306/mysql";
-	    	//Crea la conexión
-			con =
-			      DriverManager.getConnection(
-			                  url,root, pass);
-			
-			System.out.println("URL: " + url);
-		    System.out.println("Conexión: " + con);
-		    
-		    stmt=con.createStatement();
-		    
-		    //Crea nuevo usuario 
-		    stmt.executeUpdate(
-		            "GRANT SELECT,INSERT,UPDATE,DELETE," +
-		            "CREATE,DROP " +
-		            "ON SSII.* TO '"+nuevoUser+"'@'localhost'"+
-		            "IDENTIFIED BY '"+nuevoPass+"';");
-		    
-		    System.out.println("Usuario creado");
-		    con.close();
-		    con=null;
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}*/
 	
-	
+	/**
+	 * Carga el driver de la BBDD
+	 * @param nombreDriver Nombre del driver a cargar
+	 */
 	private static void cargaDriverBD(String nombreDriver){
 		try {
 			Class.forName(nombreDriver);
@@ -176,6 +131,12 @@ public class BD {
 	}
 	
 	
+	private String trataCadena(String cadena){
+		String s=cadena;
+		s=s.replaceAll("\'", "\\\\'");
+		s=s.replaceAll("\"", "\\\\'");
+		return s;
+	}
 	
 	
 	/**
@@ -183,39 +144,115 @@ public class BD {
 	 * @param peli Película a introducir
 	 * @return True en caso de introducirse de forma correcta. False en otro caso.
 	 */
-	private boolean introducePelicula(Pelicula peli){
+	private boolean introducePelicula(Pelicula peli, Connection con){
 		boolean exito=false;
 		String titulo=peli.getTitulo();
 		//Trato el string, por si tiene caracteres especiales como '
 		//TODO función que arregle todos los caracteres especiales. http://www.javapractices.com/topic/TopicAction.do?Id=96
-		titulo=titulo.replaceAll("\'", "\\\\'");
+		titulo=trataCadena(titulo);
+		
+		/*if (titulo.equals("Flamenco, flamenco"));
+			String s="hola";
+			String veamos=peli.getSinopsis();
+			System.out.println(veamos);
+		return true;*/
+		
 		String anyo=((Integer)peli.getAnio()).toString();
 		String genero=peli.getGenero();
-		//String duracion=((Integer)peli.getDuracion()).toString();
-		int duracion=peli.getDuracion(); 
-		String durString=trataDuracion(duracion);
+		String durString=trataDuracion(peli.getDuracion());
 		//String calificacion=peli.getCalificacion();
 		String calificacion="prueba";
 		//TODO Hacer la calificación para introducirla correctamente en la bbdd.
 		String nacionalidad=peli.getNacionalidad();
-		String consulta="INSERT INTO pelicula (Titulo,Año,Genero,Duracion,Calificacion,Nacionalidad)" +
+		String consulta="INSERT INTO pelicula (Titulo,Anyo,Genero,Duracion,Calificacion,Nacionalidad)" +
 				" VALUES ('"+titulo+"','"+anyo+"','"+genero+"','"+durString+"','"+calificacion+"','"+nacionalidad+"');";
-		System.out.println(consulta);
+		//System.out.println(consulta);
 		try{
 			stmt=con.createStatement();
 			stmt.executeUpdate(consulta);
-			exito=true;
+		//	exito=true;
 		}
 		catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.err.println("Error al insertar la película "+titulo+" del año "+anyo);
 		}
+		
+		
+		//Saco el valor de ID que se le acaba de dar a la pelicula
+		consulta="SELECT last_insert_id() from `ssii`.`pelicula`";
+		System.out.println(consulta);
+		ResultSet rs=ejecuta(consulta,con);
+		int codPelicula=0;
+	    try {
+			rs.next();
+			codPelicula= rs.getInt(1);
+		}catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.err.println("Error al obtener el campo código de la película recién introducida, con título "+titulo+" del año "+anyo);
+		}
+		
+		System.out.println(codPelicula);
+		
+		//Introduzco la descripción
+		String descripcion=trataCadena(peli.getSinopsis());
+		consulta="INSERT INTO Descripcion (IDPelicula, Descripcion)" +
+		" VALUES ('"+codPelicula+"','"+descripcion+"');";
+		try{
+			stmt=con.createStatement();
+			System.out.println(consulta);
+			stmt.executeUpdate(consulta);
+		}
+		catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.err.println("Error al insertar la sinopsis de la película "+titulo);
+		}
+		
+		//Introduzco los directores
+		String[] directores=peli.getDirector().split(", ");
+		consulta="INSERT INTO Dirigen (IDPelicula, Director)" +
+		" VALUES ('"+codPelicula+"','";
+		try {
+			for (int i=0;i<directores.length;i++){
+				String consultaAux=consulta+directores[i]+"');";
+				System.out.println(consultaAux);
+				con.createStatement().executeUpdate(consultaAux);
+			}
+		}catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.err.println("Error al insertar el director de la película "+titulo);
+		}
+		
+		
+		//Introduzco los actores
+		String actoresAux=peli.getInterpretes().replaceAll(" y ", ", ");
+		String[] actores=actoresAux.split(", ");
+		
+		consulta="INSERT INTO Actuan (IDPelicula, Actor)" +
+		" VALUES ('"+codPelicula+"','";
+		try {
+			for (int i=0;i<actores.length;i++){
+				String consultaAux=consulta+actores[i]+"');";
+				System.out.println(consultaAux);
+				con.createStatement().executeUpdate(consultaAux);
+			}
+			exito=true;
+		}catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.err.println("Error al insertar los actores de la película "+titulo);
+		}
 		return exito;
 	}
 	
-
-	
+	/**
+	 * Pasa un entero de duración (en minutos) a un String de tipo HH:MM
+	 * @param duracion Duración en minutos a transformar
+	 * @return String con formato HH:MM con la duración pasada por parámetro 
+	 */
 	private String trataDuracion(int duracion) {
 		Integer horas=duracion/60;
 		Integer minutos=duracion%60;
@@ -223,12 +260,13 @@ public class BD {
 		return s;
 	}
 
+	
 	/**
 	 * Introduce un cine en la base de datos. Precondición: La conexión está creada.
 	 * @param cine Cine a introducir
 	 * @return True en caso de introducirse de forma correcta. False en otro caso.
 	 */
-	private boolean introduceCine(Cine cine){
+	private boolean introduceCine(Cine cine, Connection con){
 		boolean exito=false;
 		String nombre=cine.getNombre();
 		
@@ -242,7 +280,7 @@ public class BD {
 		
 		int codProvincia=0;
 		//No hago un while porque sólo hay una provincia con ese nombre
-		ResultSet rs=ejecuta(consultaID);
+		ResultSet rs=ejecuta(consultaID,con);
 	    try {
 			rs.next();
 			codProvincia= rs.getInt("ID");
@@ -268,7 +306,6 @@ public class BD {
 				System.err.println("Error al insertar el cine "+nombre+" de la provincia "+provincia);
 			}
 		}
-
 		return exito;
 	}
 	
@@ -276,24 +313,25 @@ public class BD {
 	
 	
 	/**
-	 * Introduce las provincias en la base de datos.
+	 * Introduce las provincias en la base de datos. No tiene en cuenta si ya estaban introducidas,
+	 * con lo que dos llamas al método producirían duplicidades. Controlarlo.
 	 * @return True si las introduce correctamente.
 	 */
-	public boolean introduceProvincias(){
-		System.out.println("Prueba de carga de peliculas");
-	    cargaDriverBD(driver);
-		conecta("userPrueba", "passPrueba");
+	//TODO controlar duplicidades
+	public boolean introduceProvincias(ParamsConexionBD p){
+		System.out.println("Introduciendo las provincias");
+		Connection con=dameConexion(p);
 		boolean exito=false;
 		Provincia[] provincias=Provincia.values();
 		String consulta;
-		for (Provincia p : provincias) {
-			String s=ProvinciasGDO.getNombre(p);
+		for (Provincia prov : provincias) {
+			String s=ProvinciasGDO.getNombre(prov);
 			consulta="INSERT INTO provincia (Nombre) VALUES ('"+s+"');";
 			System.out.println(consulta);
 			try{
-			stmt=con.createStatement();
-			stmt.executeUpdate(consulta);
-			exito=true;
+				stmt=con.createStatement();
+				stmt.executeUpdate(consulta);
+				exito=true;
 			}catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -309,14 +347,15 @@ public class BD {
 	 * Introduce las películas que se pasan por el array a la base de datos.
 	 * @param peliculas Lista de películas a introducir.
 	 */
-	public void introducePelicula(ArrayList<Pelicula> peliculas){
+	public void introducePelicula(ArrayList<Pelicula> peliculas, ParamsConexionBD p){
 		System.out.println("Prueba de carga de peliculas");
-	    cargaDriverBD(driver);
-		conecta("userPrueba", "passPrueba");
+		Connection con=dameConexion(p);
+		boolean b=true;
 		for (Pelicula pelicula : peliculas) {
-			introducePelicula(pelicula);
+			b=introducePelicula(pelicula,con) && b;
 		}
 		desconecta();
+		System.out.println(b);
 	}
 	
 	
@@ -324,70 +363,98 @@ public class BD {
 	 * Introduce los cines que se pasan por el array a la base de datos.
 	 * @param peliculas Lista de cines a introducir.
 	 */
-	public void introduceCine(ArrayList<Cine> cines){
+	public void introduceCine(ArrayList<Cine> cines, ParamsConexionBD p){
 		System.out.println("Prueba de carga de cines");
-	    cargaDriverBD(driver);
-		conecta("userPrueba", "passPrueba");
+	    //cargaDriverBD(driver);
+		Connection con=dameConexion(p);
 		for (Cine cine: cines) {
-			introduceCine(cine);
+			introduceCine(cine,con);
 		}
 		desconecta();
 	}
 	
 
 	
-	//Carga el driver, y crea un usuario con privilegios si no existía.
+	//Carga el driver
 	public BD(){
-		//Carga el driver
 		cargaDriverBD(driver);
-		
-		//conecta con derechos de root
-		//conecta("root","");
-		//Realmente se debería hacer llamando a conecta, y luego ejecuta. TODO
-		creaUserDerechos("root", "", userRoot, passRoot);
 	}
 	
 	
+	/**
+	 * Crea el espacio y las tablas de la base de datos.
+	 * Si existian, las borra y vuelve a crearlas.
+	 * No hay que haber realizado antes una conexión, pues se hace aquí con 
+	 * los datos del parámetro de entrada. También realiza la desconexión.
+	 * @param p Parámetros para conectar. Hace falta que el usuario tenga derechos de crear y borrar.
+	 */
+	public void creaTablas(ParamsConexionBD p){
+		String consulta="";
+		String textAux="";
+		File f= new File("src/bbdd/crea_tablas_FK.sql");
+		System.out.println("Creando base de datos desde el archivo "+f.getAbsolutePath().toString());
+		BufferedReader entrada=null;
+		//Leo el archivo de texto
+		try {
+			entrada = new BufferedReader( new FileReader( f ) );
+			while((textAux=entrada.readLine())!=null)
+					consulta=consulta+textAux;
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.err.println("Error al leer el archivo" +f.getAbsolutePath().toString());
+		}
+		//Conecto con permisos de root
+		Connection con=dameConexion(p);
+		//Separo las consultas
+		String[] consultas=consulta.split(";");
+		//Y las ejecuto una por una
+		try {
+			for (int i=0;i<consultas.length;i++)
+			con.createStatement().executeUpdate(consultas[i]);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.err.println("Error al crear la base de datos");
+		}
+		desconecta();
+		System.out.println("Base de datos y tablas creadas con éxito");
+	}
 	
+	
+	/**
+	 * Crea un usuario con derechos totales sobre la base de datos
+	 * @param p Parámetros de conexión. El usuario debe tener derechos para crear un usuario.
+	 */
+	public void creaNuevoAdministrador(ParamsConexionBD p) {
+		System.out.println("Creando usuario con derechos de administrador para la base de datos SSII");
+		String user=p.getUser();
+		String pass=p.getPass();
+		Connection con=dameConexion(p);
+		try{
+			stmt=con.createStatement();
+			String consulta="GRANT ALL PRIVILEGES"+
+            " ON SSII.* TO '"+user+"'@'localhost'"+
+            "IDENTIFIED BY '"+pass+"';";
+			stmt.executeUpdate(consulta);
+			System.out.println("Usuario creado");
+			desconecta();
+		}catch (SQLException e){
+			e.printStackTrace();
+		}	
+	}
+
+
+
+	
+  
 	public static void main(String args[]){
 		BD bd=new BD();
 		//TODO meter tratamiento de usar o no usar TOR
 		ProcesadorCarteleraGDO pr=new ProcesadorCarteleraGDO(false);
 		ArrayList<Pelicula> arr= pr.getPeliculas(ProvinciasGDO.Provincia.alava);
-		bd.introducePelicula(arr);
+		ParamsConexionBD p=new ParamsConexionBD("userSSII", "passSSII", "jdbc:mysql://localhost:3306/ssii");
+		bd.introducePelicula(arr,p);
 	}
 	
-	/*
-	public static void main(String args[]){
-	    System.out.println("Prueba de conexión");
-
-	    cargaDriverBD(driver);
-		
-	    BD prueba=new BD();
-	    prueba.desconecta();
-	    prueba.creaUserDerechos("root", "", userRoot, passRoot);
-	    prueba.conecta("root", "ssiipass");
-	    prueba.desconecta();
-	    prueba.desconecta();
-	    prueba.conecta("userPrueba", "passPrueba");
-	    
-	    String consulta="SELECT ID,TITULO FROM SSII.PELICULA;";
-	    ResultSet rs=prueba.ejecuta(consulta);
-	    try {
-			while(rs.next()){
-			    int valor= rs.getInt("id");
-			    String tit = rs.getString("titulo");
-			    System.out.println("\t id de película= " + valor
-			                         + "\t Título = " + tit);
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	    prueba.desconecta();
-	}//main*/
-
-
-  
   
 }//clase
