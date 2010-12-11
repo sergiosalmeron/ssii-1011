@@ -19,23 +19,36 @@ import net.htmlparser.jericho.Element;
 import net.htmlparser.jericho.Segment;
 import net.htmlparser.jericho.Source;
 
-
+/**
+ * Clase para la extracción de cines y pases de la página de la guía del ocio.
+ * @author SSII
+ *
+ */
 public class ProcesadorCinesGDO {
-	
+	//Parámetro consultado para ver si las conexiones se hacen por medio de la clase ConecTor o no
 	private boolean usandoTor;
 	
-	
+	/**
+	 * Constructora por defecto. Las conexiones se hacen sin ConecTor
+	 */
 	public ProcesadorCinesGDO() {
 		super();
 		this.usandoTor =false;
 	}
-
+	/**
+	 * Constructor
+	 * @param usandoTor Especifica si las conexiones se hacen por medio de la clase ConecTor o no
+	 */
 	public ProcesadorCinesGDO(boolean usandoTor) {
 		super();
 		this.usandoTor = usandoTor;
 	}
 
-
+	/**
+	 * Método que devuelve un arraylist con los cines (y sus pases) de una provincia.
+	 * @param provincia La provincia
+	 * @return Los cines
+	 */
 	public ArrayList<Cine> getCines(Provincia provincia) {
 		
 		ArrayList<Cine> cines=getDirecciones(provincia);
@@ -48,7 +61,12 @@ public class ProcesadorCinesGDO {
 	}
 	
 	
-
+	/**
+	 * A partir de la página principal de cines de la provincia a tratar, genera un arraylist
+	 * de cines que solo tienen el nombre del cine y su URL de GDO
+	 * @param provincia La provincia
+	 * @return Las direcciones web de los cines dentro de GDO
+	 */
 	private ArrayList<Cine> getDirecciones(Provincia provincia){
 		ArrayList<Cine> cines=new ArrayList<Cine>();
 		//<div class="gridType06 ftl clear">
@@ -83,10 +101,11 @@ public class ProcesadorCinesGDO {
 		return cines;
 	}
 	
-	
-	
-	
-	
+	/**
+	 * Método que, a partir de un objeto cine que solo tiene su dirección web de GDO, rellena sus atts
+	 * @param cine Un objeto cine con su dirección web de GDO
+	 * @return El objeto cine con todos sus atts rellenos
+	 */
 	private boolean getCine(Cine cine) {
 		Source source=null;
 		try {
@@ -132,7 +151,11 @@ public class ProcesadorCinesGDO {
 	}
 
 
-
+	/**
+	 * Método que genera una tabla hash con los atributos mostrados de un cine en su web de GDO
+	 * @param fuente El código de la página del cine
+	 * @return La tabla hash con los atts y sus valores
+	 */
 	private Hashtable<String, String> procesaInfoCine(Source fuente){
 		List <Element> atributos=fuente.getAllElementsByClass("infoContent").get(0).getAllElements("li");
 		//System.out.println("-----------");
@@ -147,7 +170,11 @@ public class ProcesadorCinesGDO {
 		//System.out.println(" ");
 		return tabla;
 	}
-	
+	/**
+	 * Método que rellena los atts de un cine a partir de una tabla hash
+	 * @param cine El cine a "rellenar"
+	 * @param tabla La tabla con los valores de los atributos del cine
+	 */
 	private void procesaTablaInfo(Cine cine, Hashtable<String, String> tabla){
 		Object aux;
 		
@@ -174,7 +201,11 @@ public class ProcesadorCinesGDO {
 		
 	}
 	
-	
+	/**
+	 * Método que inserta en un cine todos los pases de la semana
+	 * @param cine El cine en el que se incluirán los pases
+	 * @param source La página web en GDO del cine
+	 */
 	private void procesaPases(Cine cine, Source source) {
 		// <div class="contentSesiones">
 		List<? extends Segment> bloques=source.getAllElementsByClass("contentSesiones");
@@ -205,7 +236,12 @@ public class ProcesadorCinesGDO {
 		
 	}
 
-
+	/**
+	 * Debido a que los horarios de los pases de cada pelicula y cine están en una dirección web distinta
+	 * tenemos que obtener las direcciones de cada uno de los horarios.
+	 * @param urlJueves La URL con los horarios de los pases del jueves
+	 * @return Un arrayList de direcciones web calculadas a partir de la url del jueves
+	 */
 	private String[] generaUrlHorarios(String urlJueves) {
 		String[] resultado=new String[7];
 		String[] campos=urlJueves.split("::");
@@ -221,6 +257,13 @@ public class ProcesadorCinesGDO {
 		return resultado;
 	}
 
+	/**
+	 * Método que, a partir de los horarios de los pases de una película, incluye en el Cine 
+	 * los pases.
+	 * @param cine El Cine en el que se incluirán los pases
+	 * @param urlPeli La url de la película (usada a modo de clave en el pase)
+	 * @param urlHorarios Las direcciones con los horarios de los pases de la película esta semana
+	 */
 	private void addPases(Cine cine, String urlPeli, String[] urlHorarios) {
 		for (int i=0;i<urlHorarios.length;i++){
 			String url= urlHorarios[i];
@@ -250,6 +293,11 @@ public class ProcesadorCinesGDO {
 		
 	}
 	
+	/**
+	 * 
+	 * @param i el número de día de la semana (partiendo de que el viernes es el valor 0)
+	 * @return el enumerado del día
+	 */
 	private EnumDias getDia(int i){
 		EnumDias resultado=null;
 		switch (i){

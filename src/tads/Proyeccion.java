@@ -3,7 +3,7 @@ package tads;
 import tads.DiasSemana.EnumDias;
 
 public class Proyeccion {
-	
+	//dirección de la película dentro de la web GDO
 	private String dirWebPelicula;
 	private EnumDias dia;
 	private String hora;
