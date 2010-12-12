@@ -25,17 +25,12 @@ CREATE TABLE `pelicula` (
   `Duracion` time DEFAULT '00:00:00',
   `Calificacion` varchar(45) DEFAULT 'No disponible',
   `Nacionalidad` varchar(45) DEFAULT 'No disponible',
+  `Url` varchar(150) NOT NULL,
   PRIMARY KEY (`ID`),
+  UNIQUE KEY `Url_UNIQUE` (`Url`),
   KEY `TITULO_PELI` (`Titulo`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Información de las películas. Id, Título, Año, Género, Durac';
+) ENGINE=InnoDB AUTO_INCREMENT=94 DEFAULT CHARSET=utf8 COMMENT='Información de las películas. Id, Título, Año, Género, Durac';
 /*!40101 SET character_set_client = @saved_cs_client */;
-
-
-LOCK TABLES `pelicula` WRITE;
-/*!40000 ALTER TABLE `pelicula` DISABLE KEYS */;
-/*!40000 ALTER TABLE `pelicula` ENABLE KEYS */;
-UNLOCK TABLES;
-
 
 
 DROP TABLE IF EXISTS `provincia`;
@@ -45,14 +40,8 @@ CREATE TABLE `provincia` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `Nombre` varchar(45) NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Nombre de provincia';
+) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8 COMMENT='Nombre de provincia';
 /*!40101 SET character_set_client = @saved_cs_client */;
-
-
-LOCK TABLES `provincia` WRITE;
-/*!40000 ALTER TABLE `provincia` DISABLE KEYS */;
-/*!40000 ALTER TABLE `provincia` ENABLE KEYS */;
-UNLOCK TABLES;
 
 
 DROP TABLE IF EXISTS `actuan`;
@@ -67,12 +56,6 @@ CREATE TABLE `actuan` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 
-LOCK TABLES `actuan` WRITE;
-/*!40000 ALTER TABLE `actuan` DISABLE KEYS */;
-/*!40000 ALTER TABLE `actuan` ENABLE KEYS */;
-UNLOCK TABLES;
-
-
 DROP TABLE IF EXISTS `descripcion`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -84,12 +67,6 @@ CREATE TABLE `descripcion` (
   CONSTRAINT `DESCRIPCION_PELICULA` FOREIGN KEY (`IDPelicula`) REFERENCES `pelicula` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Descripción (sinopsis) de la pelicula';
 /*!40101 SET character_set_client = @saved_cs_client */;
-
-
-LOCK TABLES `descripcion` WRITE;
-/*!40000 ALTER TABLE `descripcion` DISABLE KEYS */;
-/*!40000 ALTER TABLE `descripcion` ENABLE KEYS */;
-UNLOCK TABLES;
 
 
 DROP TABLE IF EXISTS `sesion`;
@@ -109,32 +86,22 @@ CREATE TABLE `sesion` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 
-LOCK TABLES `sesion` WRITE;
-/*!40000 ALTER TABLE `sesion` DISABLE KEYS */;
-/*!40000 ALTER TABLE `sesion` ENABLE KEYS */;
-UNLOCK TABLES;
-
-
 DROP TABLE IF EXISTS `cine`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `cine` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `Nombre` varchar(45) DEFAULT NULL,
-  `Direccion` varchar(45) DEFAULT NULL,
+  `Direccion` text,
   `IDProvincia` int(11) DEFAULT NULL,
+  `Url` varchar(150) NOT NULL,
   PRIMARY KEY (`ID`),
+  UNIQUE KEY `Url_UNIQUE` (`Url`),
   KEY `NOMBRE_CINE` (`Nombre`) USING BTREE,
   KEY `PROV_CINE` (`IDProvincia`),
   CONSTRAINT `PROV_CINE` FOREIGN KEY (`IDProvincia`) REFERENCES `provincia` (`ID`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Información de los cines. Nombre, Dirección y Provincia';
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8 COMMENT='Información de los cines. Nombre, Dirección y Provincia';
 /*!40101 SET character_set_client = @saved_cs_client */;
-
-
-LOCK TABLES `cine` WRITE;
-/*!40000 ALTER TABLE `cine` DISABLE KEYS */;
-/*!40000 ALTER TABLE `cine` ENABLE KEYS */;
-UNLOCK TABLES;
 
 
 DROP TABLE IF EXISTS `dirigen`;
@@ -148,12 +115,6 @@ CREATE TABLE `dirigen` (
   CONSTRAINT `DIRIGEN_PELICULA` FOREIGN KEY (`IDPelicula`) REFERENCES `pelicula` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Directores de películs.Generalmente es uno,pueden ser varios';
 /*!40101 SET character_set_client = @saved_cs_client */;
-
-
-LOCK TABLES `dirigen` WRITE;
-/*!40000 ALTER TABLE `dirigen` DISABLE KEYS */;
-/*!40000 ALTER TABLE `dirigen` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -163,4 +124,3 @@ UNLOCK TABLES;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-

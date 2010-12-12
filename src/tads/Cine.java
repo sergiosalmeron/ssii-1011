@@ -102,6 +102,11 @@ public class Cine {
 		return nombre;
 	}
 	
+	public ArrayList<Proyeccion> getPases() {
+		return pases;
+	}
+
+
 	public boolean addPase(Proyeccion pro){
 		if (pro!=null){
 			pases.add(pro);
