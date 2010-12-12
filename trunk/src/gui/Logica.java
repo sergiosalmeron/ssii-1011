@@ -1,38 +1,26 @@
-package clasesDePrueba;
+package gui;
 
-import java.io.IOException;
 import java.util.ArrayList;
-
-import extractores.cines.ProcesadorCinesGDO;
-import extractores.peliculas.ProcesadorCarteleraGDO;
-import gui.InterfazExtractor;
 
 import tads.Cine;
 import tads.Pelicula;
 import tads.ProvinciasGDO.Provincia;
+import extractores.cines.ProcesadorCinesGDO;
+import extractores.peliculas.ProcesadorCarteleraGDO;
 
-public class pruebecilla1 {
-	
-	private static InterfazExtractor interfaz;
+public class Logica implements Runnable {
+
 	private static boolean interrumpir;
 
-	public static void main(String[] args) throws IOException {
+	private static InterfazExtractor interfaz;
 
-		/*ProcesadorCinesGDO a=new ProcesadorCinesGDO();
-		ArrayList<Cine> cines=a.getCines(Provincia.avila);
-		for (Cine cine: cines)
-			System.out.println(cine);*/
-		/*ProcesadorCarteleraGDO carte= new ProcesadorCarteleraGDO();
-		ArrayList<Pelicula> pelis=carte.getPeliculas(Provincia.avila);
-		for (Pelicula peli : pelis){
-			System.out.println(peli);
-			System.out.println(peli.getSinopsis());
-		}
-		*/
-		interfaz= new InterfazExtractor();
+	
+	public Logica (InterfazExtractor interfaz){
+		this.interfaz=interfaz;
 	}
 	
-	public static void extrae(){
+	@Override
+	public void run() {
 		Provincia[] provincias=Provincia.values();
 		
 		ArrayList<Cine> cines=new ArrayList<Cine>();
@@ -59,9 +47,9 @@ public class pruebecilla1 {
 			interrumpir=false;
 	}
 	
-	public static void interrumpe(){
+	
+	public void interrumpe(){
 		interrumpir=true;
 	}
-	
-	
+
 }
