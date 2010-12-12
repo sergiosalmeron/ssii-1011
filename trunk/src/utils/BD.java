@@ -15,7 +15,9 @@ import tads.Cine;
 import tads.ParamsConexionBD;
 import tads.Pelicula;
 import tads.ProvinciasGDO;
+import tads.Proyeccion;
 import tads.ProvinciasGDO.Provincia;
+import extractores.cines.ProcesadorCinesGDO;
 import extractores.peliculas.ProcesadorCarteleraGDO;
 
 
@@ -39,9 +41,9 @@ public class BD {
 			if (con!=null)
 				desconecta();
 			conexion = DriverManager.getConnection(p.getUrl(),p.getUser(),p.getPass());
+//			System.out.println("Conectado con el usuario "+p.getUser());
 			con=conexion;
 		}catch (SQLException e) {
-				// TODO: handle exception
 				System.err.println("Error al obtener la conexión del usuario "+p.getUser());
 				System.err.println(e.getMessage().toString());
 		}	
@@ -52,19 +54,18 @@ public class BD {
 	/**
 	 * Cierra la conexión (si existe), estableciendola a null.
 	 */
-	public void desconecta(){
+	private void desconecta(){
 		try {
 	    	//Cierra la conexión
 			if (con!=null){
 				con.close();
 				con=null;
-				System.out.println("desconectado correctamente");
+				//System.out.println("Usuario desconectado");
 			}
 			else
 				System.out.println("No había una conexión realizada");
 		}
 		catch (SQLException e) {
-			// TODO: handle exception
 			System.err.println("Error al desconectar");
 		}	
 	}
@@ -82,8 +83,8 @@ public class BD {
 			stmt=con.createStatement();
 			rs=stmt.executeQuery(consulta);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.err.println("Fallo al ejecutar la consulta "+consulta);
+			System.err.println(e.getMessage());
 		}
 		return rs;
 	}
@@ -111,7 +112,9 @@ public class BD {
 			System.out.println("Usuario creado");
 			desconecta();
 		}catch (SQLException e){
-			e.printStackTrace();
+			System.err.println("Fallo al crear el usuario "+newUser+" con privilegios" +
+					"para seleccionar, insertar, actualizar y borrar registros");
+			System.err.println(e.getMessage());
 		}
 	}
 	
@@ -124,7 +127,6 @@ public class BD {
 		try {
 			Class.forName(nombreDriver);
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.err.println("Error al cargar el driver de la BD");
 		}
@@ -139,6 +141,16 @@ public class BD {
 	}
 	
 	
+	private String calculaCalificacion(int valor){
+		String calificacion;
+		if (valor==0)
+			calificacion="Todos los públicos";
+		else
+			calificacion="Mayores de "+valor+" años";
+		return calificacion;
+	}
+	
+	
 	/**
 	 * Introduce una película en la base de datos. Precondición: La conexión está creada.
 	 * @param peli Película a introducir
@@ -150,100 +162,96 @@ public class BD {
 		//Trato el string, por si tiene caracteres especiales como '
 		//TODO función que arregle todos los caracteres especiales. http://www.javapractices.com/topic/TopicAction.do?Id=96
 		titulo=trataCadena(titulo);
-		
-		/*if (titulo.equals("Flamenco, flamenco"));
-			String s="hola";
-			String veamos=peli.getSinopsis();
-			System.out.println(veamos);
-		return true;*/
-		
+			
 		String anyo=((Integer)peli.getAnio()).toString();
 		String genero=peli.getGenero();
 		String durString=trataDuracion(peli.getDuracion());
-		//String calificacion=peli.getCalificacion();
-		String calificacion="prueba";
-		//TODO Hacer la calificación para introducirla correctamente en la bbdd.
+		String calificacion=calculaCalificacion(peli.getCalificacion());
 		String nacionalidad=peli.getNacionalidad();
-		String consulta="INSERT INTO pelicula (Titulo,Anyo,Genero,Duracion,Calificacion,Nacionalidad)" +
-				" VALUES ('"+titulo+"','"+anyo+"','"+genero+"','"+durString+"','"+calificacion+"','"+nacionalidad+"');";
-		//System.out.println(consulta);
+		String url=peli.getDirWeb();
+		String consulta="INSERT INTO pelicula (Titulo,Anyo,Genero,Duracion,Calificacion,Nacionalidad,Url)" +
+				" VALUES ('"+titulo+"','"+anyo+"','"+genero+"','"+durString+"','"+calificacion+"','"+nacionalidad+"','"+url+"');";
+//		System.out.println(consulta);
+		boolean introducida=false;
 		try{
 			stmt=con.createStatement();
 			stmt.executeUpdate(consulta);
-		//	exito=true;
+			introducida=true;
 		}
 		catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 			System.err.println("Error al insertar la película "+titulo+" del año "+anyo);
+			System.err.println(e.getMessage());
+			System.err.println(consulta);
 		}
 		
 		
-		//Saco el valor de ID que se le acaba de dar a la pelicula
-		consulta="SELECT last_insert_id() from `ssii`.`pelicula`";
-		System.out.println(consulta);
-		ResultSet rs=ejecuta(consulta,con);
-		int codPelicula=0;
-	    try {
-			rs.next();
-			codPelicula= rs.getInt(1);
-		}catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.err.println("Error al obtener el campo código de la película recién introducida, con título "+titulo+" del año "+anyo);
-		}
-		
-		System.out.println(codPelicula);
-		
-		//Introduzco la descripción
-		String descripcion=trataCadena(peli.getSinopsis());
-		consulta="INSERT INTO Descripcion (IDPelicula, Descripcion)" +
-		" VALUES ('"+codPelicula+"','"+descripcion+"');";
-		try{
-			stmt=con.createStatement();
-			System.out.println(consulta);
-			stmt.executeUpdate(consulta);
-		}
-		catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.err.println("Error al insertar la sinopsis de la película "+titulo);
-		}
-		
-		//Introduzco los directores
-		String[] directores=peli.getDirector().split(", ");
-		consulta="INSERT INTO Dirigen (IDPelicula, Director)" +
-		" VALUES ('"+codPelicula+"','";
-		try {
-			for (int i=0;i<directores.length;i++){
-				String consultaAux=consulta+directores[i]+"');";
-				System.out.println(consultaAux);
-				con.createStatement().executeUpdate(consultaAux);
+		//Sólo en el caso de que no haya fallado la inserción de la película en la bbdd, continúo
+		if (introducida){
+			//Saco el valor de ID que se le acaba de dar a la pelicula
+			consulta="SELECT last_insert_id() from `ssii`.`pelicula`";
+//			System.out.println(consulta);
+			ResultSet rs=ejecuta(consulta,con);
+			int codPelicula=0;
+		    try {
+				rs.next();
+				codPelicula= rs.getInt(1);
+			}catch (SQLException e) {
+				System.err.println("Error al obtener el campo código de la película recién introducida, con título "+titulo+" del año "+anyo);
+				System.err.println(e.getMessage());
+				System.err.println(consulta);
 			}
-		}catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.err.println("Error al insertar el director de la película "+titulo);
-		}
-		
-		
-		//Introduzco los actores
-		String actoresAux=peli.getInterpretes().replaceAll(" y ", ", ");
-		String[] actores=actoresAux.split(", ");
-		
-		consulta="INSERT INTO Actuan (IDPelicula, Actor)" +
-		" VALUES ('"+codPelicula+"','";
-		try {
-			for (int i=0;i<actores.length;i++){
-				String consultaAux=consulta+actores[i]+"');";
-				System.out.println(consultaAux);
-				con.createStatement().executeUpdate(consultaAux);
+			
+			
+			//Introduzco la descripción
+			String descripcion=trataCadena(peli.getSinopsis());
+			consulta="INSERT INTO Descripcion (IDPelicula, Descripcion)" +
+			" VALUES ('"+codPelicula+"','"+descripcion+"');";
+			try{
+				stmt=con.createStatement();
+//				System.out.println(consulta);
+				stmt.executeUpdate(consulta);
 			}
-			exito=true;
-		}catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.err.println("Error al insertar los actores de la película "+titulo);
+			catch (SQLException e) {
+				System.err.println("Error al insertar la sinopsis de la película "+titulo);
+				System.err.println(e.getMessage());
+				System.err.println(consulta);
+			}
+			
+			//Introduzco los directores
+			String[] directores=peli.getDirector().split(", ");
+			consulta="INSERT INTO Dirigen (IDPelicula, Director)" +
+			" VALUES ('"+codPelicula+"','";
+			try {
+				for (int i=0;i<directores.length;i++){
+					String consultaAux=consulta+directores[i]+"');";
+//					System.out.println(consultaAux);
+					con.createStatement().executeUpdate(consultaAux);
+				}
+			}catch (SQLException e) {
+				System.err.println("Error al insertar el director de la película "+titulo);
+				System.err.println(e.getMessage());
+				System.err.println(consulta);
+			}
+			
+			
+			//Introduzco los actores
+			String actoresAux=peli.getInterpretes().replaceAll(" y ", ", ");
+			String[] actores=actoresAux.split(", ");
+			
+			consulta="INSERT INTO Actuan (IDPelicula, Actor)" +
+			" VALUES ('"+codPelicula+"','";
+			try {
+				for (int i=0;i<actores.length;i++){
+					String consultaAux=consulta+actores[i]+"');";
+//					System.out.println(consultaAux);
+					con.createStatement().executeUpdate(consultaAux);
+				}
+				exito=true;
+			}catch (SQLException e) {
+				System.err.println("Error al insertar los actores de la película "+titulo);
+				System.err.println(e.getMessage());
+//				System.err.println(consulta);
+			}
 		}
 		return exito;
 	}
@@ -268,15 +276,13 @@ public class BD {
 	 */
 	private boolean introduceCine(Cine cine, Connection con){
 		boolean exito=false;
-		String nombre=cine.getNombre();
-		
-		//TODO hay que tratar las barras de escape / y las comas ,
-		String direccion=cine.getDireccion();
-		
-		//ProvinciasGDO p=Provincia.
+		String nombre=trataCadena(cine.getNombre());
+		String direccion=trataCadena(cine.getDireccion());
+
 		String provincia=ProvinciasGDO.getNombre(cine.getProvincia());
 		String consultaID="SELECT ID FROM provincia WHERE Nombre='"+provincia+"';";
-		System.out.println(consultaID);
+		String url=cine.getDirWebGDO();
+//		System.out.println(consultaID);
 		
 		int codProvincia=0;
 		//No hago un while porque sólo hay una provincia con ese nombre
@@ -285,25 +291,25 @@ public class BD {
 			rs.next();
 			codProvincia= rs.getInt("ID");
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.err.println("Petada al sacar el ID de la provincia "+provincia);
+			System.err.println("Fallo introduciendo el cine "+nombre+" mientras se sacaba el ID de la provincia "+provincia);
+			System.err.println(e.getMessage());
+			System.err.println(consultaID);
 		}
 		
 		//Me ha dado un valor correcto
 		if (codProvincia!=0){
-			String consulta="INSERT INTO cine (Nombre,Direccion,Provincia)" +
-				" VALUES ('"+nombre+"','"+direccion+"','"+codProvincia+"');";
-			System.out.println(consulta);
+			String consulta="INSERT INTO cine (Nombre,Direccion,IDProvincia,Url)" +
+				" VALUES ('"+nombre+"','"+direccion+"','"+codProvincia+"','"+url+"');";
+//			System.out.println(consulta);
 			try{
 				stmt=con.createStatement();
 				stmt.executeUpdate(consulta);
 				exito=true;
 			}
 			catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 				System.err.println("Error al insertar el cine "+nombre+" de la provincia "+provincia);
+				System.err.println(e.getMessage());
+				System.err.println(consulta);
 			}
 		}
 		return exito;
@@ -311,34 +317,67 @@ public class BD {
 	
 	
 	
-	
-	/**
-	 * Introduce las provincias en la base de datos. No tiene en cuenta si ya estaban introducidas,
-	 * con lo que dos llamas al método producirían duplicidades. Controlarlo.
-	 * @return True si las introduce correctamente.
-	 */
-	//TODO controlar duplicidades
-	public boolean introduceProvincias(ParamsConexionBD p){
-		System.out.println("Introduciendo las provincias");
-		Connection con=dameConexion(p);
+	private boolean introduceProyecciones(Cine cine,ParamsConexionBD p){
 		boolean exito=false;
-		Provincia[] provincias=Provincia.values();
-		String consulta;
-		for (Provincia prov : provincias) {
-			String s=ProvinciasGDO.getNombre(prov);
-			consulta="INSERT INTO provincia (Nombre) VALUES ('"+s+"');";
-			System.out.println(consulta);
-			try{
-				stmt=con.createStatement();
-				stmt.executeUpdate(consulta);
-				exito=true;
-			}catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				System.err.println("Error al insertar la provincia "+s);
+		Connection con;
+		ArrayList<Proyeccion> arrProyecciones=cine.getPases();
+		
+		for (Proyeccion proyeccion : arrProyecciones) {
+			//Saco el ID de la película a la que voy a meter los pases
+			String urlPeli=proyeccion.getDirWebPelicula();
+			String consultaID="SELECT ID FROM pelicula WHERE Url='"+urlPeli+"';";
+//			System.out.println(consultaID);
+			int codPeli=0;
+			//No hago un while porque sólo hay una pelicula con esa Url
+			con=dameConexion(p);
+			ResultSet rs=ejecuta(consultaID,con);
+		    try {
+				rs.next();
+				codPeli= rs.getInt("ID");
+			} catch (SQLException e) {
+				System.err.println("Fallo al sacar el ID de pelicula mientras se introducían las proyecciones del cine "+cine.getNombre()+" de la provincia "+cine.getProvincia());
+				System.err.println(e.getMessage());
+				System.err.println(consultaID);
 			}
+//			System.out.println("ID de película: "+codPeli);
+			
+			//Saco el ID del cine al que voy a meter los pases
+			String urlCine=cine.getDirWebGDO();
+			consultaID="SELECT ID FROM cine WHERE Url='"+urlCine+"';";
+//			System.out.println(consultaID);
+			int codCine=0;
+			//No hago un while porque sólo hay un cine con esa Url
+			con=dameConexion(p);
+			rs=ejecuta(consultaID,con);
+		    try {
+				rs.next();
+				codCine= rs.getInt("ID");
+			} catch (SQLException e) {
+				System.err.println("Fallo al sacar el ID del cine mientras se introducían " +
+						"las proyecciones del cine "+cine.getNombre()+" de la provincia "+cine.getProvincia());
+				System.err.println(e.getMessage());
+				System.err.println(consultaID);
+			}
+//			System.out.println("ID de cine: "+codCine);
+			
+			//E inserto en la BBDD
+			if (codCine!=0 && codPeli!=0){
+				String consultaInsercion="INSERT INTO sesion (IDPelicula, IDCine, Hora, Dia)"+
+				" VALUES ('"+codPeli+"','"+codCine+"','"+proyeccion.getHora()+"','"+proyeccion.getDia()+"');";
+//				System.out.println("Consulta de insercion final: "+consultaInsercion);
+				try{
+					stmt=con.createStatement();
+					stmt.executeUpdate(consultaInsercion);
+					exito=true;
+				}
+				catch (SQLException e) {
+					System.err.println("Error al insertar las proyecciones del cine "+cine.getNombre()+" de la provincia "+cine.getProvincia()+" de la pelicula con ID:"+codPeli);
+					System.err.println(e.getMessage());
+					System.err.println(consultaInsercion);
+				}
+			}
+			
 		}
-		desconecta();
 		return exito;
 	}
 	
@@ -347,7 +386,7 @@ public class BD {
 	 * Introduce las películas que se pasan por el array a la base de datos.
 	 * @param peliculas Lista de películas a introducir.
 	 */
-	public void introducePelicula(ArrayList<Pelicula> peliculas, ParamsConexionBD p){
+	private void introducePelicula(ArrayList<Pelicula> peliculas, ParamsConexionBD p){
 		System.out.println("Prueba de carga de peliculas");
 		Connection con=dameConexion(p);
 		boolean b=true;
@@ -355,7 +394,7 @@ public class BD {
 			b=introducePelicula(pelicula,con) && b;
 		}
 		desconecta();
-		System.out.println(b);
+//		System.out.println(b);
 	}
 	
 	
@@ -363,9 +402,8 @@ public class BD {
 	 * Introduce los cines que se pasan por el array a la base de datos.
 	 * @param peliculas Lista de cines a introducir.
 	 */
-	public void introduceCine(ArrayList<Cine> cines, ParamsConexionBD p){
+	private void introduceCine(ArrayList<Cine> cines, ParamsConexionBD p){
 		System.out.println("Prueba de carga de cines");
-	    //cargaDriverBD(driver);
 		Connection con=dameConexion(p);
 		for (Cine cine: cines) {
 			introduceCine(cine,con);
@@ -412,18 +450,19 @@ public class BD {
 			for (int i=0;i<consultas.length;i++)
 			con.createStatement().executeUpdate(consultas[i]);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 			System.err.println("Error al crear la base de datos");
+			System.err.println(e.getMessage());
 		}
-		desconecta();
 		System.out.println("Base de datos y tablas creadas con éxito");
+		desconecta();
 	}
 	
 	
 	/**
 	 * Crea un usuario con derechos totales sobre la base de datos
-	 * @param p Parámetros de conexión. El usuario debe tener derechos para crear un usuario.
+	 * @param p Parámetros de conexión. El usuario debe tener derechos para crear
+	 * usuarios y otorgarles permisos.
+	 * @param p2 Parámetros que contienen el nombre de usuario y contraseña del nuevo usuario.
 	 */
 	public void creaNuevoAdministrador(ParamsConexionBD p,ParamsConexionBD p2) {
 		System.out.println("Creando usuario con derechos de administrador para la base de datos SSII");
@@ -439,21 +478,94 @@ public class BD {
 			System.out.println("Usuario creado");
 			desconecta();
 		}catch (SQLException e){
-			e.printStackTrace();
+			System.err.println("Fallo al crear un nuevo administrador ");
+			System.err.println(e.getMessage());
 		}	
 	}
 
+	/**
+	 * Introduce las provincias en la base de datos. Utiliza como clave primaria el orden en que están
+	 * declaradas las provincias en el enumerado, empleando el ordinal. Por tanto, no permite duplicados,
+	 * y sólo acepta 50 filas (tantas como provincias haya declaradas).
+	 * @param p Datos con los que se realiza la conexión a la BBDD
+	 * @return True si las introduce correctamente.
+	 */
+	public boolean introduceProvincias(ParamsConexionBD p){
+		System.out.println("Introduciendo las provincias");
+		Connection con=dameConexion(p);
+		boolean exito=false;
+		Provincia[] provincias=Provincia.values();
+		int id;
+		String consulta;
+		for (Provincia prov : provincias) {
+			String s=ProvinciasGDO.getNombre(prov);
+			id=prov.ordinal()+1;
+			consulta="INSERT IGNORE INTO provincia (ID,Nombre) VALUES ('"+id+"','"+s+"');";
+			try{
+				stmt=con.createStatement();
+				stmt.executeUpdate(consulta);
+				exito=true;
+			}catch (SQLException e) {
+				System.err.println("Error al insertar la provincia "+s);
+				System.err.println(e.getMessage());
+				System.err.println(consulta);
+			}
+		}
+		desconecta();
+		return exito;
+	}
+	
+	
+	
 
+	/**
+	 * Actualiza una provincia completamente. Sus peliculas, cines y pases.
+	 * Precondición: La provincia tiene que existir en la BBDD.
+	 * @param p Parámetros de conexión. El usuario debe tener permisos de inserción.
+	 * @param prov Provincia a actualizar
+	 * @param usaTor Cierto si debe emplarse Tor en la actualización.
+	 * @see utils.bd#introduceProvincia  IntroduceProvincia
+	 */
+	public void actualizaProvincia(ParamsConexionBD p, Provincia prov,boolean usaTor){
+		System.out.println("El sistema está actualizando los datos de "+ProvinciasGDO.getNombre(prov));
+		actualizaPeliculas(p,prov,usaTor);
+		actualizaCines(p, prov,usaTor);
+	}
 
 	
-  
-	public static void main(String args[]){
-		BD bd=new BD();
-		//TODO meter tratamiento de usar o no usar TOR
-		ProcesadorCarteleraGDO pr=new ProcesadorCarteleraGDO(false);
-		ArrayList<Pelicula> arr= pr.getPeliculas(ProvinciasGDO.Provincia.alava);
-		ParamsConexionBD p=new ParamsConexionBD("userSSII", "passSSII", "jdbc:mysql://localhost:3306/ssii");
-		bd.introducePelicula(arr,p);
+	/**
+	 * Actualiza los datos de las películas que se proyecten en una provincia
+	 * @param p Parámetros de conexión. El usuario debe tener permisos de inserción.
+	 * @param prov Provincia a actualizar
+	 * @param usaTor Cierto si debe emplarse Tor en la actualización.
+	 */
+	public void actualizaPeliculas(ParamsConexionBD p, Provincia prov, boolean usaTor){
+		System.out.println("Procesando las peliculas. Por favor, espere...");
+		ProcesadorCarteleraGDO prPelis=new ProcesadorCarteleraGDO(usaTor);
+		ArrayList<Pelicula> arrPelis= prPelis.getPeliculas(prov);
+		introducePelicula(arrPelis, p);
+		System.out.println("Fin del procesado de peliculas.");
+	}
+	
+	/**
+	 * Actualiza los datos de los cines y sus proyecciones de una provincia.
+	 * Precondición: La provincia tiene que existir en la BBDD.
+	 * @param p Parámetros de conexión. El usuario debe tener permisos de inserción.
+	 * @param prov Provincia a actualizar
+	 * @param usaTor Cierto si debe emplarse Tor en la actualización.
+	 * @see utils.bd#introduceProvincia  IntroduceProvincia
+	 */
+	public void actualizaCines(ParamsConexionBD p, Provincia prov, boolean usaTor){
+		System.out.println("Procesando los cines. Por favor, espere...");
+		ProcesadorCinesGDO prCines=new ProcesadorCinesGDO(usaTor);
+		ArrayList<Cine> arrCines=prCines.getCines(prov);
+		introduceCine(arrCines, p);
+		System.out.println("Fin del procesado de cines.");
+		System.out.println("Procesando los pases. Por favor, espere...");
+		for (Cine cine : arrCines) {
+			introduceProyecciones(cine, p);
+		}
+		System.out.println("Fin del procesado de pases.");
 	}
 	
   
