@@ -132,7 +132,11 @@ public class BD {
 		}
 	}
 	
-	
+	/**
+	 * Trata las cadenas, adecuándolas para su inserción en la BBDD. Cambia ' por \' y " por \'
+	 * @param cadena Cadena a tratar
+	 * @return Cadena modificada para su inserción en la BBDD, esto es, con caracteres de escape.
+	 */
 	private String trataCadena(String cadena){
 		String s=cadena;
 		s=s.replaceAll("\'", "\\\\'");
@@ -140,7 +144,13 @@ public class BD {
 		return s;
 	}
 	
-	
+	/**
+	 * Calcula un string con la calificación que se insertará en la BBDD
+	 * en función del parámetro. Puede ser "Todos los públicos" o "Mayores de X años", 
+	 * siendo X el valor pasado por parámetro.
+	 * @param valor Edad 
+	 * @return String para poder ser insertada en la BBDD
+	 */
 	private String calculaCalificacion(int valor){
 		String calificacion;
 		if (valor==0)
@@ -154,6 +164,7 @@ public class BD {
 	/**
 	 * Introduce una película en la base de datos. Precondición: La conexión está creada.
 	 * @param peli Película a introducir
+	 * @param con Conexión con la base de datos
 	 * @return True en caso de introducirse de forma correcta. False en otro caso.
 	 */
 	private boolean introducePelicula(Pelicula peli, Connection con){
@@ -272,6 +283,7 @@ public class BD {
 	/**
 	 * Introduce un cine en la base de datos. Precondición: La conexión está creada.
 	 * @param cine Cine a introducir
+	 * @param con Conexión con la base de datos
 	 * @return True en caso de introducirse de forma correcta. False en otro caso.
 	 */
 	private boolean introduceCine(Cine cine, Connection con){
@@ -316,7 +328,12 @@ public class BD {
 	}
 	
 	
-	
+	/**
+	 * Introduce las proyecciones de un cine en la base de datos. 
+	 * @param cine Cine del que se van a introducir las proyecciones.
+	 * @param p Parámetros de conexión a la base de datos. Debe tener permiso de selección e inserción nuevos registros. 
+	 * @return True si se introduce de forma correcta.
+	 */
 	private boolean introduceProyecciones(Cine cine,ParamsConexionBD p){
 		boolean exito=false;
 		Connection con;
@@ -385,6 +402,7 @@ public class BD {
 	/**
 	 * Introduce las películas que se pasan por el array a la base de datos.
 	 * @param peliculas Lista de películas a introducir.
+	 * @param p Parámetros de conexión a la base de datos. Debe tener permiso de insertar nuevos registros. 
 	 */
 	private void introducePelicula(ArrayList<Pelicula> peliculas, ParamsConexionBD p){
 		System.out.println("Prueba de carga de peliculas");
@@ -401,6 +419,7 @@ public class BD {
 	/**
 	 * Introduce los cines que se pasan por el array a la base de datos.
 	 * @param peliculas Lista de cines a introducir.
+	 * @param p Parámetros de conexión a la base de datos. Debe tener permiso de insertar nuevos registros. 
 	 */
 	private void introduceCine(ArrayList<Cine> cines, ParamsConexionBD p){
 		System.out.println("Prueba de carga de cines");
@@ -414,6 +433,9 @@ public class BD {
 
 	
 	//Carga el driver
+	/**
+	 * Constructora de clase, carga el driver de la BBDD para poder realizar conexiones.
+	 */
 	public BD(){
 		cargaDriverBD(driver);
 	}

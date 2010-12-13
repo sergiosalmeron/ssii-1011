@@ -6,7 +6,12 @@ public class ParamsConexionBD {
 	private String pass;
 	private String url;
 	
-	
+	/**
+	 * Constructora de clase con parámetros. 
+	 * @param user Nombre de usuario
+	 * @param pass Contraseña
+	 * @param url URL de conexión a la bbdd
+	 */
 	public ParamsConexionBD(String user, String pass, String url) {
 		super();
 		this.user = user;
