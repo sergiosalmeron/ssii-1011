@@ -29,7 +29,7 @@ CREATE TABLE `pelicula` (
   PRIMARY KEY (`ID`),
   UNIQUE KEY `Url_UNIQUE` (`Url`),
   KEY `TITULO_PELI` (`Titulo`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=94 DEFAULT CHARSET=utf8 COMMENT='Información de las películas. Id, Título, Año, Género, Durac';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Información de las películas. Id, Título, Año, Género, Durac';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 
@@ -40,7 +40,7 @@ CREATE TABLE `provincia` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `Nombre` varchar(45) NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8 COMMENT='Nombre de provincia';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Nombre de provincia';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 
@@ -100,7 +100,7 @@ CREATE TABLE `cine` (
   KEY `NOMBRE_CINE` (`Nombre`) USING BTREE,
   KEY `PROV_CINE` (`IDProvincia`),
   CONSTRAINT `PROV_CINE` FOREIGN KEY (`IDProvincia`) REFERENCES `provincia` (`ID`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8 COMMENT='Información de los cines. Nombre, Dirección y Provincia';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Información de los cines. Nombre, Dirección y Provincia';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 

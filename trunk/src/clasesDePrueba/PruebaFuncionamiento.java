@@ -1,21 +1,15 @@
 package clasesDePrueba;
 
-import java.util.ArrayList;
-
-import tads.Cine;
 import tads.ParamsConexionBD;
-import tads.Pelicula;
 import tads.ProvinciasGDO;
-import tads.Proyeccion;
 import utils.BD;
-import extractores.cines.ProcesadorCinesGDO;
-import extractores.peliculas.ProcesadorCarteleraGDO;
 
-public class prueba2 {
+public class PruebaFuncionamiento {
 
 	public static void main(String args[]){
 		BD bd= new BD();
 		ParamsConexionBD p=new ParamsConexionBD("root", "ssiipass", "jdbc:mysql://localhost:3306/mysql");
+		//ParamsConexionBD p=new ParamsConexionBD("root", "", "jdbc:mysql://localhost:3306/mysql");
 		ParamsConexionBD p2=new ParamsConexionBD("rootNuevo","passNuevo","");
 		//Crea administrador
 		bd.creaNuevoAdministrador(p,p2);
