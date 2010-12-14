@@ -248,8 +248,15 @@ public class BD {
 			
 			
 			//Introduzco los actores
-			String actoresAux=peli.getInterpretes().replaceAll(" y ", ", ");
-			String[] actores=actoresAux.split(", ");
+			String actoresAux=peli.getInterpretes();
+			String[] actores;
+			if (actoresAux!=null){
+				actoresAux=actoresAux.replaceAll(" y ", ", ");
+				actores=actoresAux.split(", ");
+			}
+			else	
+				actores=new String[0];
+
 			
 			consulta="INSERT INTO Actuan (IDPelicula, Actor)" +
 			" VALUES ('"+codPelicula+"','";

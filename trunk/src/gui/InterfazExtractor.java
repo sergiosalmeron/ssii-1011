@@ -1,7 +1,6 @@
 package gui;
 
 import java.awt.Component;
-import java.awt.event.ActionListener;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -12,11 +11,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 
-
-import com.sun.corba.se.spi.orbutil.fsm.Action;
-
-import Prueba.ProvinciasGDO;
-import Prueba.ProvinciasGDO.Provincia;
+import tads.ProvinciasGDO;
+import tads.ProvinciasGDO.Provincia;
 
 public class InterfazExtractor extends JFrame{
 

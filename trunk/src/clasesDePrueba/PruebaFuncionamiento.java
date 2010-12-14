@@ -2,21 +2,23 @@ package clasesDePrueba;
 
 import tads.ParamsConexionBD;
 import tads.ProvinciasGDO;
+import tads.ProvinciasGDO.Provincia;
 import utils.BD;
 
 public class PruebaFuncionamiento {
 
 	public static void main(String args[]){
 		BD bd= new BD();
-		ParamsConexionBD p=new ParamsConexionBD("root", "ssiipass", "jdbc:mysql://localhost:3306/mysql");
-		//ParamsConexionBD p=new ParamsConexionBD("root", "", "jdbc:mysql://localhost:3306/mysql");
-		ParamsConexionBD p2=new ParamsConexionBD("rootNuevo","passNuevo","");
+		//ParamsConexionBD p=new ParamsConexionBD("root", "ssiipass", "jdbc:mysql://localhost:3306/mysql");
+		ParamsConexionBD p=new ParamsConexionBD("root", "", "jdbc:mysql://localhost:3306/mysql");
+		ParamsConexionBD p2=new ParamsConexionBD("rootNuevo","passNuevo","jdbc:mysql://localhost:3306/ssii");
 		//Crea administrador
 		bd.creaNuevoAdministrador(p,p2);
 		//Crea la estructura de la bbdd. Si ya existía, la borra y vuelve a crearla
 		bd.creaTablas(p);
 		//Crea usuario que interactuará con la bbdd
 		bd.creaUserDerechos(p, "userSSII", "passSSII");
+		//ParamsConexionBD p=new ParamsConexionBD("userSSII","passSSII", "jdbc:mysql://localhost:3306/ssii");
 		p=new ParamsConexionBD("userSSII","passSSII", "jdbc:mysql://localhost:3306/ssii");
 		//Introduce las provincias 
 		bd.introduceProvincias(p);
@@ -29,5 +31,13 @@ public class PruebaFuncionamiento {
 		
 		//Actualiza una provincia completamente, peliculas, cines y pases.
 		bd.actualizaProvincia(p, ProvinciasGDO.Provincia.burgos,false);
+		
+		
+		//Bucle que actualiza todas las provincias
+		Provincia[] arrProv=ProvinciasGDO.Provincia.values();
+		for (ProvinciasGDO.Provincia prov : arrProv) {
+			bd.actualizaProvincia(p, prov, true);
+		}
+		
 	}
 }
