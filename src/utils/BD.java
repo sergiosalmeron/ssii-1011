@@ -139,8 +139,10 @@ public class BD {
 	 */
 	private String trataCadena(String cadena){
 		String s=cadena;
-		s=s.replaceAll("\'", "\\\\'");
-		s=s.replaceAll("\"", "\\\\'");
+		if (cadena!=null){
+			s=s.replaceAll("\'", "\\\\'");
+			s=s.replaceAll("\"", "\\\\'");
+		}
 		return s;
 	}
 	

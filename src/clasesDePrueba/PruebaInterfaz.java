@@ -11,7 +11,7 @@ import tads.Cine;
 import tads.Pelicula;
 import tads.ProvinciasGDO.Provincia;
 
-public class pruebecilla1 {
+public class PruebaInterfaz {
 	
 	private static InterfazExtractor interfaz;
 	private static boolean interrumpir;
