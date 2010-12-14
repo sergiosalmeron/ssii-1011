@@ -1,6 +1,5 @@
 package tads;
 
-import tads.ProvinciasGDO.Provincia;
 
 public class DiasSemana {
 	
