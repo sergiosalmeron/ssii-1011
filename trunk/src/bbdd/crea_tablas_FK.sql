@@ -103,6 +103,18 @@ CREATE TABLE `cine` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Información de los cines. Nombre, Dirección y Provincia';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+DROP TABLE IF EXISTS `ciudad`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ciudad` (
+  `ID` int(11) NOT NULL,
+  `Nombre` varchar(45) NOT NULL,
+  `IDProvincia` int(11) DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `CiudadProvincia` (`IDProvincia`),
+  CONSTRAINT `CiudadProvincia` FOREIGN KEY (`IDProvincia`) REFERENCES `provincia` (`ID`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Información de las ciudades. ID, Nombre y Provincia en la que se encuentra';
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 DROP TABLE IF EXISTS `dirigen`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;

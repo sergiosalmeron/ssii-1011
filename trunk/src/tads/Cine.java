@@ -14,7 +14,7 @@ public class Cine {
 	private int numSalas;
 	private String tfno;
 	private String webOficial;
-	
+	private String ciudad;
 
 	private String direccion;
 	private String zona;
@@ -25,6 +25,18 @@ public class Cine {
 	
 	
 	
+	
+	
+	public String getCiudad() {
+		return ciudad;
+	}
+
+
+	public void setCiudad(String ciudad) {
+		this.ciudad = ciudad;
+	}
+
+
 	public String getUrlCompras() {
 		return urlCompras;
 	}
