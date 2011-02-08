@@ -9,8 +9,8 @@ public class PruebaFuncionamiento {
 
 	public static void main(String args[]){
 		BD bd= new BD();
-		//ParamsConexionBD p=new ParamsConexionBD("root", "ssiipass", "jdbc:mysql://localhost:3306/mysql");
-		ParamsConexionBD p=new ParamsConexionBD("root", "", "jdbc:mysql://localhost:3306/mysql");
+		ParamsConexionBD p=new ParamsConexionBD("root", "ssiipass", "jdbc:mysql://localhost:3306/mysql");
+		//ParamsConexionBD p=new ParamsConexionBD("root", "", "jdbc:mysql://localhost:3306/mysql");
 		ParamsConexionBD p2=new ParamsConexionBD("rootNuevo","passNuevo","jdbc:mysql://localhost:3306/ssii");
 		//Crea administrador
 		bd.creaNuevoAdministrador(p,p2);
@@ -21,10 +21,10 @@ public class PruebaFuncionamiento {
 		//ParamsConexionBD p=new ParamsConexionBD("userSSII","passSSII", "jdbc:mysql://localhost:3306/ssii");
 		p=new ParamsConexionBD("userSSII","passSSII", "jdbc:mysql://localhost:3306/ssii");
 		//Introduce las provincias 
-		bd.introduceProvincias(p);
+		//bd.introduceProvincias(p);
 
 		//Introduce películas de álava
-		bd.actualizaPeliculas(p, ProvinciasGDO.Provincia.alava,false);
+		//bd.actualizaPeliculas(p, ProvinciasGDO.Provincia.alava,false);
 		
 		//Introduce cines de álava
 		bd.actualizaCines(p, ProvinciasGDO.Provincia.alava,false);

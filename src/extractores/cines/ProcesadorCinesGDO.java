@@ -137,8 +137,12 @@ public class ProcesadorCinesGDO {
 		String direccion=source.getFirstElementByClass("moduleType106 clear").getFirstElement("li").getTextExtractor().toString();
 		if (direccion!=null){
 			try{
+				String city;
+				String[] stringsDireccion=direccion.split(",");
+				city=stringsDireccion[stringsDireccion.length-1].trim();
 				direccion=direccion.split(":")[1].trim();
 				cine.setDireccion(direccion);
+				cine.setCiudad(city);
 			}
 			catch(Exception e){
 			}
