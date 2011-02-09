@@ -297,7 +297,7 @@ public class BD {
 	 */
 	private boolean introduceCine(Cine cine, Connection con){
 		boolean exito=false;
-		String nombre=trataCadena(cine.getNombre());
+		String nombreCine=trataCadena(cine.getNombre());
 		String direccion=trataCadena(cine.getDireccion());
 
 		String provincia=ProvinciasGDO.getNombre(cine.getProvincia());
@@ -316,12 +316,51 @@ public class BD {
 			rs.next();
 			codProvincia= rs.getInt("ID");
 		} catch (SQLException e) {
-			System.err.println("Fallo introduciendo el cine "+nombre+" mientras se sacaba el ID de la provincia "+provincia);
+			System.err.println("Fallo introduciendo el cine "+nombreCine+" mientras se sacaba el ID de la provincia "+provincia);
 			System.err.println(e.getMessage());
 			System.err.println(consultaID);
 		}
 		provCorrecta=codProvincia!=0;
 		
+		//Saco el código de la ciudad
+		int codCiudad = buscaOInsertaCiudad(nombreCine, provincia, ciudad, codProvincia, con);
+		ciudadCorrecta=codCiudad!=0;
+		
+		//Me ha dado un valor correcto
+		if (provCorrecta&&ciudadCorrecta){
+			String consulta="INSERT INTO cine (Nombre,Direccion,IDProvincia,Url,IDCiudad)" +
+				" VALUES ('"+nombreCine+"','"+direccion+"','"+codProvincia+"','"+url+"','"+codCiudad+"');";
+//			System.out.println(consulta);
+			try{
+				stmt=con.createStatement();
+				stmt.executeUpdate(consulta);
+				exito=true;
+			}
+			catch (SQLException e) {
+				System.err.println("Error al insertar el cine "+nombreCine+" de la provincia "+provincia);
+				System.err.println(e.getMessage());
+				System.err.println(consulta);
+			}
+		}
+		return exito;
+	}
+
+
+	/**
+	 * Busca la existencia de la ciudad pasada por parámetro (ciudad) en la provincia con código (codProvincia).
+	 * Si la ciudad no existe, se introduce. Se devuelve el ID de la ciudad. Precondición: La conexión está creada.
+	 * @param nombreCine Nombre del cine sobre el que se busca la ciudad. Utilizado únicamente para mostrar errores.
+	 * @param provincia Nombre de la provincia sobre la que se busca la ciudad. Utilizado únicamente para mostrar errores.
+	 * @param ciudad Nombre de la ciudad buscada.
+	 * @param codProvincia Código de la provincia en que se encuentra la ciudad.
+	 * @param con Conexión con la base de datos. 
+	 * @return ID de la ciudad (>0). Si devuelve 0, entonces ha habido un error en la inserción.
+	 */
+	private int buscaOInsertaCiudad(String nombreCine,
+			String provincia, String ciudad, int codProvincia, Connection con) {
+		
+		String consultaID;
+		ResultSet rs;
 		//Busco la ciudad, si existe. Suponemos que no hay más de una ciudad con mismo nombre en la misma provincia
 		int codCiudad=0;
 		consultaID="SELECT ID FROM ciudad WHERE Nombre='"+ciudad+"' AND IDProvincia='"+codProvincia+"';";
@@ -331,7 +370,7 @@ public class BD {
 			if(rs.next())
 				codCiudad=rs.getInt("ID");
 		} catch (SQLException e1) {
-			System.err.println("Fallo introduciendo el cine "+nombre+" mientras se sacaba el ID de la ciudad "+ciudad);
+			System.err.println("Fallo introduciendo el cine "+nombreCine+" mientras se sacaba el ID de la ciudad "+ciudad);
 			System.err.println(e1.getMessage());
 			System.err.println(consultaID);
 		}
@@ -353,37 +392,18 @@ public class BD {
 					if(rs.next())
 						codCiudad=rs.getInt("ID");
 				} catch (SQLException e1) {
-					System.err.println("Fallo introduciendo el cine "+nombre+" mientras se sacaba el ID de la ciudad "+ciudad+"después de insertarla");
+					System.err.println("Fallo introduciendo el cine "+nombreCine+" mientras se sacaba el ID de la ciudad "+ciudad+"después de insertarla");
 					System.err.println(e1.getMessage());
 					System.err.println(consultaID);
 				}
 			}
 			catch (SQLException e) {
-				System.err.println("Error al insertar la ciudad "+ciudad+" del cine "+nombre+" de la provincia "+provincia);
+				System.err.println("Error al insertar la ciudad "+ciudad+" del cine "+nombreCine+" de la provincia "+provincia);
 				System.err.println(e.getMessage());
 				System.err.println(consultaID);
 			}
 		}
-		
-		ciudadCorrecta=codCiudad!=0;
-		
-		//Me ha dado un valor correcto
-		if (provCorrecta&&ciudadCorrecta){
-			String consulta="INSERT INTO cine (Nombre,Direccion,IDProvincia,Url,IDCiudad)" +
-				" VALUES ('"+nombre+"','"+direccion+"','"+codProvincia+"','"+url+"','"+codCiudad+"');";
-//			System.out.println(consulta);
-			try{
-				stmt=con.createStatement();
-				stmt.executeUpdate(consulta);
-				exito=true;
-			}
-			catch (SQLException e) {
-				System.err.println("Error al insertar el cine "+nombre+" de la provincia "+provincia);
-				System.err.println(e.getMessage());
-				System.err.println(consulta);
-			}
-		}
-		return exito;
+		return codCiudad;
 	}
 	
 	

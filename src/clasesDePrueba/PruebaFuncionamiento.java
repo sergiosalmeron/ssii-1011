@@ -21,10 +21,10 @@ public class PruebaFuncionamiento {
 		//ParamsConexionBD p=new ParamsConexionBD("userSSII","passSSII", "jdbc:mysql://localhost:3306/ssii");
 		p=new ParamsConexionBD("userSSII","passSSII", "jdbc:mysql://localhost:3306/ssii");
 		//Introduce las provincias 
-		//bd.introduceProvincias(p);
+		bd.introduceProvincias(p);
 
 		//Introduce películas de álava
-		//bd.actualizaPeliculas(p, ProvinciasGDO.Provincia.alava,false);
+		bd.actualizaPeliculas(p, ProvinciasGDO.Provincia.alava,false);
 		
 		//Introduce cines de álava
 		bd.actualizaCines(p, ProvinciasGDO.Provincia.alava,false);
