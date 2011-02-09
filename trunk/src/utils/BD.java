@@ -301,10 +301,14 @@ public class BD {
 		String direccion=trataCadena(cine.getDireccion());
 
 		String provincia=ProvinciasGDO.getNombre(cine.getProvincia());
+		String ciudad=cine.getCiudad();
 		String consultaID="SELECT ID FROM provincia WHERE Nombre='"+provincia+"';";
 		String url=cine.getDirWebGDO();
+		boolean provCorrecta,ciudadCorrecta;
+		
 //		System.out.println(consultaID);
 		
+		//Busco la provincia del cine.
 		int codProvincia=0;
 		//No hago un while porque sólo hay una provincia con ese nombre
 		ResultSet rs=ejecuta(consultaID,con);
@@ -316,11 +320,57 @@ public class BD {
 			System.err.println(e.getMessage());
 			System.err.println(consultaID);
 		}
+		provCorrecta=codProvincia!=0;
+		
+		//Busco la ciudad, si existe. Suponemos que no hay más de una ciudad con mismo nombre en la misma provincia
+		int codCiudad=0;
+		consultaID="SELECT ID FROM ciudad WHERE Nombre='"+ciudad+"' AND IDProvincia='"+codProvincia+"';";
+		System.out.println(consultaID);
+		rs=ejecuta(consultaID,con);
+		try {
+			if(rs.next())
+				codCiudad=rs.getInt("ID");
+		} catch (SQLException e1) {
+			System.err.println("Fallo introduciendo el cine "+nombre+" mientras se sacaba el ID de la ciudad "+ciudad);
+			System.err.println(e1.getMessage());
+			System.err.println(consultaID);
+		}
+		
+		//si codCiudad=0, entonces no he sacado su valor. Si no lo he sacado, entonces no existía en la BD.
+		//Procedo a insertarlo.
+		if (codCiudad==0){
+			consultaID="INSERT INTO ciudad (Nombre, IDProvincia) " +
+			"VALUES ('"+ciudad+"','"+codProvincia+"');";
+			System.out.println(consultaID);
+			try{
+				stmt=con.createStatement();
+				stmt.executeUpdate(consultaID);
+				//Ahora está insertado, saco su ID. Es copypaste del código anterior
+				consultaID="SELECT ID FROM ciudad WHERE Nombre='"+ciudad+"' AND IDProvincia='"+codProvincia+"';";
+				System.out.println(consultaID);
+				rs=ejecuta(consultaID,con);
+				try {
+					if(rs.next())
+						codCiudad=rs.getInt("ID");
+				} catch (SQLException e1) {
+					System.err.println("Fallo introduciendo el cine "+nombre+" mientras se sacaba el ID de la ciudad "+ciudad+"después de insertarla");
+					System.err.println(e1.getMessage());
+					System.err.println(consultaID);
+				}
+			}
+			catch (SQLException e) {
+				System.err.println("Error al insertar la ciudad "+ciudad+" del cine "+nombre+" de la provincia "+provincia);
+				System.err.println(e.getMessage());
+				System.err.println(consultaID);
+			}
+		}
+		
+		ciudadCorrecta=codCiudad!=0;
 		
 		//Me ha dado un valor correcto
-		if (codProvincia!=0){
-			String consulta="INSERT INTO cine (Nombre,Direccion,IDProvincia,Url)" +
-				" VALUES ('"+nombre+"','"+direccion+"','"+codProvincia+"','"+url+"');";
+		if (provCorrecta&&ciudadCorrecta){
+			String consulta="INSERT INTO cine (Nombre,Direccion,IDProvincia,Url,IDCiudad)" +
+				" VALUES ('"+nombre+"','"+direccion+"','"+codProvincia+"','"+url+"','"+codCiudad+"');";
 //			System.out.println(consulta);
 			try{
 				stmt=con.createStatement();
@@ -338,7 +388,7 @@ public class BD {
 	
 	
 	/**
-	 * Introduce las proyecciones de un cine en la base de datos. 
+	 * Introduce las proyecciones de un cine en la base de datos.  Precondición: Las películas existen en la BBDD.
 	 * @param cine Cine del que se van a introducir las proyecciones.
 	 * @param p Parámetros de conexión a la base de datos. Debe tener permiso de selección e inserción nuevos registros. 
 	 * @return True si se introduce de forma correcta.
@@ -580,7 +630,7 @@ public class BD {
 	
 	/**
 	 * Actualiza los datos de los cines y sus proyecciones de una provincia.
-	 * Precondición: La provincia tiene que existir en la BBDD.
+	 * Precondición: La provincia tiene que existir en la BBDD, y las películas que éste proyecta, también.
 	 * @param p Parámetros de conexión. El usuario debe tener permisos de inserción.
 	 * @param prov Provincia a actualizar
 	 * @param usaTor Cierto si debe emplarse Tor en la actualización.
