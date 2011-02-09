@@ -95,10 +95,13 @@ CREATE TABLE `cine` (
   `Direccion` text,
   `IDProvincia` int(11) DEFAULT NULL,
   `Url` varchar(150) NOT NULL,
+  `IDCiudad` int(11) DEFAULT NULL,
   PRIMARY KEY (`ID`),
   UNIQUE KEY `Url_UNIQUE` (`Url`),
   KEY `NOMBRE_CINE` (`Nombre`) USING BTREE,
   KEY `PROV_CINE` (`IDProvincia`),
+  KEY `CIUDAD_CINE` (`IDCiudad`),
+  CONSTRAINT `CIUDAD_CINE` FOREIGN KEY (`IDCiudad`) REFERENCES `ciudad` (`ID`) ON UPDATE CASCADE,
   CONSTRAINT `PROV_CINE` FOREIGN KEY (`IDProvincia`) REFERENCES `provincia` (`ID`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Información de los cines. Nombre, Dirección y Provincia';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -107,7 +110,7 @@ DROP TABLE IF EXISTS `ciudad`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `ciudad` (
-  `ID` int(11) NOT NULL,
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
   `Nombre` varchar(45) NOT NULL,
   `IDProvincia` int(11) DEFAULT NULL,
   PRIMARY KEY (`ID`),
