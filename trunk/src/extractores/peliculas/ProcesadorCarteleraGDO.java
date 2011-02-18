@@ -316,8 +316,10 @@ public class ProcesadorCarteleraGDO implements ProcesadorCartelera{
 	 */
 	private void setSinopsis(Pelicula peli, Source pag){
 		Element e=pag.getFirstElementByClass("wysiwyg");
-		String sino=e.getTextExtractor().toString();
-		peli.setSinopsis(sino);
+		if (e!=null){
+			String sino=e.getTextExtractor().toString();
+			peli.setSinopsis(sino);
+		}
 	}
 
 	
