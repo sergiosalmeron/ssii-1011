@@ -616,7 +616,31 @@ public class BD {
 		return exito;
 	}
 	
-	
+	/**
+	 * Consulta en la BBDD si existe una película con dicha URL (recordamos que URL es unique en la BBDD).
+	 * @param p Parámetros de conexión. El usuario debe tener permisos de consulta.
+	 * @param url Url de la película que vamos a consultar
+	 * @return Cierto si la película existe en la BBDD. Falso en caso contrario.
+	 */
+	public boolean existePelicula(ParamsConexionBD p, String url){
+		boolean existe=false;
+		int numPelis=0;
+		Connection con=dameConexion(p);
+		String consulta="SELECT COUNT(*) FROM PELICULA WHERE URL='"+url+"';";
+		try{
+			ResultSet rs;
+			stmt=con.createStatement();
+			rs=stmt.executeQuery(consulta);
+			if (rs.next())
+				numPelis=rs.getInt(1);
+			existe=numPelis!=0;
+		}catch (SQLException e) {
+			System.err.println("Error al consultar si en la BBDD existe la película con url "+url);
+			System.err.println(e.getMessage());
+			System.err.println(consulta);
+		}
+		return existe;
+	}
 	
 
 	/**
