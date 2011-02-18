@@ -216,20 +216,23 @@ public class ProcesadorCinesGDO {
 		for (Segment bloque : bloques) {
 			List<Element> enlaces=bloque.getAllElements("a");
 			String urlPeli=null;
-			String urlJueves=null;
+			String urlUltimoDia=null;
+			EnumDias ultimoDia=EnumDias.Martes;
 			for (Element enlace : enlaces){
 				String link=enlace.getAttributeValue("href");
 				if (link.indexOf("/cine/archivo")>-1){
 					urlPeli="http://www.guiadelocio.com"+link;
 				}
-				if ((enlace.getTextExtractor().toString().indexOf("jueves")>-1) && (link.indexOf("/ezjscore/call")>-1)){
-					urlJueves="http://www.guiadelocio.com"+link;
+				
+				String ultimoDiaStr=DiasSemana.getDiaString(ultimoDia).toLowerCase();
+				if ((enlace.getTextExtractor().toString().indexOf(ultimoDiaStr)>-1) && (link.indexOf("/ezjscore/call")>-1)){
+					urlUltimoDia="http://www.guiadelocio.com"+link;
 				}
 			}
 			
-			if ((urlPeli!=null)&&(urlJueves!=null)){
-				String[] urlHorarios=generaUrlHorarios(urlJueves);
-				addPases(cine, urlPeli, urlHorarios);
+			if ((urlPeli!=null)&&(urlUltimoDia!=null)){
+				String[] urlHorarios=generaUrlHorarios(urlUltimoDia);
+				addPases(cine, urlPeli, urlHorarios, ultimoDia);
 			}
 			
 			
@@ -243,21 +246,21 @@ public class ProcesadorCinesGDO {
 	/**
 	 * Debido a que los horarios de los pases de cada pelicula y cine están en una dirección web distinta
 	 * tenemos que obtener las direcciones de cada uno de los horarios.
-	 * @param urlJueves La URL con los horarios de los pases del jueves
+	 * @param urlJueves La URL con los horarios de los pases del último día
 	 * @return Un arrayList de direcciones web calculadas a partir de la url del jueves
 	 */
-	private String[] generaUrlHorarios(String urlJueves) {
+	private String[] generaUrlHorarios(String urlUltimoDia) {
 		String[] resultado=new String[7];
-		String[] campos=urlJueves.split("::");
+		String[] campos=urlUltimoDia.split("::");
 		String urlBase="";
 		for (int i=0;i<campos.length-1;i++){
 			urlBase=urlBase+campos[i]+"::";
 		}
-		int valorJueves=Integer.valueOf(campos[campos.length-1]);
+		int valorUltimoDia=Integer.valueOf(campos[campos.length-1]);
 		for (int i=1;i<=6;i++){
-			resultado[i-1]=urlBase+(valorJueves-((7-i)*86400));
+			resultado[i-1]=urlBase+(valorUltimoDia-((7-i)*86400));
 		}
-		resultado[6]=urlJueves;
+		resultado[6]=urlUltimoDia;
 		return resultado;
 	}
 
@@ -267,8 +270,9 @@ public class ProcesadorCinesGDO {
 	 * @param cine El Cine en el que se incluirán los pases
 	 * @param urlPeli La url de la película (usada a modo de clave en el pase)
 	 * @param urlHorarios Las direcciones con los horarios de los pases de la película esta semana
+	 * @param ultimoDia 
 	 */
-	private void addPases(Cine cine, String urlPeli, String[] urlHorarios) {
+	private void addPases(Cine cine, String urlPeli, String[] urlHorarios, EnumDias ultimoDia) {
 		for (int i=0;i<urlHorarios.length;i++){
 			String url= urlHorarios[i];
 			Source source=null;
@@ -288,7 +292,7 @@ public class ProcesadorCinesGDO {
 				for (Element hora: horas){
 					String strHora=hora.getTextExtractor().toString().trim();
 					if (strHora.length()>0){
-						Proyeccion pase=new Proyeccion(urlPeli, getDia(i), strHora);
+						Proyeccion pase=new Proyeccion(urlPeli, getDia(i, ultimoDia), strHora);
 						cine.addPase(pase);
 					}
 				}
@@ -302,8 +306,9 @@ public class ProcesadorCinesGDO {
 	 * @param i el número de día de la semana (partiendo de que el viernes es el valor 0)
 	 * @return el enumerado del día
 	 */
-	private EnumDias getDia(int i){
+	/*private EnumDias getDia(int i, EnumDias ultimoDia){
 		EnumDias resultado=null;
+		((ArrayList)EnumDias.values()).indexOf(null);
 		switch (i){
 			case 0:
 				resultado=DiasSemana.getDiaEnum("Viernes");
@@ -326,6 +331,24 @@ public class ProcesadorCinesGDO {
 			case 6:
 				resultado=DiasSemana.getDiaEnum("Jueves");
 				break;
+		}
+		return resultado;
+	}*/
+	private EnumDias getDia(int i, EnumDias ultimoDia){
+		int base=getValorBase(ultimoDia);
+		int valor=(base+i+1)%7;
+		return EnumDias.values()[valor];
+	}
+	
+	private int getValorBase(EnumDias ultimoDia){
+		EnumDias[] arr=EnumDias.values();
+		int resultado=0;
+		boolean encontrado=false;
+		for (EnumDias a:arr){
+			if (a==ultimoDia)
+				encontrado=true;
+			if (!encontrado)
+				resultado++;
 		}
 		return resultado;
 	}
