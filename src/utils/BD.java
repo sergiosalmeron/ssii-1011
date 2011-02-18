@@ -666,7 +666,8 @@ public class BD {
 	 */
 	public void actualizaPeliculas(ParamsConexionBD p, Provincia prov, boolean usaTor){
 		System.out.println("Procesando las peliculas. Por favor, espere...");
-		ProcesadorCarteleraGDO prPelis=new ProcesadorCarteleraGDO(usaTor);
+		//ProcesadorCarteleraGDO prPelis=new ProcesadorCarteleraGDO(usaTor);
+		ProcesadorCarteleraGDO prPelis=new ProcesadorCarteleraGDO(usaTor, this, p);
 		ArrayList<Pelicula> arrPelis= prPelis.getPeliculas(prov);
 		introducePelicula(arrPelis, p);
 		System.out.println("Fin del procesado de peliculas.");
