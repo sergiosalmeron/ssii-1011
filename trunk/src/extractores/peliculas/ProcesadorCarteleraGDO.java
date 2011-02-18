@@ -7,9 +7,11 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+import tads.ParamsConexionBD;
 import tads.Pelicula;
 import tads.ProvinciasGDO;
 import tads.ProvinciasGDO.Provincia;
+import utils.BD;
 import utils.ConecTor;
 
 
@@ -27,6 +29,12 @@ import net.htmlparser.jericho.Source;
 public class ProcesadorCarteleraGDO implements ProcesadorCartelera{
 	
 	private boolean usandoTor;
+	
+	private BD bd;
+	private ParamsConexionBD p;
+	
+
+	
 	/**
 	 * Constructora por defecto. No usa conexiones TOR con ConecTor
 	 */
@@ -34,6 +42,7 @@ public class ProcesadorCarteleraGDO implements ProcesadorCartelera{
 		super();
 		this.usandoTor = false;
 	}
+
 	
 	/**
 	 * Constructora
@@ -44,6 +53,30 @@ public class ProcesadorCarteleraGDO implements ProcesadorCartelera{
 		this.usandoTor = usandoTor;
 	}
 
+	/**
+	 * Constructora
+	 * @param bd La bbdd
+	 * @param p los parámetros de conexión a la bbdd
+	 */
+	public ProcesadorCarteleraGDO(BD bd, ParamsConexionBD p) {
+		super();
+		this.usandoTor = false;
+		this.bd = bd;
+		this.p = p;
+	}
+	
+	/**
+	 * Constructora
+	 * @param usandoTor Indica si las conexiones se realizarán con TOR (true) o sin él (false)
+	 * @param bd La bbdd
+	 * @param p los parámetros de conexión a la bbdd
+	 */
+	public ProcesadorCarteleraGDO(boolean usandoTor, BD bd, ParamsConexionBD p) {
+		super();
+		this.usandoTor = usandoTor;
+		this.bd = bd;
+		this.p = p;
+	}
 
 	//Las películas están limitadas por las etiquetas:
 	//Etiqueta Inicio: <div class="gridType06 ftl clear">
@@ -91,17 +124,33 @@ public class ProcesadorCarteleraGDO implements ProcesadorCartelera{
 		for (Segment segment : segments) {
 			String dire=segment.getFirstElement("a").getAttributeValue("href");
 			if (dire!=null){
-				try {
-					if (usandoTor)
-						direcciones.add(ConecTor.getURL("http://www.guiadelocio.com"+dire));
-					else
-						direcciones.add(new URL("http://www.guiadelocio.com"+dire));
-					//direcciones.add(ExtracTor.getURL("http://www.guiadelocio.com"+dire));
-				} catch (MalformedURLException e) {
+				dire="http://www.guiadelocio.com"+dire;
+				if (consultarPeli(dire)){//si la peli ya esta en la bbdd, no la añadimos
+					try {
+						if (usandoTor)
+							direcciones.add(ConecTor.getURL(dire));
+						else
+							direcciones.add(new URL(dire));
+					} catch (MalformedURLException e) {
+					}
 				}
 			}
 		}
 		return direcciones;
+	}
+	
+	/**
+	 * Método para saber si una peli debe ser consultada en internet. Si la peli ya esta en la bbdd, la peli no se consultará de nuevo
+	 * @param direccion URL de la peli en GDO
+	 * @return true si la peli no consta en la bbdd y false eoc
+	 */
+	private boolean consultarPeli(String direccion){
+		boolean hayBD=(this.bd!=null)&&(this.p!=null);
+		if (!hayBD)
+			return true;
+		else{
+			return !this.bd.existePelicula(p, direccion);
+		}
 	}
 	
 	/**
