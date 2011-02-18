@@ -231,6 +231,8 @@ public class BD {
 			}
 			
 			//Introduzco los directores
+			//TODO Estoy suponiendo que existen directores...
+			if (peli.getDirector()!=null){
 			String[] directores=peli.getDirector().split(", ");
 			consulta="INSERT INTO Dirigen (IDPelicula, Director)" +
 			" VALUES ('"+codPelicula+"','";
@@ -245,9 +247,11 @@ public class BD {
 				System.err.println(e.getMessage());
 				System.err.println(consulta);
 			}
-			
+			}
 			
 			//Introduzco los actores
+			//TODO Estoy suponiendo que existen actores...
+			if (peli.getDirector()!=null){
 			String actoresAux=peli.getInterpretes();
 			String[] actores;
 			if (actoresAux!=null){
@@ -271,7 +275,7 @@ public class BD {
 				System.err.println("Error al insertar los actores de la película "+titulo);
 				System.err.println(e.getMessage());
 //				System.err.println(consulta);
-			}
+			}}
 		}
 		return exito;
 	}
@@ -363,14 +367,16 @@ public class BD {
 		ResultSet rs;
 		//Busco la ciudad, si existe. Suponemos que no hay más de una ciudad con mismo nombre en la misma provincia
 		int codCiudad=0;
-		consultaID="SELECT ID FROM ciudad WHERE Nombre='"+ciudad+"' AND IDProvincia='"+codProvincia+"';";
-		System.out.println(consultaID);
+		String ciudadArreglada=trataCadena(ciudad);
+		consultaID="SELECT ID FROM ciudad WHERE Nombre='"+ciudadArreglada+"' AND IDProvincia='"+codProvincia+"';";
+		//TODO quitar los system out
+		//System.out.println(consultaID);
 		rs=ejecuta(consultaID,con);
 		try {
 			if(rs.next())
 				codCiudad=rs.getInt("ID");
 		} catch (SQLException e1) {
-			System.err.println("Fallo introduciendo el cine "+nombreCine+" mientras se sacaba el ID de la ciudad "+ciudad);
+			System.err.println("Fallo introduciendo el cine "+nombreCine+" mientras se sacaba el ID de la ciudad "+ciudadArreglada);
 			System.err.println(e1.getMessage());
 			System.err.println(consultaID);
 		}
@@ -379,26 +385,28 @@ public class BD {
 		//Procedo a insertarlo.
 		if (codCiudad==0){
 			consultaID="INSERT INTO ciudad (Nombre, IDProvincia) " +
-			"VALUES ('"+ciudad+"','"+codProvincia+"');";
-			System.out.println(consultaID);
+			"VALUES ('"+ciudadArreglada+"','"+codProvincia+"');";
+			//TODO quitar los systemout
+			//System.out.println(consultaID);
 			try{
 				stmt=con.createStatement();
 				stmt.executeUpdate(consultaID);
 				//Ahora está insertado, saco su ID. Es copypaste del código anterior
-				consultaID="SELECT ID FROM ciudad WHERE Nombre='"+ciudad+"' AND IDProvincia='"+codProvincia+"';";
-				System.out.println(consultaID);
+				consultaID="SELECT ID FROM ciudad WHERE Nombre='"+ciudadArreglada+"' AND IDProvincia='"+codProvincia+"';";
+				//TODO quitar los systemout
+				//System.out.println(consultaID);
 				rs=ejecuta(consultaID,con);
 				try {
 					if(rs.next())
 						codCiudad=rs.getInt("ID");
 				} catch (SQLException e1) {
-					System.err.println("Fallo introduciendo el cine "+nombreCine+" mientras se sacaba el ID de la ciudad "+ciudad+"después de insertarla");
+					System.err.println("Fallo introduciendo el cine "+nombreCine+" mientras se sacaba el ID de la ciudad "+ciudadArreglada+"después de insertarla");
 					System.err.println(e1.getMessage());
 					System.err.println(consultaID);
 				}
 			}
 			catch (SQLException e) {
-				System.err.println("Error al insertar la ciudad "+ciudad+" del cine "+nombreCine+" de la provincia "+provincia);
+				System.err.println("Error al insertar la ciudad "+ciudadArreglada+" del cine "+nombreCine+" de la provincia "+provincia);
 				System.err.println(e.getMessage());
 				System.err.println(consultaID);
 			}
@@ -484,7 +492,8 @@ public class BD {
 	 * @param p Parámetros de conexión a la base de datos. Debe tener permiso de insertar nuevos registros. 
 	 */
 	private void introducePelicula(ArrayList<Pelicula> peliculas, ParamsConexionBD p){
-		System.out.println("Prueba de carga de peliculas");
+		//TODO quitar los systemout
+		//System.out.println("Prueba de carga de peliculas");
 		Connection con=dameConexion(p);
 		boolean b=true;
 		for (Pelicula pelicula : peliculas) {
@@ -501,7 +510,8 @@ public class BD {
 	 * @param p Parámetros de conexión a la base de datos. Debe tener permiso de insertar nuevos registros. 
 	 */
 	private void introduceCine(ArrayList<Cine> cines, ParamsConexionBD p){
-		System.out.println("Prueba de carga de cines");
+		//TODO quitar los systemout
+		//System.out.println("Prueba de carga de cines");
 		Connection con=dameConexion(p);
 		for (Cine cine: cines) {
 			introduceCine(cine,con);
