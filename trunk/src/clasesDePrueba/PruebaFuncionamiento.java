@@ -15,7 +15,7 @@ public class PruebaFuncionamiento {
 		//Crea administrador
 		bd.creaNuevoAdministrador(p,p2);
 		//Crea la estructura de la bbdd. Si ya existía, la borra y vuelve a crearla
-		bd.creaTablas(p);
+		//bd.creaTablas(p);
 		//Crea usuario que interactuará con la bbdd
 		bd.creaUserDerechos(p, "userSSII", "passSSII");
 		//ParamsConexionBD p=new ParamsConexionBD("userSSII","passSSII", "jdbc:mysql://localhost:3306/ssii");
@@ -24,19 +24,23 @@ public class PruebaFuncionamiento {
 		bd.introduceProvincias(p);
 
 		//Introduce películas de álava
-		bd.actualizaPeliculas(p, ProvinciasGDO.Provincia.alava,false);
+		//bd.actualizaPeliculas(p, ProvinciasGDO.Provincia.alava,false);
 		
 		//Introduce cines de álava
-		bd.actualizaCines(p, ProvinciasGDO.Provincia.alava,false);
+		//bd.actualizaCines(p, ProvinciasGDO.Provincia.alava,false);
 		
 		//Actualiza una provincia completamente, peliculas, cines y pases.
-		bd.actualizaProvincia(p, ProvinciasGDO.Provincia.burgos,false);
+		//bd.actualizaProvincia(p, ProvinciasGDO.Provincia.burgos,false);
 		
 		
 		//Bucle que actualiza todas las provincias
 		Provincia[] arrProv=ProvinciasGDO.Provincia.values();
 		for (ProvinciasGDO.Provincia prov : arrProv) {
-			bd.actualizaProvincia(p, prov, true);
+			if (prov.ordinal()>=Provincia.madrid.ordinal() && prov.ordinal()<=Provincia.madrid.ordinal()){
+				bd.actualizaProvincia(p, prov, false);
+				int a=3;
+				a++;
+			}
 		}
 		
 	}
