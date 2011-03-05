@@ -28,12 +28,15 @@ public class ProcesadorCinesGDO {
 	//Parámetro consultado para ver si las conexiones se hacen por medio de la clase ConecTor o no
 	private boolean usandoTor;
 	
+	private boolean stop;
+	
 	/**
 	 * Constructora por defecto. Las conexiones se hacen sin ConecTor
 	 */
 	public ProcesadorCinesGDO() {
 		super();
 		this.usandoTor =false;
+		this.stop=false;
 	}
 	/**
 	 * Constructor
@@ -42,6 +45,7 @@ public class ProcesadorCinesGDO {
 	public ProcesadorCinesGDO(boolean usandoTor) {
 		super();
 		this.usandoTor = usandoTor;
+		this.stop=false;
 	}
 
 	/**
@@ -52,10 +56,14 @@ public class ProcesadorCinesGDO {
 	public ArrayList<Cine> getCines(Provincia provincia) {
 		
 		ArrayList<Cine> cines=getDirecciones(provincia);
-		for (Cine cine : cines){
+		int i=0;
+		while ((i<cines.size())&&(!stop)){
+			Cine cine=cines.get(i);
 			getCine(cine);
+			i++;
 		}
 		
+		stop=false;
 		
 		return cines;
 	}
@@ -351,6 +359,10 @@ public class ProcesadorCinesGDO {
 				resultado++;
 		}
 		return resultado;
+	}
+	
+	public void paralo(){
+		stop=true;
 	}
 
 
