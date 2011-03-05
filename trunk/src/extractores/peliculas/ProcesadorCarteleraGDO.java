@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+import tads.Cine;
 import tads.ParamsConexionBD;
 import tads.Pelicula;
 import tads.ProvinciasGDO;
@@ -29,6 +30,7 @@ import net.htmlparser.jericho.Source;
 public class ProcesadorCarteleraGDO implements ProcesadorCartelera{
 	
 	private boolean usandoTor;
+	private boolean stop;
 	
 	private BD bd;
 	private ParamsConexionBD p;
@@ -41,6 +43,7 @@ public class ProcesadorCarteleraGDO implements ProcesadorCartelera{
 	public ProcesadorCarteleraGDO() {
 		super();
 		this.usandoTor = false;
+		this.stop=false;
 	}
 
 	
@@ -51,6 +54,7 @@ public class ProcesadorCarteleraGDO implements ProcesadorCartelera{
 	public ProcesadorCarteleraGDO(boolean usandoTor) {
 		super();
 		this.usandoTor = usandoTor;
+		this.stop=false;
 	}
 
 	/**
@@ -63,6 +67,7 @@ public class ProcesadorCarteleraGDO implements ProcesadorCartelera{
 		this.usandoTor = false;
 		this.bd = bd;
 		this.p = p;
+		this.stop=false;
 	}
 	
 	/**
@@ -76,6 +81,7 @@ public class ProcesadorCarteleraGDO implements ProcesadorCartelera{
 		this.usandoTor = usandoTor;
 		this.bd = bd;
 		this.p = p;
+		this.stop=false;
 	}
 
 	//Las películas están limitadas por las etiquetas:
@@ -89,11 +95,15 @@ public class ProcesadorCarteleraGDO implements ProcesadorCartelera{
 		
 		ArrayList<URL> direcciones=getDirecciones(provincia);
 		ArrayList<Pelicula> pelis=new ArrayList<Pelicula>();
-		for (URL direccion : direcciones){
+		int i=0;
+		while ((i<direcciones.size())&&(!stop)){
+			URL direccion=direcciones.get(i);
 			Pelicula peli=getPelicula(direccion);
 			if (peli!=null)
 				pelis.add(peli);
+			i++;
 		}
+		stop=false;
 		return pelis;
 	}
 	
@@ -321,6 +331,11 @@ public class ProcesadorCarteleraGDO implements ProcesadorCartelera{
 			peli.setSinopsis(sino);
 		}
 	}
+	
+	public void paralo(){
+		stop=true;
+	}
+
 
 	
 
