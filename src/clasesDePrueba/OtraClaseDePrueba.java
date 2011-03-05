@@ -12,7 +12,7 @@ import extractores.peliculas.ProcesadorCarteleraGDO;
 public class OtraClaseDePrueba {
 
 	public static void main(String[] args) throws IOException {
-Provincia[] provincias=Provincia.values();
+		/*Provincia[] provincias=Provincia.values();
 		
 		ArrayList<Cine> cines=new ArrayList<Cine>();
 		
@@ -23,7 +23,13 @@ Provincia[] provincias=Provincia.values();
 				//interfaz.Informa(i, 1);
 				cines.addAll(procCines.getCines(provincias[i]));
 			//}
-		}
+		}*/
+		//ProcesadorCarteleraGDO a=new ProcesadorCarteleraGDO();
+		//a.getPeliculasRestantes(null);
+		
+		ProcesadorCinesGDO a = new ProcesadorCinesGDO();
+		//a.getCines(Provincia.granada);
+		a.getCinesRestantes(Provincia.granada);
 	}
 	
 }

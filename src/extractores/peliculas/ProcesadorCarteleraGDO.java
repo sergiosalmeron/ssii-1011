@@ -1,5 +1,11 @@
 package extractores.peliculas;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -34,6 +40,8 @@ public class ProcesadorCarteleraGDO implements ProcesadorCartelera{
 	
 	private BD bd;
 	private ParamsConexionBD p;
+	
+	private static final String toDos="enlaces/pelis.txt";
 	
 
 	
@@ -103,6 +111,26 @@ public class ProcesadorCarteleraGDO implements ProcesadorCartelera{
 				pelis.add(peli);
 			i++;
 		}
+		if (stop)
+			creaToDos(direcciones, i, provincia);
+		stop=false;
+		return pelis;
+	}
+	
+	public ArrayList<Pelicula> getPeliculasRestantes(Provincia provincia) {
+		
+		ArrayList<URL> direcciones=cargaToDos();
+		ArrayList<Pelicula> pelis=new ArrayList<Pelicula>();
+		int i=0;
+		while ((i<direcciones.size())&&(!stop)){
+			URL direccion=direcciones.get(i);
+			Pelicula peli=getPelicula(direccion);
+			if (peli!=null)
+				pelis.add(peli);
+			i++;
+		}
+		if (stop)
+			creaToDos(direcciones, i, provincia);
 		stop=false;
 		return pelis;
 	}
@@ -334,6 +362,60 @@ public class ProcesadorCarteleraGDO implements ProcesadorCartelera{
 	
 	public void paralo(){
 		stop=true;
+	}
+	
+	private void creaToDos(ArrayList<URL> quereceres, int inicio, ProvinciasGDO.Provincia prov){
+		System.out.println("Se van a guardar las películas no procesadas...");
+		boolean ok=true;
+		File fic = new File(toDos);
+		if (fic.exists()){
+			fic.delete();
+		}
+		try {
+			fic.createNewFile();
+			if (fic.exists()){
+				BufferedWriter bw = new BufferedWriter(new FileWriter(fic));
+				bw.write(prov+"\n");
+				for (int i=inicio;i<quereceres.size();i++){
+					URL toDo=quereceres.get(i);
+					bw.write(toDo+"\n");
+				}
+				bw.close();
+			}
+		} catch (IOException e) {
+			ok=false;
+			System.err.println("Error exportanto los enlaces de películas");
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if (ok)
+			System.out.println("Finalizado con éxito el proceso de guardado de las películas por procesar");
+		else
+			System.out.println("No se pudieron guardar las películas por procesar");
+	}
+	
+	private ArrayList<URL>  cargaToDos(){
+		ArrayList<URL> quereceres=new ArrayList<URL>();
+		File fic = new File(toDos);
+		if (fic.exists()){
+			try {
+				BufferedReader bf = new BufferedReader(new FileReader(fic));
+				String enlace;
+				while ((enlace = bf.readLine())!=null) {
+					if (enlace.contains("http://www")){
+						quereceres.add(new URL(enlace));
+					}
+				} 
+				bf.close();
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
+		}
+		return quereceres;
 	}
 
 
