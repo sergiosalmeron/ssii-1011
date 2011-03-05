@@ -1,5 +1,11 @@
 package extractores.cines;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -29,6 +35,9 @@ public class ProcesadorCinesGDO {
 	private boolean usandoTor;
 	
 	private boolean stop;
+	
+	private static final String toDos="enlaces/cines.txt";
+
 	
 	/**
 	 * Constructora por defecto. Las conexiones se hacen sin ConecTor
@@ -62,6 +71,27 @@ public class ProcesadorCinesGDO {
 			getCine(cine);
 			i++;
 		}
+		
+		if (stop)
+			creaToDos(cines, i, provincia);
+		
+		stop=false;
+		
+		return cines;
+	}
+	
+	public ArrayList<Cine> getCinesRestantes(Provincia provincia) {
+		
+		ArrayList<Cine> cines=cargaToDos();
+		int i=0;
+		while ((i<cines.size())&&(!stop)){
+			Cine cine=cines.get(i);
+			getCine(cine);
+			i++;
+		}
+		
+		if (stop)
+			creaToDos(cines, i, provincia);
 		
 		stop=false;
 		
@@ -363,6 +393,65 @@ public class ProcesadorCinesGDO {
 	
 	public void paralo(){
 		stop=true;
+	}
+	
+
+	private void creaToDos(ArrayList<Cine> quereceres, int inicio, ProvinciasGDO.Provincia prov){
+		System.out.println("Se van a guardar los cines no procesados...");
+		boolean ok=true;
+		File fic = new File(toDos);
+		if (fic.exists()){
+			fic.delete();
+		}
+		try {
+			fic.createNewFile();
+			if (fic.exists()){
+				BufferedWriter bw = new BufferedWriter(new FileWriter(fic));
+				bw.write(prov+"\n");
+				for (int i=inicio;i<quereceres.size();i++){
+					Cine toDo=quereceres.get(i);
+					bw.write(toDo.getDirWebGDO()+"\n");
+					bw.write(toDo.getNombre()+"\n");
+				}
+				bw.close();
+			}
+		} catch (IOException e) {
+			ok=false;
+			System.err.println("Error exportanto los enlaces de cines");
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if (ok)
+			System.out.println("Finalizado con éxito el proceso de guardado de los cines por procesar");
+		else
+			System.out.println("No se pudieron guardar los cines por procesar");
+	}
+	
+	private ArrayList<Cine>  cargaToDos(){
+		ArrayList<Cine> quereceres=new ArrayList<Cine>();
+		File fic = new File(toDos);
+		if (fic.exists()){
+			try {
+				BufferedReader bf = new BufferedReader(new FileReader(fic));
+				String enlace;
+				String nombre;
+				
+				while ((enlace = bf.readLine())!=null) {
+					if (enlace.contains("http://www")){
+						if ((nombre = bf.readLine())!=null)
+							quereceres.add(new Cine(enlace, nombre));
+					}
+				} 
+				bf.close();
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
+		}
+		return quereceres;
 	}
 
 
