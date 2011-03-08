@@ -1,7 +1,10 @@
 package gui;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.util.Vector;
 
@@ -17,7 +20,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
 
 import tads.ProvinciasGDO;
 import tads.ProvinciasGDO.Provincia;
@@ -30,13 +34,14 @@ public class InterfazExtractor extends JFrame{
 	private static final long serialVersionUID = 1L;
 	
 	private JProgressBar progressBar;
-	private JLabel indicador;
-	private JButton inicio;
-	private JButton parada;
+	private JLabel indicador,ultActCompleta,fechaUltActCompleta,ultProvActualizada,provActualizada;
+	private JButton inicio,parada,borrarBD,reiniciarBD;
 	private int totalExtracciones;
 	private ListenerGUI manejador;
 	private Logica	logica;
 	private Thread thread;
+	private JComboBox provinciasCombo;
+	private JRadioButton todaProvinciaRB,sesionRB,cineRB,peliRB;
 	
 	public InterfazExtractor(){
 		logica = new Logica(this); 
@@ -46,162 +51,229 @@ public class InterfazExtractor extends JFrame{
 		this.add(construyeInterfaz());
 		//this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.pack();
+		this.setMinimumSize(new Dimension(575,275));
 		//this.setSize(250, 200);
 		this.setVisible(true);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setTitle("MoodVie - Extractor de información");
 	}
 	
-	private JPanel construyeInterfaz(){
-		/*JPanel panel=new JPanel();
-		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
-		
-		
-		panel.add(Box.createGlue());
-		progressBar = new JProgressBar(0, 2*totalExtracciones);
-		progressBar.setAlignmentX(CENTER_ALIGNMENT);
-		panel.add(progressBar, Component.CENTER_ALIGNMENT);
-		indicador=new JLabel("Pulse 'Inicio' para empezar...");
-		panel.add(indicador, Component.CENTER_ALIGNMENT);//  .add(indicador);
-		
-		
-		panel.add(Box.createGlue());
-		inicio=new JButton();
-		inicio.setText("Inicio");
-		inicio.addActionListener(manejador);
-		inicio.setAlignmentX(CENTER_ALIGNMENT);
-		panel.add(inicio);//, Component.CENTER_ALIGNMENT);		
-		
-		
-		panel.add(Box.createGlue());
-		parada=new JButton();
-		parada.setText("Parada");
-		parada.setAlignmentX(CENTER_ALIGNMENT);
-		parada.addActionListener(manejador);
-		parada.setEnabled(false);
-		panel.add(parada, Component.CENTER_ALIGNMENT);
-		
-		
-		
-		
-		return panel;*/
-		
-		
+	private JPanel construyeInterfaz(){		
 		//Creo el Panel Principal
+		//JPanel panelPrincipal=new JPanel(new FlowLayout());
 		JPanel panelPrincipal=new JPanel(new BorderLayout());
 		
-		
 		//Creo el panel de la imagen del logo
-		JPanel panelImagen=new JPanel();
-		JLabel etiqueta= new JLabel();
-		etiqueta.setIcon(new ImageIcon("src/gui/imagenes/logo.jpg"));
-		panelImagen.add(etiqueta);
-		
-		
+		JPanel panelImagen = creaPanelImagen();
 		//Creo el panel con los contenidos
-		JPanel panelInfo=new JPanel();
-		//panelInfo.setLayout(new BoxLayout(panelInfo,BoxLayout.Y_AXIS));
-		panelInfo.setLayout(new BorderLayout());
-				
-		//Panel de radiobuttons y comboBox
-		JPanel panelSeleccion=creaPanelRadioYCombo();
-	    //Barra de progreso, botones de iniciar y parar
-	    JPanel panelProgreso = creaPanelProgresoYBotones();
+		JPanel panelInfo = creaPanelContenidos();
 	    
-	    
-	    //Añado los paneles, combos y botones
-	    panelInfo.add(panelSeleccion,BorderLayout.WEST);
-	    panelInfo.add(panelProgreso,BorderLayout.SOUTH);
-		//panelInfo.add(panelSeleccion);
-		//panelInfo.add(panelProgreso);
-	    
-	    	
 		//Añado el panel de la imagen a la izquierda
 		panelPrincipal.add(panelImagen,BorderLayout.WEST);
 		panelPrincipal.add(panelInfo,BorderLayout.CENTER);
+		//panelPrincipal.add(panelImagen);
+		//panelPrincipal.add(panelInfo);
 		
-		panelPrincipal.setBorder(BorderFactory.createEmptyBorder(20, 0, 10, 15));
+		//Bordes y restricciones al panel principal
+		panelPrincipal.setBorder(BorderFactory.createEmptyBorder(10, 5, 10, 5));
+		panelPrincipal.setMinimumSize(new Dimension(250,150));
 		return panelPrincipal;
 	}
 
+	private JPanel creaPanelImagen() {
+		JPanel panelImagen=new JPanel();
+		JLabel etiqueta= new JLabel();
+		ImageIcon icono=new ImageIcon("src/gui/imagenes/logo.jpg");
+		Image img = icono.getImage();  
+		Image newimg = img.getScaledInstance(230, 200,  java.awt.Image.SCALE_SMOOTH);  
+		etiqueta.setIcon(new ImageIcon(newimg));
+		panelImagen.add(etiqueta);
+		return panelImagen;
+	}
+	
+	
+	private JPanel creaPanelContenidos() {
+		JPanel panelInfo=new JPanel();
+		
+		//panelInfo.setLayout(new BorderLayout());
+		//Panel de Actualizar y de Administrar
+		JTabbedPane panelSeleccion=new JTabbedPane();
+		panelSeleccion.addTab("Actualizar",creaPanelActualizar());
+		panelSeleccion.addTab("Administrar",creaPanelAdministrar());
+		//panelSeleccion.setMinimumSize(new Dimension(150,120));
+		//panelInfo.add(panelSeleccion,BorderLayout.NORTH);
+		panelInfo.add(panelSeleccion);
+		return panelInfo;
+	}
+
+
+	private JPanel creaPanelActualizar(){
+		JPanel panelActualizar=new JPanel();
+		//panelActualizar.setMinimumSize(new Dimension(150,120));
+		panelActualizar.setLayout(new BoxLayout(panelActualizar, BoxLayout.Y_AXIS));
+		panelActualizar.add(creaPanelRadioYComboActualizar());
+		panelActualizar.add(creaPanelProgresoYBotones());
+		return panelActualizar;
+	}
+	
+	
+	private GridBagConstraints rellenaConstraints(int x,int y, int anchoCelda, int altoCelda, int ancla){
+		GridBagConstraints cons=new GridBagConstraints();
+		cons.gridx=x;
+		cons.gridy=y;
+		cons.gridwidth=anchoCelda;
+		cons.gridheight=altoCelda;
+		cons.anchor=ancla;
+		return cons;
+	}
+	
+	private JPanel creaPanelAdministrar(){
+		JPanel panelAdministrar=new JPanel();
+		panelAdministrar.setLayout(new BoxLayout(panelAdministrar, BoxLayout.Y_AXIS));
+		
+		JPanel panelInfo=new JPanel();
+		GridBagLayout gbl=new GridBagLayout();
+		GridBagConstraints cons=new GridBagConstraints();
+		panelInfo.setLayout(gbl);
+		
+		//
+		ultActCompleta=new JLabel("Última actualización:   ");
+		cons=rellenaConstraints(1, 1, 1, 1, cons.WEST);
+		panelInfo.add(ultActCompleta,cons);
+		
+		fechaUltActCompleta=new JLabel("el X-Y-Z a las AA:BB");
+		cons=rellenaConstraints(2,1,1,1,cons.EAST);
+		panelInfo.add(fechaUltActCompleta,cons);
+		
+		ultProvActualizada=new JLabel("Última provincia actualizada:  ");
+		cons=rellenaConstraints(1,2,1,1,cons.WEST);
+	    panelInfo.add(ultProvActualizada,cons);
+		
+	    provActualizada=new JLabel("Prov inexistente");
+	    cons=rellenaConstraints(2,2,1,1,cons.EAST);
+		panelInfo.add(provActualizada,cons);
+		
+		
+		JPanel panelBotonesAdm=new JPanel(gbl);
+		borrarBD=new JButton("Borrar BD");
+		cons=rellenaConstraints(1, 1, 1, 1, cons.WEST);
+		panelBotonesAdm.add(borrarBD,cons);
+		
+		reiniciarBD=new JButton("Eliminar entradas");
+		cons=rellenaConstraints(2,1,1,1,cons.EAST);
+		panelBotonesAdm.add(reiniciarBD,cons);
+				
+		JTextArea area=new JTextArea("Nada en este panel tiene aún funcionalidad");
+		cons=rellenaConstraints(1,2,2,1,cons.CENTER);
+		panelBotonesAdm.add(area,cons);
+		
+		
+		panelAdministrar.add(panelInfo);
+		panelAdministrar.add(panelBotonesAdm);
+		panelAdministrar.setBorder(BorderFactory.createEmptyBorder(10, 5, 10, 5));
+		return panelAdministrar;
+	}
+	
+	
+	
 	/**
 	 * @return
 	 */
 	private JPanel creaPanelProgresoYBotones() {
-		JPanel panelProgreso=new JPanel(new BorderLayout());
+		JPanel panelProgreso=new JPanel();
+		GridBagLayout gb=new GridBagLayout();
+		panelProgreso.setLayout(gb);
+				
+		GridBagConstraints cons=new GridBagConstraints();
 	    progressBar = new JProgressBar(0, 2*totalExtracciones);
-		progressBar.setAlignmentX(CENTER_ALIGNMENT);
-		panelProgreso.add(progressBar,BorderLayout.NORTH);
+	    cons=rellenaConstraints(1,1,2,1,cons.NORTH);
+	    //cons.ipadx=80;
+	    panelProgreso.add(progressBar,cons);
+	    	    
 		indicador=new JLabel("Pulse 'Inicio' para empezar...");
-		panelProgreso.add(indicador,BorderLayout.CENTER);
+		cons=rellenaConstraints(1,2,2,1,cons.CENTER);
+	    panelProgreso.add(indicador,cons);
 		
-		
-		JPanel panelBotones=new JPanel(new FlowLayout());
-	    inicio=new JButton();
+		inicio=new JButton();
 		inicio.setText("Inicio");
 		inicio.addActionListener(manejador);
-		inicio.setAlignmentX(CENTER_ALIGNMENT);
-		panelBotones.add(inicio);		
-		
-		
+		cons=rellenaConstraints(1,3,1,1,cons.CENTER);
+	    panelProgreso.add(inicio,cons);		
 
 		parada=new JButton();
 		parada.setText("Parada");
-		parada.setAlignmentX(CENTER_ALIGNMENT);
 		parada.addActionListener(manejador);
 		parada.setEnabled(false);
+		cons=rellenaConstraints(2,3,1,1,cons.CENTER);
+	    panelProgreso.add(parada,cons);
 		
-		panelBotones.add(parada);
-
-		
-		panelProgreso.add(panelBotones,BorderLayout.SOUTH);
+	    
+		panelProgreso.setBorder(BorderFactory.createEmptyBorder(15, 5, 10, 5));
 		return panelProgreso;
 	}
 	
 	
-	private JPanel creaPanelRadioYCombo(){
-		//Panel de radiobuttons y comboBox
-		JPanel panelSeleccion=new JPanel(new FlowLayout());
+
+	
+
+	
+	
+	private JPanel creaPanelRadioYComboActualizar(){
 		
-		//Creo los radioButton
-		JRadioButton peliRB = new JRadioButton();
+		JPanel panelSeleccion=new JPanel();
+		GridBagLayout gt=new GridBagLayout();
+		panelSeleccion.setLayout(gt);
+		
+		GridBagConstraints cons=new GridBagConstraints();
+		
+		peliRB = new JRadioButton();
 		peliRB.setText("Películas");
 	    peliRB.setSelected(true);
-	    JRadioButton cineRB = new JRadioButton();
+	    cineRB = new JRadioButton();
 	    cineRB.setText("Cines");
-	    JRadioButton sesionRB = new JRadioButton();
+	    sesionRB = new JRadioButton();
 	    sesionRB.setText("Sesiones");
-	    JRadioButton todaProvinciaRB = new JRadioButton();
+	    todaProvinciaRB = new JRadioButton();
 	    todaProvinciaRB.setText("Toda la Provincia");
 	    
-	    //Agrupo los botones
 	    ButtonGroup grupo=new ButtonGroup();
 	    grupo.add(peliRB);
 	    grupo.add(cineRB);
 	    grupo.add(sesionRB);
 	    grupo.add(todaProvinciaRB);
 	    
-	    //Panel donde van los radiobutton
-	    JPanel radioPanel = new JPanel();
-	    radioPanel.setLayout(new BoxLayout(radioPanel,BoxLayout.Y_AXIS));
-        radioPanel.add(peliRB);
-        radioPanel.add(cineRB);
-        radioPanel.add(sesionRB);
-        radioPanel.add(todaProvinciaRB);
-
-	    //Creo un Array de Strings con todas las provincias;
+	    cons=rellenaConstraints(1,1,1,1,cons.WEST);
+	    panelSeleccion.add(peliRB,cons);
+		
+	    cons=rellenaConstraints(1,2,1,1,cons.WEST);
+	    panelSeleccion.add(cineRB,cons);
+	    
+	    cons=rellenaConstraints(1,3,1,1,cons.WEST);
+	    panelSeleccion.add(sesionRB,cons);
+	    
+	    cons=rellenaConstraints(1,4,1,1,cons.WEST);
+	    panelSeleccion.add(todaProvinciaRB,cons);
+	    
+	    JLabel labelProv=new JLabel("Selecciona Provincia");
+	    cons=rellenaConstraints(2,1,1,1,cons.EAST);
+	    panelSeleccion.add(labelProv,cons);
+	    
+	  //Creo un Array de Strings con todas las provincias;
         Provincia[] provs=Provincia.values();
         Vector<String> provinciasEnumeradas=new Vector<String>();
         provinciasEnumeradas.add("Todas");
         for (Provincia prov : provs)
 			provinciasEnumeradas.add(ProvinciasGDO.getNombre(prov));
-	    JComboBox  provinciasCombo= new JComboBox(provinciasEnumeradas);
+	    provinciasCombo= new JComboBox(provinciasEnumeradas);
+	    cons=rellenaConstraints(2,2,1,2,cons.EAST);
+	    //cons.ipadx=25;
+	    panelSeleccion.add(provinciasCombo,cons);
 	    
-	    //Añado el panel de radioButton y el combo de las provincias
-	    panelSeleccion.add(radioPanel);
-	    panelSeleccion.add(provinciasCombo);
-	    
-	    return panelSeleccion;
+	    panelSeleccion.setBorder(BorderFactory.createEtchedBorder());
+	    panelSeleccion.setMinimumSize(new Dimension(120,80));
+		
+		return panelSeleccion;
+		
 	}
 	
 	
