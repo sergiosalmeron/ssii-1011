@@ -2,10 +2,11 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -42,7 +43,36 @@ public class InterfazExtractor extends JFrame{
 	private Thread thread;
 	private JComboBox provinciasCombo;
 	private JRadioButton todaProvinciaRB,sesionRB,cineRB,peliRB;
+	private ButtonGroup grupo;
 	
+	
+	
+	
+	
+	public void setProvActualizada(JLabel provActualizada) {
+		this.provActualizada = provActualizada;
+	}
+
+	public JRadioButton getTodaProvinciaRB() {
+		return todaProvinciaRB;
+	}
+
+	public JRadioButton getSesionRB() {
+		return sesionRB;
+	}
+
+	public JRadioButton getCineRB() {
+		return cineRB;
+	}
+
+	public JRadioButton getPeliRB() {
+		return peliRB;
+	}
+
+	public void setFechaUltActCompleta(JLabel fechaUltActCompleta) {
+		this.fechaUltActCompleta = fechaUltActCompleta;
+	}
+
 	public InterfazExtractor(){
 		logica = new Logica(this); 
 		thread = new Thread(logica); 
@@ -226,21 +256,30 @@ public class InterfazExtractor extends JFrame{
 		
 		GridBagConstraints cons=new GridBagConstraints();
 		
-		peliRB = new JRadioButton();
-		peliRB.setText("Películas");
-	    peliRB.setSelected(true);
-	    cineRB = new JRadioButton();
-	    cineRB.setText("Cines");
-	    sesionRB = new JRadioButton();
-	    sesionRB.setText("Sesiones");
-	    todaProvinciaRB = new JRadioButton();
-	    todaProvinciaRB.setText("Toda la Provincia");
+		peliRB = new JRadioButton("Peliculas",true);
+		peliRB.setActionCommand("peli");
+	    cineRB = new JRadioButton("Cines",false);
+	    cineRB.setActionCommand("cine");
+	    sesionRB = new JRadioButton("Sesiones",false);
+	    sesionRB.setActionCommand("sesion");
+	    todaProvinciaRB = new JRadioButton("Toda la Provincia",false);
+	    todaProvinciaRB.setActionCommand("provincia");
 	    
-	    ButtonGroup grupo=new ButtonGroup();
+	  /*  class RBActionListener implements ActionListener {
+	        public void actionPerformed(ActionEvent ex) {
+	          String choice = radioSeleccionado();
+	          System.out.println("ACTION Candidate Selected: " + choice);
+	        }
+	      }*/
+	    
+	    
+	    
+	    grupo=new ButtonGroup();
 	    grupo.add(peliRB);
 	    grupo.add(cineRB);
 	    grupo.add(sesionRB);
 	    grupo.add(todaProvinciaRB);
+	    
 	    
 	    cons=rellenaConstraints(1,1,1,1,cons.WEST);
 	    panelSeleccion.add(peliRB,cons);
@@ -277,7 +316,9 @@ public class InterfazExtractor extends JFrame{
 	}
 	
 	
-	
+	private String radioSeleccionado(){
+		return grupo.getSelection().getActionCommand();
+	}
 	
 	public void Informa(int provincia, int paso){
 		if (paso==0){
