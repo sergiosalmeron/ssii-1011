@@ -417,6 +417,25 @@ public class ProcesadorCarteleraGDO implements ProcesadorCartelera{
 		}
 		return quereceres;
 	}
+	
+	public Provincia getProvinciaRestantes(){
+		Provincia resultado=null;
+		File fic = new File(toDos);
+		if (fic.exists()){
+			try {
+				BufferedReader bf = new BufferedReader(new FileReader(fic));
+				String linea;
+				if ((linea = bf.readLine())!=null)
+					resultado=ProvinciasGDO.getProvincia(linea);
+				bf.close();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} 
+		}
+		return resultado;
+	}
 
 
 	

@@ -1,13 +1,8 @@
 package clasesDePrueba;
 
 import java.io.IOException;
-import java.util.ArrayList;
-
-import tads.Cine;
-import tads.Pelicula;
 import tads.ProvinciasGDO.Provincia;
 import extractores.cines.ProcesadorCinesGDO;
-import extractores.peliculas.ProcesadorCarteleraGDO;
 
 public class OtraClaseDePrueba {
 
