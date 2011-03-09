@@ -124,8 +124,24 @@ public class ProvinciasGDO {
 		case zamora:  return "Zamora";
 		case zaragoza:  return "Zaragoza";
 		default: return pro.toString();
-		
 		}
+	}
+	
+	public static Provincia getProvincia(String nombre){
+		if (nombre==null)
+			return null;
+		int i=0;
+		Provincia resultado=null;
+		boolean encontrado=false;
+		Provincia[] provs=Provincia.values();
+		while ((!encontrado)&&(i<provs.length)){
+			if (nombre.equalsIgnoreCase(provs[i].toString()));{
+				resultado=provs[i];
+				encontrado=true;
+			}
+			i++;
+		}
+		return resultado;
 	}
 	
 }

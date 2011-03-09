@@ -453,6 +453,27 @@ public class ProcesadorCinesGDO {
 		}
 		return quereceres;
 	}
+	
+	public Provincia getProvinciaRestantes(){
+		Provincia resultado=null;
+		File fic = new File(toDos);
+		if (fic.exists()){
+			try {
+				BufferedReader bf = new BufferedReader(new FileReader(fic));
+				String linea;
+				if ((linea = bf.readLine())!=null)
+					resultado=ProvinciasGDO.getProvincia(linea);
+				bf.close();
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
+		}
+		return resultado;
+	}
 
 
 
