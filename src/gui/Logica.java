@@ -31,18 +31,27 @@ public class Logica implements Runnable {
 	
 	@Override
 	public void run() {
-		Provincia[] arrProv=Provincia.values();
+		Provincia[] arrProv;///=Provincia.values();
 		
 		ModoFuncionamiento modo=this.interfaz.getFuncionamiento();
 		boolean actualizar=this.interfaz.isActualizar();
 		//String prov=this.interfaz.getProvinciaSeleccionada();
-		Provincia provincia=ProvinciasGDO.getProvincia(this.interfaz.getProvinciaSeleccionada());
+		///Provincia provincia=ProvinciasGDO.getProvincia(this.interfaz.getNombreProvinciaSeleccionada());
+		Provincia provincia=this.interfaz.getProvinciaSeleccionada();
+		
+		if (provincia==null)
+			arrProv=Provincia.values();
+		else{
+			arrProv=new Provincia[1];
+			arrProv[0]=provincia;
+		}
 		
 		switch (modo) {
 		case PELI:  ArrayList<Pelicula> pelis=new ArrayList<Pelicula>();
 					///ProcesadorCarteleraGDO procCarte= new ProcesadorCarteleraGDO();
 					
 					//Actualiza desde esa provincia
+					///for (ProvinciasGDO.Provincia provIterada : arrProv) {
 					for (ProvinciasGDO.Provincia provIterada : arrProv) {
 						if (provincia.ordinal()>=provIterada.ordinal() && (!interrumpir)){
 							interfaz.informa(provincia.ordinal(), 0);
