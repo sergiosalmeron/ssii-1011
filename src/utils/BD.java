@@ -189,6 +189,7 @@ public class BD {
 		try{
 			stmt=con.createStatement();
 			stmt.executeUpdate(consulta);
+			actualizaFechaTabla(con, "pelicula");
 			introducida=true;
 		}
 		catch (SQLException e) {
@@ -223,6 +224,7 @@ public class BD {
 				stmt=con.createStatement();
 //				System.out.println(consulta);
 				stmt.executeUpdate(consulta);
+				actualizaFechaTabla(con, "Descripcion");
 			}
 			catch (SQLException e) {
 				System.err.println("Error al insertar la sinopsis de la película "+titulo);
@@ -242,6 +244,7 @@ public class BD {
 //					System.out.println(consultaAux);
 					con.createStatement().executeUpdate(consultaAux);
 				}
+				actualizaFechaTabla(con, "Dirigen");
 			}catch (SQLException e) {
 				System.err.println("Error al insertar el director de la película "+titulo);
 				System.err.println(e.getMessage());
@@ -270,6 +273,7 @@ public class BD {
 //					System.out.println(consultaAux);
 					con.createStatement().executeUpdate(consultaAux);
 				}
+				actualizaFechaTabla(con, "Actuan");
 				exito=true;
 			}catch (SQLException e) {
 				System.err.println("Error al insertar los actores de la película "+titulo);
@@ -338,6 +342,7 @@ public class BD {
 			try{
 				stmt=con.createStatement();
 				stmt.executeUpdate(consulta);
+				actualizaFechaTabla(con, "cine");
 				exito=true;
 			}
 			catch (SQLException e) {
@@ -391,6 +396,7 @@ public class BD {
 			try{
 				stmt=con.createStatement();
 				stmt.executeUpdate(consultaID);
+				actualizaFechaTabla(con, "ciudad");
 				//Ahora está insertado, saco su ID. Es copypaste del código anterior
 				consultaID="SELECT ID FROM ciudad WHERE Nombre='"+ciudadArreglada+"' AND IDProvincia='"+codProvincia+"';";
 				//TODO quitar los systemout
@@ -472,6 +478,7 @@ public class BD {
 				try{
 					stmt=con.createStatement();
 					stmt.executeUpdate(consultaInsercion);
+					actualizaFechaTabla(con, "sesion");
 					exito=true;
 				}
 				catch (SQLException e) {
@@ -540,7 +547,7 @@ public class BD {
 	public void creaTablas(ParamsConexionBD p){
 		String consulta="";
 		String textAux="";
-		File f= new File("src/bbdd/crea_tablas_FK.sql");
+		File f= new File("src/bbdd/crea_tablas_FK2.sql");
 		System.out.println("Creando base de datos desde el archivo "+f.getAbsolutePath().toString());
 		BufferedReader entrada=null;
 		//Leo el archivo de texto
@@ -615,6 +622,7 @@ public class BD {
 			try{
 				stmt=con.createStatement();
 				stmt.executeUpdate(consulta);
+				actualizaFechaTabla(con, "provincia");
 				exito=true;
 			}catch (SQLException e) {
 				System.err.println("Error al insertar la provincia "+s);
@@ -624,6 +632,47 @@ public class BD {
 		}
 		desconecta();
 		return exito;
+	}
+	
+	public String dameFechaUltAct(ParamsConexionBD p, String tabla){
+		String fecha = null;
+		Connection con=dameConexion(p);
+		String consulta="SELECT MAX(Fecha) FROM ACTUALIZADO;";
+		try{
+			ResultSet rs;
+			stmt=con.createStatement();
+			rs=stmt.executeQuery(consulta);
+			if (rs.next())
+				fecha=rs.getString(1);
+		}catch (SQLException e) {
+			System.err.println("Error al consultar la fecha de última actualización de la tabla "+tabla);
+			System.err.println(e.getMessage());
+			System.err.println(consulta);
+		}
+		return fecha;
+	}
+	
+	/**
+	 * Función que devuelve cuándo fue actualizada la BBDD por última vez, sin importar qué tabla sea (salvo la tabla Actualizado).
+	 * @param p Parámetros de conexión a la base de datos. Debe tener permiso de selección de registros.
+	 * @return Fecha de última actualización de la BBDD (pero no sé la tabla).
+	 */
+	public String dameFechaUltAct(ParamsConexionBD p){
+		String fecha = null;
+		Connection con=dameConexion(p);
+		String consulta="SELECT MAX(Fecha) FROM actualizado;";
+		try{
+			ResultSet rs;
+			stmt=con.createStatement();
+			rs=stmt.executeQuery(consulta);
+			if (rs.next())
+				fecha=rs.getString(1);
+		}catch (SQLException e) {
+			System.err.println("Error al consultar la fecha de última actualización de la BBDD");
+			System.err.println(e.getMessage());
+			System.err.println(consulta);
+		}
+		return fecha;
 	}
 	
 	/**
@@ -653,6 +702,36 @@ public class BD {
 	}
 	
 
+	/*private void actualizaFechaTabla(ParamsConexionBD p,String tabla){
+		Connection con=dameConexion(p);
+		String consulta="INSERT INTO ACTUALIZADO(Tabla,Fecha) VALUES('"+
+		tabla+"',null) ON DUPLICATE KEY UPDATE fecha=null;";
+		try{
+			stmt=con.createStatement();
+			stmt.executeUpdate(consulta);
+		}catch (SQLException e) {
+			System.err.println("Error al actualizar la fecha de actualización de la tabla "+tabla);
+			System.err.println(e.getMessage());
+			System.err.println(consulta);
+		}
+	}*/
+	
+	private void actualizaFechaTabla(Connection con,String tabla) throws SQLException {
+		//Connection con=dameConexion(p);
+		String consulta="INSERT INTO ACTUALIZADO(Tabla,Fecha) VALUES('"+
+		tabla+"',null) ON DUPLICATE KEY UPDATE fecha=null;";
+		try{
+			stmt=con.createStatement();
+			stmt.executeUpdate(consulta);
+		}catch (SQLException e) {
+			System.err.println("Error al actualizar la fecha de actualización de la tabla "+tabla);
+			System.err.println(e.getMessage());
+			System.err.println(consulta);
+			throw e;
+		}
+	}
+	
+	
 	/**
 	 * Actualiza una provincia completamente. Sus peliculas, cines y pases.
 	 * Precondición: La provincia tiene que existir en la BBDD.
@@ -705,6 +784,9 @@ public class BD {
 	}
 	
 	
+	
+	
+	
 	/**
 	 * Devuelve el número de cines de la BBDD
 	 * Precondición: La BBDD debe existir
@@ -750,6 +832,7 @@ public class BD {
 		}
 		return numPelis;
 	}
+	
 	
 	/**
 	 * Devuelve el número de sesiones de la BBDD
