@@ -704,5 +704,51 @@ public class BD {
 		System.out.println("Fin del procesado de pases.");
 	}
 	
-  
+	
+	/**
+	 * Devuelve el número de cines de la BBDD
+	 * Precondición: La BBDD debe existir
+	 * @param p Parámetros de conexión. El usuario debe tener permisos de selección.
+	 */
+	public int numCines(ParamsConexionBD p){
+		int numCines=-1;
+		Connection con=dameConexion(p);
+		String consulta="SELECT COUNT(*) FROM CINE;";
+		try{
+			ResultSet rs;
+			stmt=con.createStatement();
+			rs=stmt.executeQuery(consulta);
+			if (rs.next())
+				numCines=rs.getInt(1);
+		}catch (SQLException e) {
+			System.err.println("Error al consultar el número de cines existente");
+			System.err.println(e.getMessage());
+			System.err.println(consulta);
+		}
+		return numCines;
+	}
+	
+	/**
+	 * Devuelve el número de peliculas de la BBDD
+	 * Precondición: La BBDD debe existir
+	 * @param p Parámetros de conexión. El usuario debe tener permisos de selección.
+	 */
+	public int numPelis(ParamsConexionBD p){
+		int numPelis=-1;
+		Connection con=dameConexion(p);
+		String consulta="SELECT COUNT(*) FROM PELICULA;";
+		try{
+			ResultSet rs;
+			stmt=con.createStatement();
+			rs=stmt.executeQuery(consulta);
+			if (rs.next())
+				numPelis=rs.getInt(1);
+		}catch (SQLException e) {
+			System.err.println("Error al consultar el número de peliculas existente");
+			System.err.println(e.getMessage());
+			System.err.println(consulta);
+		}
+		return numPelis;
+	}
+	
 }//clase

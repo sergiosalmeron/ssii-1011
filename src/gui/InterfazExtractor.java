@@ -9,9 +9,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Vector;
 
+import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -24,6 +26,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 
+import tads.ModoFuncionamiento;
 import tads.ProvinciasGDO;
 import tads.ProvinciasGDO.Provincia;
 
@@ -44,6 +47,8 @@ public class InterfazExtractor extends JFrame{
 	private JComboBox provinciasCombo;
 	private JRadioButton todaProvinciaRB,sesionRB,cineRB,peliRB;
 	private ButtonGroup grupo;
+	private boolean actualizar;
+	private ModoFuncionamiento funcionamiento;
 	
 	
 	
@@ -53,7 +58,9 @@ public class InterfazExtractor extends JFrame{
 		this.provActualizada = provActualizada;
 	}
 
-	public JRadioButton getTodaProvinciaRB() {
+	
+	
+	/*public JRadioButton getTodaProvinciaRB() {
 		return todaProvinciaRB;
 	}
 
@@ -67,8 +74,17 @@ public class InterfazExtractor extends JFrame{
 
 	public JRadioButton getPeliRB() {
 		return peliRB;
+	}*/
+
+	
+	public boolean isActualizar() {
+		return actualizar;
 	}
 
+	public ModoFuncionamiento getFuncionamiento() {
+		return funcionamiento;
+	}
+	
 	public void setFechaUltActCompleta(JLabel fechaUltActCompleta) {
 		this.fechaUltActCompleta = fechaUltActCompleta;
 	}
@@ -78,6 +94,8 @@ public class InterfazExtractor extends JFrame{
 		thread = new Thread(logica); 
 		totalExtracciones=Provincia.values().length;
 		manejador=new ListenerGUI(this);
+		actualizar=false;
+		funcionamiento=ModoFuncionamiento.PROVINCIA;
 		this.add(construyeInterfaz());
 		//this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.pack();
@@ -257,13 +275,30 @@ public class InterfazExtractor extends JFrame{
 		GridBagConstraints cons=new GridBagConstraints();
 		
 		peliRB = new JRadioButton("Peliculas",true);
-		peliRB.setActionCommand("peli");
+		peliRB.setActionCommand("peli act");
+		//peliRB.setIcon(new ImageIcon("src/gui/imagenes/movie_nosel.png"));
+		//peliRB.setRolloverIcon(new ImageIcon("src/gui/imagenes/movie_nosel.png"));
+		//peliRB.setRolloverEnabled(true);
+		//peliRB.setRolloverSelectedIcon(new ImageIcon("src/gui/imagenes/movie.png"));
+		//peliRB.setSelectedIcon(new ImageIcon("src/gui/imagenes/movie.png"));
+		//peliRB.setFocusPainted(false);
+		//peliRB.setHorizontalAlignment(AbstractButton.LEFT);
+		/*
+		imageIcon icono=new ImageIcon("src/gui/imagenes/logo.jpg");
+		Image img = icono.getImage();  
+		Image newimg = img.getScaledInstance(230, 200,  java.awt.Image.SCALE_SMOOTH);
+		 */
 	    cineRB = new JRadioButton("Cines",false);
-	    cineRB.setActionCommand("cine");
+	    cineRB.setActionCommand("cine act");
 	    sesionRB = new JRadioButton("Sesiones",false);
-	    sesionRB.setActionCommand("sesion");
+	    sesionRB.setActionCommand("sesion act");
+	    //sesionRB.setFocusPainted(false);
+	    //sesionRB.setHorizontalAlignment(AbstractButton.RIGHT);
+	    
 	    todaProvinciaRB = new JRadioButton("Toda la Provincia",false);
-	    todaProvinciaRB.setActionCommand("provincia");
+	    todaProvinciaRB.setActionCommand("provincia act");
+	    todaProvinciaRB.setSelected(true);
+	    //todaProvinciaRB.setFocusPainted(true);
 	    
 	  /*  class RBActionListener implements ActionListener {
 	        public void actionPerformed(ActionEvent ex) {
@@ -315,18 +350,22 @@ public class InterfazExtractor extends JFrame{
 		
 	}
 	
-	
 	private String radioSeleccionado(){
 		return grupo.getSelection().getActionCommand();
 	}
+
 	
-	public void Informa(int provincia, int paso){
+	public void informa(int provincia, int paso){
 		if (paso==0){
 			indicador.setText("Procesando las películas de "+ProvinciasGDO.getNombre(Provincia.values()[provincia]));
 			progressBar.setValue(provincia);
 		}
 		if (paso==1){
 			indicador.setText("Procesando los cines de "+Provincia.values()[provincia]);
+			progressBar.setValue(totalExtracciones+provincia);
+		}
+		if (paso==2){
+			indicador.setText("Procesando las sesiones de "+Provincia.values()[provincia]);
 			progressBar.setValue(totalExtracciones+provincia);
 		}
 	}
@@ -351,7 +390,46 @@ public class InterfazExtractor extends JFrame{
 		this.inicio.setEnabled(true);
 		this.parada.setEnabled(false);
 	}
+
+	/**
+	 * Pone el modo a película, y si es actualizar o reiniciar valores de la provincia
+	 * @param actualizar Cierto si quiere actualizar, falso si quiere borrar los valores y volver a cargarlos 
+	 */
+	public void setPeli(boolean actualizar) {
+		this.actualizar=actualizar;
+		this.funcionamiento=ModoFuncionamiento.PELI;
+	}
 	
+	/**
+	 * Pone el modo a cine, y si es actualizar o reiniciar valores de la provincia
+	 * @param actualizar Cierto si quiere actualizar, falso si quiere borrar los valores y volver a cargarlos 
+	 */
+	public void setCine(boolean actualizar) {
+		this.actualizar=actualizar;
+		this.funcionamiento=ModoFuncionamiento.CINE;
+	}
+
+	/**
+	 * Pone el modo a sesión, y si es actualizar o reiniciar valores de la provincia
+	 * @param actualizar Cierto si quiere actualizar, falso si quiere borrar los valores y volver a cargarlos 
+	 */
+	public void setSesion(boolean actualizar) {
+		this.actualizar=actualizar;
+		this.funcionamiento=ModoFuncionamiento.SESION;
+	}
+
+	/**
+	 * Pone el modo a provincia, y si es actualizar o reiniciar valores de la provincia
+	 * @param actualizar Cierto si quiere actualizar, falso si quiere borrar los valores y volver a cargarlos 
+	 */
+	public void setProvincia(boolean actualizar) {
+		this.actualizar=actualizar;
+		this.funcionamiento=ModoFuncionamiento.PROVINCIA;
+	}
+
+	public String getProvinciaSeleccionada(){
+		return ProvinciasGDO.getCodigo(Provincia.values()[this.provinciasCombo.getSelectedIndex()]);
+	}
 	
 
 }
