@@ -409,6 +409,7 @@ public class InterfazExtractor extends JFrame{
 	
 	public void interrumpeProceso(){
 		logica.interrumpe();
+		finalizaProceso(false);
 	}
 	
 	public void finalizaProceso(boolean ok){
