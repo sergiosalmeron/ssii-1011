@@ -462,8 +462,20 @@ public class InterfazExtractor extends JFrame{
 	 * Obtiene el código de la provincia seleccionada en el comboBox de provincias
 	 * @return Código de la provincia seleccionada
 	 */
-	public String getProvinciaSeleccionada(){
+	public String getNombreProvinciaSeleccionada(){
 		return ProvinciasGDO.getCodigo(Provincia.values()[this.provinciasCombo.getSelectedIndex()]);
+	}
+	
+	/**
+	 * Obtiene el código de la provincia seleccionada en el comboBox de provincias
+	 * @return Código de la provincia seleccionada
+	 */
+	public Provincia getProvinciaSeleccionada(){
+		int num=this.provinciasCombo.getSelectedIndex()-1;
+		if (num<0)
+			return null;
+		else
+			return Provincia.values()[num];
 	}
 	
 
