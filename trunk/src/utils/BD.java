@@ -751,4 +751,27 @@ public class BD {
 		return numPelis;
 	}
 	
+	/**
+	 * Devuelve el número de sesiones de la BBDD
+	 * Precondición: La BBDD debe existir
+	 * @param p Parámetros de conexión. El usuario debe tener permisos de selección.
+	 */
+	public int numSesiones(ParamsConexionBD p){
+		int numSesiones=-1;
+		Connection con=dameConexion(p);
+		String consulta="SELECT COUNT(*) FROM SESION;";
+		try{
+			ResultSet rs;
+			stmt=con.createStatement();
+			rs=stmt.executeQuery(consulta);
+			if (rs.next())
+				numSesiones=rs.getInt(1);
+		}catch (SQLException e) {
+			System.err.println("Error al consultar el número de sesiones existente");
+			System.err.println(e.getMessage());
+			System.err.println(consulta);
+		}
+		return numSesiones;
+	}
+	
 }//clase
