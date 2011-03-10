@@ -16,10 +16,17 @@ public class Logica implements Runnable {
 	private static boolean interrumpir;
 
 	private static InterfazExtractor interfaz;
+	
+	private ProcesadorCarteleraGDO procCarte;
+	private ProcesadorCinesGDO procCines;
+
 
 	
 	public Logica (InterfazExtractor interfaz){
 		this.interfaz=interfaz;
+		procCarte= new ProcesadorCarteleraGDO();
+		procCines= new ProcesadorCinesGDO();
+
 	}
 	
 	@Override
@@ -33,7 +40,7 @@ public class Logica implements Runnable {
 		
 		switch (modo) {
 		case PELI:  ArrayList<Pelicula> pelis=new ArrayList<Pelicula>();
-					ProcesadorCarteleraGDO procCarte= new ProcesadorCarteleraGDO();
+					///ProcesadorCarteleraGDO procCarte= new ProcesadorCarteleraGDO();
 					
 					//Actualiza desde esa provincia
 					for (ProvinciasGDO.Provincia provIterada : arrProv) {
@@ -46,7 +53,7 @@ public class Logica implements Runnable {
 					}
 		break;
 		case CINE:	ArrayList<Cine> cines=new ArrayList<Cine>();
-					ProcesadorCinesGDO procCines= new ProcesadorCinesGDO();
+					///ProcesadorCinesGDO procCines= new ProcesadorCinesGDO();
 					
 					//Actualiza desde esa provincia
 					for (ProvinciasGDO.Provincia provIterada : arrProv) {
@@ -59,7 +66,7 @@ public class Logica implements Runnable {
 					}
 			break;
 		case SESION:ArrayList<Cine> cinesSesion=new ArrayList<Cine>();
-					ProcesadorCinesGDO procCinesSesion= new ProcesadorCinesGDO();
+					///ProcesadorCinesGDO procCinesSesion= new ProcesadorCinesGDO();
 					
 					//Actualiza desde esa provincia
 					for (ProvinciasGDO.Provincia provIterada : arrProv) {
@@ -71,8 +78,8 @@ public class Logica implements Runnable {
 			break;
 		case PROVINCIA:	pelis=new ArrayList<Pelicula>();
 						cines=new ArrayList<Cine>();
-						procCines= new ProcesadorCinesGDO();
-						procCarte= new ProcesadorCarteleraGDO();
+						//procCines= new ProcesadorCinesGDO();
+						//procCarte= new ProcesadorCarteleraGDO();
 						
 						for (ProvinciasGDO.Provincia provIterada : arrProv) {
 							//Actualiza desde esa provincia
@@ -123,6 +130,8 @@ public class Logica implements Runnable {
 	
 	public void interrumpe(){
 		interrumpir=true;
+		procCarte.paralo();
+		procCines.paralo();
 	}
 
 }
