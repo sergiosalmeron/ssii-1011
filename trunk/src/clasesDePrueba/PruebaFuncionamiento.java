@@ -21,7 +21,7 @@ public class PruebaFuncionamiento {
 		//ParamsConexionBD p=new ParamsConexionBD("userSSII","passSSII", "jdbc:mysql://localhost:3306/ssii");
 		p=new ParamsConexionBD("userSSII","passSSII", "jdbc:mysql://localhost:3306/ssii");
 		//Introduce las provincias 
-		//bd.introduceProvincias(p);
+		bd.introduceProvincias(p);
 
 		//Introduce películas de álava
 		//bd.actualizaPeliculas(p, ProvinciasGDO.Provincia.alava,false);
@@ -30,18 +30,18 @@ public class PruebaFuncionamiento {
 		//bd.actualizaCines(p, ProvinciasGDO.Provincia.alava,false);
 		
 		//Actualiza una provincia completamente, peliculas, cines y pases.
-		//bd.actualizaProvincia(p, ProvinciasGDO.Provincia.burgos,false);
+		//bd.actualizaProvincia(p, ProvinciasGDO.Provincia.badajoz,false);
 		
 		
 		//Bucle que actualiza todas las provincias
-		/*Provincia[] arrProv=ProvinciasGDO.Provincia.values();
+		Provincia[] arrProv=ProvinciasGDO.Provincia.values();
 		for (ProvinciasGDO.Provincia prov : arrProv) {
-			if (prov.ordinal()>=Provincia.madrid.ordinal() && prov.ordinal()<=Provincia.madrid.ordinal()){
+			if (prov.ordinal()>=Provincia.cantabria.ordinal() && prov.ordinal()<=Provincia.zaragoza.ordinal()){
 				bd.actualizaProvincia(p, prov, false);
 				int a=3;
 				a++;
 			}
-		}*/
+		}
 		
 	}
 }

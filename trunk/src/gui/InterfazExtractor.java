@@ -5,6 +5,8 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -38,7 +40,8 @@ public class InterfazExtractor extends JFrame{
 	private JProgressBar progressBar;
 	private JLabel indicador,ultActCompleta,fechaUltActCompleta,
 			ultProvActualizada,provActualizada,pelis,cines,sesiones;
-	private JButton inicio,parada,borrarBD,reiniciarBD;
+	private JButton butInicio,butParada,butBorrarBD,butReiniciarBD;
+	private TransparentButton butActualizar;
 	private int totalExtracciones;
 	private ListenerGUI manejador;
 	private Logica	logica;
@@ -49,31 +52,10 @@ public class InterfazExtractor extends JFrame{
 	private boolean actualizar;
 	private ModoFuncionamiento funcionamiento;
 	
-	
-	
-	
-	
+
 	public void setProvActualizada(JLabel provActualizada) {
 		this.provActualizada = provActualizada;
 	}
-
-	
-	
-	/*public JRadioButton getTodaProvinciaRB() {
-		return todaProvinciaRB;
-	}
-
-	public JRadioButton getSesionRB() {
-		return sesionRB;
-	}
-
-	public JRadioButton getCineRB() {
-		return cineRB;
-	}
-
-	public JRadioButton getPeliRB() {
-		return peliRB;
-	}*/
 
 	
 	public boolean isActualizar() {
@@ -96,10 +78,8 @@ public class InterfazExtractor extends JFrame{
 		actualizar=false;
 		funcionamiento=ModoFuncionamiento.PROVINCIA;
 		this.add(construyeInterfaz());
-		//this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.pack();
 		this.setMinimumSize(new Dimension(575,275));
-		//this.setSize(250, 200);
+		this.pack();
 		this.setVisible(true);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setTitle("MoodVie - Extractor de información");
@@ -118,8 +98,6 @@ public class InterfazExtractor extends JFrame{
 		//Añado el panel de la imagen a la izquierda
 		panelPrincipal.add(panelImagen,BorderLayout.WEST);
 		panelPrincipal.add(panelInfo,BorderLayout.CENTER);
-		//panelPrincipal.add(panelImagen);
-		//panelPrincipal.add(panelInfo);
 		
 		//Bordes y restricciones al panel principal
 		panelPrincipal.setBorder(BorderFactory.createEmptyBorder(10, 5, 10, 5));
@@ -141,14 +119,10 @@ public class InterfazExtractor extends JFrame{
 	
 	private JPanel creaPanelContenidos() {
 		JPanel panelInfo=new JPanel();
-		
-		//panelInfo.setLayout(new BorderLayout());
 		//Panel de Actualizar y de Administrar
 		JTabbedPane panelSeleccion=new JTabbedPane();
 		panelSeleccion.addTab("Actualizar",creaPanelActualizar());
 		panelSeleccion.addTab("Administrar",creaPanelAdministrar());
-		//panelSeleccion.setMinimumSize(new Dimension(150,120));
-		//panelInfo.add(panelSeleccion,BorderLayout.NORTH);
 		panelInfo.add(panelSeleccion);
 		return panelInfo;
 	}
@@ -183,65 +157,101 @@ public class InterfazExtractor extends JFrame{
 		GridBagConstraints cons=new GridBagConstraints();
 		panelInfo.setLayout(gbl);
 		
-		//
-		ultActCompleta=new JLabel("Última actualización:   ");
+		//Creación de etiquetas
+		ultActCompleta=new JLabel("Última actualización:");
 		cons=rellenaConstraints(1, 1, 1, 1, cons.WEST);
 		panelInfo.add(ultActCompleta,cons);
 		
-		fechaUltActCompleta=new JLabel("el X-Y-Z a las AA:BB");
+		fechaUltActCompleta=new JLabel();
 		cons=rellenaConstraints(2,1,1,1,cons.EAST);
 		panelInfo.add(fechaUltActCompleta,cons);
 		
-		ultProvActualizada=new JLabel("Última provincia actualizada:  ");
+		ultProvActualizada=new JLabel("Última provincia actualizada:");
 		cons=rellenaConstraints(1,2,1,1,cons.WEST);
+		cons.ipadx=15;
 	    panelInfo.add(ultProvActualizada,cons);
 		
-	    provActualizada=new JLabel("Prov inexistente");
+	    //TODO GUARDAR ÚLTIMA PROVINCIA ACTUALIZADA
+	    provActualizada=new JLabel("PENSAR CÓMO HACER ESTO");
 	    cons=rellenaConstraints(2,2,1,1,cons.EAST);
+	    cons.ipadx=0;
 		panelInfo.add(provActualizada,cons);
+
+		butActualizar=new TransparentButton();
+		//Redimensión del icono
+		ImageIcon icono=new ImageIcon("src/gui/imagenes/reload.png");
+		Image img = icono.getImage();  
+		Image newimg = img.getScaledInstance(20, 20,  java.awt.Image.SCALE_SMOOTH);
+		butActualizar.setIcon(new ImageIcon(newimg));
+		icono=new ImageIcon("src/gui/imagenes/reload_over.jpg");
+		img=icono.getImage();
+		newimg= img.getScaledInstance(20,20, java.awt.Image.SCALE_SMOOTH);
+		butActualizar.setRolloverIcon(new ImageIcon(newimg));
+		butActualizar.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+			actualizaCampos();
+			}
+		});
+		cons=rellenaConstraints(3,2,1,2,cons.WEST);
+		cons.ipadx=0;
+		panelInfo.add(butActualizar,cons);
 		
-		//cons=rellenaConstraints(1, 3, 1, 1, cons.WEST);
-		
-		//panelInfo.add(new JLabel("Se proyectan "),cons);
-		
-		
-		//TODO pensar si hacer los métodos static
-		BD bd=new BD();
-		ParamsConexionBD p=new ParamsConexionBD("userSSII","passSSII", "jdbc:mysql://localhost:3306/ssii");
-		int nPelis=bd.numPelis(p);
-		int nCines=bd.numCines(p);
-		int nSesiones=bd.numSesiones(p);
-		pelis=new JLabel("Nº Peliculas: "+((Integer)nPelis).toString());
+		pelis=new JLabel();
 		cons=rellenaConstraints(1, 3, 1, 1, cons.WEST);
 		panelInfo.add(pelis,cons);		
-		cines=new JLabel("Nº Cines: "+((Integer)nCines).toString());
+		cines=new JLabel();
 		cons=rellenaConstraints(1, 4, 1, 1, cons.WEST);
 		panelInfo.add(cines,cons);
-		sesiones=new JLabel("Nº Sesiones: "+((Integer)nSesiones).toString());
+		sesiones=new JLabel();
 		cons=rellenaConstraints(1, 5, 1, 1, cons.WEST);
 		panelInfo.add(sesiones,cons);
-
+		//Actualización de los campos, rellenando los valores
+		actualizaCampos();
 		
+		//Creación de botones
 		JPanel panelBotonesAdm=new JPanel(gbl);
-		borrarBD=new JButton("Borrar BD");
+		butBorrarBD=new JButton("Borrar BD");
 		cons=rellenaConstraints(1, 1, 1, 1, cons.WEST);
-		panelBotonesAdm.add(borrarBD,cons);
+		panelBotonesAdm.add(butBorrarBD,cons);
 		
-		reiniciarBD=new JButton("Eliminar entradas");
+		butReiniciarBD=new JButton("Eliminar entradas");
 		cons=rellenaConstraints(2,1,1,1,cons.EAST);
-		panelBotonesAdm.add(reiniciarBD,cons);
+		panelBotonesAdm.add(butReiniciarBD,cons);
 				
-		JTextArea area=new JTextArea("Nada en este panel tiene aún funcionalidad");
+		JTextArea area=new JTextArea("Sólo el botón actualizar tiene funcionalidad");
 		cons=rellenaConstraints(1,2,2,1,cons.CENTER);
 		panelBotonesAdm.add(area,cons);
 		
-		
+
 		panelAdministrar.add(panelInfo);
 		panelAdministrar.add(panelBotonesAdm);
 		panelAdministrar.setBorder(BorderFactory.createEmptyBorder(10, 5, 10, 5));
 		return panelAdministrar;
 	}
 	
+	
+	private void actualizaCampos(){
+		final BD bd=new BD();
+		final ParamsConexionBD p=new ParamsConexionBD("userSSII","passSSII", "jdbc:mysql://localhost:3306/ssii");
+		actualizaUltFecha(bd.dameFechaUltAct(p));	
+		actualizaNumPelis(bd.numPelis(p));
+		actualizaNumCines(bd.numCines(p));
+		actualizaNumSesiones(bd.numSesiones(p));
+	}
+	
+	private void actualizaUltFecha(String fecha){
+		fechaUltActCompleta.setText(fecha);	;
+	}
+	private void actualizaNumPelis(int nPelis){
+		pelis.setText("Nº Peliculas: "+nPelis);
+	}
+	private void actualizaNumCines(int nCines){
+		cines.setText("Nº Cines: "+nCines);
+	}
+	private void actualizaNumSesiones(int nSesiones){
+		sesiones.setText("Nº Sesiones: "+nSesiones);
+	}
 	
 	
 	/**
@@ -262,18 +272,18 @@ public class InterfazExtractor extends JFrame{
 		cons=rellenaConstraints(1,2,2,1,cons.CENTER);
 	    panelProgreso.add(indicador,cons);
 		
-		inicio=new JButton();
-		inicio.setText("Inicio");
-		inicio.addActionListener(manejador);
+		butInicio=new JButton();
+		butInicio.setText("Inicio");
+		butInicio.addActionListener(manejador);
 		cons=rellenaConstraints(1,3,1,1,cons.CENTER);
-	    panelProgreso.add(inicio,cons);		
+	    panelProgreso.add(butInicio,cons);		
 
-		parada=new JButton();
-		parada.setText("Parada");
-		parada.addActionListener(manejador);
-		parada.setEnabled(false);
+		butParada=new JButton();
+		butParada.setText("Parada");
+		butParada.addActionListener(manejador);
+		butParada.setEnabled(false);
 		cons=rellenaConstraints(2,3,1,1,cons.CENTER);
-	    panelProgreso.add(parada,cons);
+	    panelProgreso.add(butParada,cons);
 		
 	    
 		panelProgreso.setBorder(BorderFactory.createEmptyBorder(15, 5, 10, 5));
@@ -391,8 +401,8 @@ public class InterfazExtractor extends JFrame{
 	}
 	
 	public void iniciaProceso(){
-		this.inicio.setEnabled(false);
-		this.parada.setEnabled(true);
+		this.butInicio.setEnabled(false);
+		this.butParada.setEnabled(true);
 		thread.setName("Extractor");
 		thread.start();
 	}
@@ -407,8 +417,8 @@ public class InterfazExtractor extends JFrame{
 		else
 			JOptionPane.showMessageDialog(this, "La ejecución ha sido interrumpida");
 
-		this.inicio.setEnabled(true);
-		this.parada.setEnabled(false);
+		this.butInicio.setEnabled(true);
+		this.butParada.setEnabled(false);
 	}
 
 	/**
@@ -447,6 +457,10 @@ public class InterfazExtractor extends JFrame{
 		this.funcionamiento=ModoFuncionamiento.PROVINCIA;
 	}
 
+	/**
+	 * Obtiene el código de la provincia seleccionada en el comboBox de provincias
+	 * @return Código de la provincia seleccionada
+	 */
 	public String getProvinciaSeleccionada(){
 		return ProvinciasGDO.getCodigo(Provincia.values()[this.provinciasCombo.getSelectedIndex()]);
 	}

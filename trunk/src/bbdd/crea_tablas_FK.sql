@@ -14,6 +14,18 @@ USE `ssii`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 
+DROP TABLE IF EXISTS `actualizado`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `actualizado` (
+  `tabla` varchar(11) NOT NULL,
+  `fecha` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`tabla`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Tabla que guarda cuándo fué actualizada cada tabla por últim';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+
+
 DROP TABLE IF EXISTS `pelicula`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
