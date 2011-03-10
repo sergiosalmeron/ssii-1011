@@ -1,12 +1,15 @@
 package gui;
 
+import extractores.cines.ProcesadorCinesGDO;
+import extractores.peliculas.ProcesadorCarteleraGDO;
+
 import java.util.ArrayList;
 
 import tads.Cine;
+import tads.ModoFuncionamiento;
 import tads.Pelicula;
+import tads.ProvinciasGDO;
 import tads.ProvinciasGDO.Provincia;
-import extractores.cines.ProcesadorCinesGDO;
-import extractores.peliculas.ProcesadorCarteleraGDO;
 
 public class Logica implements Runnable {
 
@@ -21,9 +24,79 @@ public class Logica implements Runnable {
 	
 	@Override
 	public void run() {
-		Provincia[] provincias=Provincia.values();
+		Provincia[] arrProv=Provincia.values();
 		
-		ArrayList<Cine> cines=new ArrayList<Cine>();
+		ModoFuncionamiento modo=this.interfaz.getFuncionamiento();
+		boolean actualizar=this.interfaz.isActualizar();
+		//String prov=this.interfaz.getProvinciaSeleccionada();
+		Provincia provincia=ProvinciasGDO.getProvincia(this.interfaz.getProvinciaSeleccionada());
+		
+		switch (modo) {
+		case PELI:  ArrayList<Pelicula> pelis=new ArrayList<Pelicula>();
+					ProcesadorCarteleraGDO procCarte= new ProcesadorCarteleraGDO();
+					
+					//Actualiza desde esa provincia
+					for (ProvinciasGDO.Provincia provIterada : arrProv) {
+						if (provincia.ordinal()>=provIterada.ordinal() && (!interrumpir)){
+							interfaz.informa(provincia.ordinal(), 0);
+							//TODO Falta la actualización propiamente dicha
+							pelis.addAll(procCarte.getPeliculas(provincia));
+							//bd.actualizaProvincia(p, prov, false);
+						}
+					}
+		break;
+		case CINE:	ArrayList<Cine> cines=new ArrayList<Cine>();
+					ProcesadorCinesGDO procCines= new ProcesadorCinesGDO();
+					
+					//Actualiza desde esa provincia
+					for (ProvinciasGDO.Provincia provIterada : arrProv) {
+						if (provincia.ordinal()>=provIterada.ordinal() && (!interrumpir)){
+							interfaz.informa(provincia.ordinal(), 1);
+							//TODO Falta la actualización propiamente dicha
+							cines.addAll(procCines.getCines(provincia));
+							//bd.actualizaProvincia(p, prov, false);
+						}
+					}
+			break;
+		case SESION:ArrayList<Cine> cinesSesion=new ArrayList<Cine>();
+					ProcesadorCinesGDO procCinesSesion= new ProcesadorCinesGDO();
+					
+					//Actualiza desde esa provincia
+					for (ProvinciasGDO.Provincia provIterada : arrProv) {
+						if (provincia.ordinal()>=provIterada.ordinal() && (!interrumpir)){
+							interfaz.informa(provincia.ordinal(), 2);
+							//TODO ¡¡Falta Todo!!!
+						}
+					}
+			break;
+		case PROVINCIA:	pelis=new ArrayList<Pelicula>();
+						cines=new ArrayList<Cine>();
+						procCines= new ProcesadorCinesGDO();
+						procCarte= new ProcesadorCarteleraGDO();
+						
+						for (ProvinciasGDO.Provincia provIterada : arrProv) {
+							//Actualiza desde esa provincia
+							//Peliculas
+							if (provincia.ordinal()>=provIterada.ordinal() && (!interrumpir)){
+								interfaz.informa(provincia.ordinal(),0);
+								//TODO Falta la actualización propiamente dicha
+								pelis.addAll(procCarte.getPeliculas(provincia));
+								//bd.actualizaProvincia(p, prov, false);
+							}
+							//Cines (y sesiones!)
+							if (provincia.ordinal()>=provIterada.ordinal() && (!interrumpir)){
+								interfaz.informa(provincia.ordinal(),1);
+								//TODO Falta la actualización propiamente dicha
+								cines.addAll(procCines.getCines(provincia));
+								//bd.actualizaProvincia(p, prov, false);
+							}
+						}
+		break;
+		default:
+			break;
+		}
+		
+		/*ArrayList<Cine> cines=new ArrayList<Cine>();
 		ArrayList<Pelicula> pelis= new ArrayList<Pelicula>();
 		
 		ProcesadorCinesGDO procCines=new ProcesadorCinesGDO();
@@ -44,7 +117,7 @@ public class Logica implements Runnable {
 		}
 		
 			interfaz.finalizaProceso(!interrumpir);
-			interrumpir=false;
+			interrumpir=false;*/
 	}
 	
 	

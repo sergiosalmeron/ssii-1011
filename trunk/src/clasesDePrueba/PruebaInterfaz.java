@@ -42,7 +42,7 @@ public class PruebaInterfaz {
 		ProcesadorCarteleraGDO procCarte= new ProcesadorCarteleraGDO();
 		for (int i=0;i<provincias.length;i++){
 			if (!interrumpir){
-				interfaz.Informa(i, 0);
+				interfaz.informa(i, 0);
 				pelis.addAll(procCarte.getPeliculas(provincias[i]));	
 			}
 			
@@ -50,7 +50,7 @@ public class PruebaInterfaz {
 		
 		for (int i=0;i<provincias.length;i++){
 			if (!interrumpir){
-				interfaz.Informa(i, 1);
+				interfaz.informa(i, 1);
 				cines.addAll(procCines.getCines(provincias[i]));
 			}
 		}
