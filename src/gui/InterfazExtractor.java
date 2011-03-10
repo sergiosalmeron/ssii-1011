@@ -5,15 +5,11 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Vector;
 
-import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -27,8 +23,10 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 
 import tads.ModoFuncionamiento;
+import tads.ParamsConexionBD;
 import tads.ProvinciasGDO;
 import tads.ProvinciasGDO.Provincia;
+import utils.BD;
 
 public class InterfazExtractor extends JFrame{
 
@@ -38,7 +36,8 @@ public class InterfazExtractor extends JFrame{
 	private static final long serialVersionUID = 1L;
 	
 	private JProgressBar progressBar;
-	private JLabel indicador,ultActCompleta,fechaUltActCompleta,ultProvActualizada,provActualizada;
+	private JLabel indicador,ultActCompleta,fechaUltActCompleta,
+			ultProvActualizada,provActualizada,pelis,cines,sesiones;
 	private JButton inicio,parada,borrarBD,reiniciarBD;
 	private int totalExtracciones;
 	private ListenerGUI manejador;
@@ -201,6 +200,27 @@ public class InterfazExtractor extends JFrame{
 	    cons=rellenaConstraints(2,2,1,1,cons.EAST);
 		panelInfo.add(provActualizada,cons);
 		
+		//cons=rellenaConstraints(1, 3, 1, 1, cons.WEST);
+		
+		//panelInfo.add(new JLabel("Se proyectan "),cons);
+		
+		
+		//TODO pensar si hacer los métodos static
+		BD bd=new BD();
+		ParamsConexionBD p=new ParamsConexionBD("userSSII","passSSII", "jdbc:mysql://localhost:3306/ssii");
+		int nPelis=bd.numPelis(p);
+		int nCines=bd.numCines(p);
+		int nSesiones=bd.numSesiones(p);
+		pelis=new JLabel("Nº Peliculas: "+((Integer)nPelis).toString());
+		cons=rellenaConstraints(1, 3, 1, 1, cons.WEST);
+		panelInfo.add(pelis,cons);		
+		cines=new JLabel("Nº Cines: "+((Integer)nCines).toString());
+		cons=rellenaConstraints(1, 4, 1, 1, cons.WEST);
+		panelInfo.add(cines,cons);
+		sesiones=new JLabel("Nº Sesiones: "+((Integer)nSesiones).toString());
+		cons=rellenaConstraints(1, 5, 1, 1, cons.WEST);
+		panelInfo.add(sesiones,cons);
+
 		
 		JPanel panelBotonesAdm=new JPanel(gbl);
 		borrarBD=new JButton("Borrar BD");
