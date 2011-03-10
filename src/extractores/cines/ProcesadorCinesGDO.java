@@ -255,7 +255,7 @@ public class ProcesadorCinesGDO {
 			List<Element> enlaces=bloque.getAllElements("a");
 			String urlPeli=null;
 			String urlUltimoDia=null;
-			EnumDias ultimoDia=EnumDias.Martes;
+			EnumDias ultimoDia=EnumDias.Jueves;
 			for (Element enlace : enlaces){
 				String link=enlace.getAttributeValue("href");
 				if (link.indexOf("/cine/archivo")>-1){
