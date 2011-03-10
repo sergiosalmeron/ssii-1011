@@ -24,7 +24,8 @@ public class OtraClaseDePrueba {
 		
 		ProcesadorCinesGDO a = new ProcesadorCinesGDO();
 		//a.getCines(Provincia.granada);
-		a.getCinesRestantes(Provincia.granada);
+		a.getCines(Provincia.granada);
+		//a.getCinesRestantes(Provincia.granada);
 	}
 	
 }
