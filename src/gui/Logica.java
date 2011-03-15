@@ -7,9 +7,11 @@ import java.util.ArrayList;
 
 import tads.Cine;
 import tads.ModoFuncionamiento;
+import tads.ParamsConexionBD;
 import tads.Pelicula;
 import tads.ProvinciasGDO;
 import tads.ProvinciasGDO.Provincia;
+import utils.BD;
 
 public class Logica implements Runnable {
 
@@ -19,6 +21,8 @@ public class Logica implements Runnable {
 	
 	private ProcesadorCarteleraGDO procCarte;
 	private ProcesadorCinesGDO procCines;
+	private ParamsConexionBD params;
+	private final BD bd=new BD();
 
 
 	
@@ -26,6 +30,7 @@ public class Logica implements Runnable {
 		this.interfaz=interfaz;
 		procCarte= new ProcesadorCarteleraGDO();
 		procCines= new ProcesadorCinesGDO();
+		interrumpir=false;
 
 	}
 	
@@ -48,38 +53,47 @@ public class Logica implements Runnable {
 		
 		switch (modo) {
 		case PELI:  ArrayList<Pelicula> pelis=new ArrayList<Pelicula>();
-					///ProcesadorCarteleraGDO procCarte= new ProcesadorCarteleraGDO();
 					
 					//Actualiza desde esa provincia
-					///for (ProvinciasGDO.Provincia provIterada : arrProv) {
 					for (ProvinciasGDO.Provincia provIterada : arrProv) {
-						if (provincia.ordinal()>=provIterada.ordinal() && (!interrumpir)){
+						/*TODO arreglar las condiciones, porque la parte derecha no puede ser provIterada, 
+						/* sino a partir de la que quiero iterar
+						 */ 
+						if (provIterada.ordinal()>=provIterada.ordinal() && (!interrumpir)){
 							interfaz.informa(provincia.ordinal(), 0);
 							//TODO Falta la actualización propiamente dicha
-							pelis.addAll(procCarte.getPeliculas(provincia));
-							//bd.actualizaProvincia(p, prov, false);
+							/*pelis.addAll(procCarte.getPeliculas(provincia));
+							params=new ParamsConexionBD("userSSII","passSSII","jdbc:mysql://localhost:3306/ssii");
+							bd.actualizaPeliculas(params, provIterada, false);*/
+							params=new ParamsConexionBD("userSSII","passSSII","jdbc:mysql://localhost:3306/ssii");
+							bd.actualizaPeliculas(params, provIterada, false);
 						}
 					}
 		break;
 		case CINE:	ArrayList<Cine> cines=new ArrayList<Cine>();
-					///ProcesadorCinesGDO procCines= new ProcesadorCinesGDO();
 					
 					//Actualiza desde esa provincia
 					for (ProvinciasGDO.Provincia provIterada : arrProv) {
-						if (provincia.ordinal()>=provIterada.ordinal() && (!interrumpir)){
+						/*TODO arreglar las condiciones, porque la parte derecha no puede ser provIterada, 
+						/* sino a partir de la que quiero iterar
+						 */
+						if (provIterada.ordinal()>=provIterada.ordinal() && (!interrumpir)){
 							interfaz.informa(provincia.ordinal(), 1);
 							//TODO Falta la actualización propiamente dicha
-							cines.addAll(procCines.getCines(provincia));
-							//bd.actualizaProvincia(p, prov, false);
+							//cines.addAll(procCines.getCines(provincia));
+							params=new ParamsConexionBD("userSSII","passSSII","jdbc:mysql://localhost:3306/ssii");
+							bd.actualizaCines(params, provIterada, false);
 						}
 					}
 			break;
 		case SESION:ArrayList<Cine> cinesSesion=new ArrayList<Cine>();
-					///ProcesadorCinesGDO procCinesSesion= new ProcesadorCinesGDO();
 					
 					//Actualiza desde esa provincia
 					for (ProvinciasGDO.Provincia provIterada : arrProv) {
-						if (provincia.ordinal()>=provIterada.ordinal() && (!interrumpir)){
+						/*TODO arreglar las condiciones, porque la parte derecha no puede ser provIterada, 
+						/* sino a partir de la que quiero iterar
+						 */
+						if (provIterada.ordinal()>=provIterada.ordinal() && (!interrumpir)){
 							interfaz.informa(provincia.ordinal(), 2);
 							//TODO ¡¡Falta Todo!!!
 						}
@@ -87,53 +101,23 @@ public class Logica implements Runnable {
 			break;
 		case PROVINCIA:	pelis=new ArrayList<Pelicula>();
 						cines=new ArrayList<Cine>();
-						//procCines= new ProcesadorCinesGDO();
-						//procCarte= new ProcesadorCarteleraGDO();
 						
 						for (ProvinciasGDO.Provincia provIterada : arrProv) {
 							//Actualiza desde esa provincia
-							//Peliculas
-							if (provincia.ordinal()>=provIterada.ordinal() && (!interrumpir)){
+							/*TODO arreglar las condiciones, porque la parte derecha no puede ser provIterada, 
+							/* sino a partir de la que quiero iterar
+							 */
+							if (provIterada.ordinal()>=provIterada.ordinal() && (!interrumpir)){
 								interfaz.informa(provincia.ordinal(),0);
 								//TODO Falta la actualización propiamente dicha
-								pelis.addAll(procCarte.getPeliculas(provincia));
-								//bd.actualizaProvincia(p, prov, false);
-							}
-							//Cines (y sesiones!)
-							if (provincia.ordinal()>=provIterada.ordinal() && (!interrumpir)){
-								interfaz.informa(provincia.ordinal(),1);
-								//TODO Falta la actualización propiamente dicha
-								cines.addAll(procCines.getCines(provincia));
-								//bd.actualizaProvincia(p, prov, false);
+								//pelis.addAll(procCarte.getPeliculas(provincia));
+								params=new ParamsConexionBD("userSSII","passSSII","jdbc:mysql://localhost:3306/ssii");
+								bd.actualizaProvincia(params, provIterada, false);
 							}
 						}
 		break;
-		default:
-			break;
+		default:break;
 		}
-		
-		/*ArrayList<Cine> cines=new ArrayList<Cine>();
-		ArrayList<Pelicula> pelis= new ArrayList<Pelicula>();
-		
-		ProcesadorCinesGDO procCines=new ProcesadorCinesGDO();
-		ProcesadorCarteleraGDO procCarte= new ProcesadorCarteleraGDO();
-		for (int i=0;i<provincias.length;i++){
-			if (!interrumpir){
-				interfaz.Informa(i, 0);
-				pelis.addAll(procCarte.getPeliculas(provincias[i]));	
-			}
-			
-		}
-		
-		for (int i=0;i<provincias.length;i++){
-			if (!interrumpir){
-				interfaz.Informa(i, 1);
-				cines.addAll(procCines.getCines(provincias[i]));
-			}
-		}
-		
-			interfaz.finalizaProceso(!interrumpir);
-			interrumpir=false;*/
 	}
 	
 	
@@ -141,6 +125,7 @@ public class Logica implements Runnable {
 		interrumpir=true;
 		procCarte.paralo();
 		procCines.paralo();
+		this.interfaz.finalizaProceso(false);
 	}
 
 }

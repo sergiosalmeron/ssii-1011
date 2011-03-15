@@ -1,14 +1,19 @@
 acoruna
+http://www.guiadelocio.com/cine/archivo-peliculas/chico-y-rita
+http://www.guiadelocio.com/cine/archivo-peliculas/cisne-negro
 http://www.guiadelocio.com/cine/archivo-peliculas/destino-oculto
 http://www.guiadelocio.com/cine/archivo-peliculas/el-discurso-del-rey
 http://www.guiadelocio.com/cine/archivo-peliculas/el-oso-yogui
+http://www.guiadelocio.com/cine/archivo-peliculas/el-santuario-sanctum
+http://www.guiadelocio.com/cine/archivo-peliculas/el-ultimo-bailarin-de-mao
+http://www.guiadelocio.com/cine/archivo-peliculas/en-el-centro-de-la-tormenta
 http://www.guiadelocio.com/cine/archivo-peliculas/en-tiempo-de-brujas
 http://www.guiadelocio.com/cine/archivo-peliculas/enredados
+http://www.guiadelocio.com/cine/archivo-peliculas/incendies
 http://www.guiadelocio.com/cine/archivo-peliculas/ispansi-espanoles
 http://www.guiadelocio.com/cine/archivo-peliculas/los-chicos-estan-bien
 http://www.guiadelocio.com/cine/archivo-peliculas/manana-cuando-la-guerra-empiece
 http://www.guiadelocio.com/cine/archivo-peliculas/mas-alla-de-la-vida-2010
-http://www.guiadelocio.com/cine/archivo-peliculas/pan-negro-pa-negre
 http://www.guiadelocio.com/cine/archivo-peliculas/primos
 http://www.guiadelocio.com/cine/archivo-peliculas/rango
 http://www.guiadelocio.com/cine/archivo-peliculas/saw-vii-3d.-el-capitulo-final
@@ -16,4 +21,5 @@ http://www.guiadelocio.com/cine/archivo-peliculas/secuestrados-2010
 http://www.guiadelocio.com/cine/archivo-peliculas/sigueme-el-rollo
 http://www.guiadelocio.com/cine/archivo-peliculas/the-fighter
 http://www.guiadelocio.com/cine/archivo-peliculas/the-mechanic
+http://www.guiadelocio.com/cine/archivo-peliculas/torrente-4-lethal-crisis-crisis-letal
 http://www.guiadelocio.com/cine/archivo-peliculas/valor-de-ley-true-grit

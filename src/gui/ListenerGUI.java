@@ -24,6 +24,10 @@ public class ListenerGUI implements ActionListener{
 			interfaz.interrumpeProceso();
 		}
 		
+		if (e.getActionCommand().equalsIgnoreCase("Continua")){
+			interfaz.continua();
+		}
+		
 		if (e.getActionCommand().equalsIgnoreCase("peli act")){
 			interfaz.setPeli(true);
 		}

@@ -51,6 +51,10 @@ public class InterfazExtractor extends JFrame{
 	private ButtonGroup grupo;
 	private boolean actualizar;
 	private ModoFuncionamiento funcionamiento;
+
+	private boolean actParada;
+
+	private JButton butContinua;
 	
 
 	public void setProvActualizada(JLabel provActualizada) {
@@ -76,7 +80,7 @@ public class InterfazExtractor extends JFrame{
 		totalExtracciones=Provincia.values().length;
 		manejador=new ListenerGUI(this);
 		actualizar=false;
-		funcionamiento=ModoFuncionamiento.PROVINCIA;
+		funcionamiento=ModoFuncionamiento.PELI;
 		this.add(construyeInterfaz());
 		this.setMinimumSize(new Dimension(575,275));
 		this.pack();
@@ -233,6 +237,7 @@ public class InterfazExtractor extends JFrame{
 	
 	private void actualizaCampos(){
 		final BD bd=new BD();
+		//final ParamsConexionBD p=new ParamsConexionBD("userSSII","passSSII", "jdbc:mysql://localhost:3306/ssii");
 		final ParamsConexionBD p=new ParamsConexionBD("userSSII","passSSII", "jdbc:mysql://localhost:3306/ssii");
 		actualizaUltFecha(bd.dameFechaUltAct(p));	
 		actualizaNumPelis(bd.numPelis(p));
@@ -282,8 +287,13 @@ public class InterfazExtractor extends JFrame{
 		butParada.setText("Parada");
 		butParada.addActionListener(manejador);
 		butParada.setEnabled(false);
+		butContinua=new JButton();
+		butContinua.setText("Continua");
+		butContinua.addActionListener(manejador);
+		butContinua.setVisible(false);
 		cons=rellenaConstraints(2,3,1,1,cons.CENTER);
 	    panelProgreso.add(butParada,cons);
+	    panelProgreso.add(butContinua,cons);
 		
 	    
 		panelProgreso.setBorder(BorderFactory.createEmptyBorder(15, 5, 10, 5));
@@ -306,6 +316,7 @@ public class InterfazExtractor extends JFrame{
 		
 		peliRB = new JRadioButton("Peliculas",true);
 		peliRB.setActionCommand("peli act");
+		peliRB.addActionListener(manejador);
 		//peliRB.setIcon(new ImageIcon("src/gui/imagenes/movie_nosel.png"));
 		//peliRB.setRolloverIcon(new ImageIcon("src/gui/imagenes/movie_nosel.png"));
 		//peliRB.setRolloverEnabled(true);
@@ -320,14 +331,17 @@ public class InterfazExtractor extends JFrame{
 		 */
 	    cineRB = new JRadioButton("Cines",false);
 	    cineRB.setActionCommand("cine act");
+	    cineRB.addActionListener(manejador);
 	    sesionRB = new JRadioButton("Sesiones",false);
 	    sesionRB.setActionCommand("sesion act");
+	    sesionRB.addActionListener(manejador);
 	    //sesionRB.setFocusPainted(false);
 	    //sesionRB.setHorizontalAlignment(AbstractButton.RIGHT);
 	    
 	    todaProvinciaRB = new JRadioButton("Toda la Provincia",false);
 	    todaProvinciaRB.setActionCommand("provincia act");
 	    todaProvinciaRB.setSelected(true);
+	    todaProvinciaRB.addActionListener(manejador);
 	    //todaProvinciaRB.setFocusPainted(true);
 	    
 	  /*  class RBActionListener implements ActionListener {
@@ -402,25 +416,51 @@ public class InterfazExtractor extends JFrame{
 	
 	public void iniciaProceso(){
 		this.butInicio.setEnabled(false);
-		this.butParada.setEnabled(true);
+		this.butParada.setEnabled(true); 
+		thread = new Thread(logica); 
 		thread.setName("Extractor");
 		thread.start();
 	}
 	
 	public void interrumpeProceso(){
 		logica.interrumpe();
-		finalizaProceso(false);
+		//finalizaProceso(false);
 	}
 	
 	public void finalizaProceso(boolean ok){
-		if (ok)
+		if (ok){
 			JOptionPane.showMessageDialog(this, "La ejecución ha finalizado correctamente");
-		else
+			this.butContinua.setVisible(false);
+			this.butParada.setVisible(true);
+			
+			this.butInicio.setEnabled(true);
+			this.butParada.setEnabled(false);
+			this.butContinua.setEnabled(false);
+			
+			this.peliRB.setEnabled(true);
+			this.cineRB.setEnabled(true);
+			this.sesionRB.setEnabled(true);
+			this.todaProvinciaRB.setEnabled(true);
+			this.provinciasCombo.setEnabled(true);
+		}
+		else{
 			JOptionPane.showMessageDialog(this, "La ejecución ha sido interrumpida");
-
-		this.butInicio.setEnabled(true);
-		this.butParada.setEnabled(false);
+			this.actParada=true;
+			this.butParada.setVisible(false);
+			this.butContinua.setVisible(true);
+			this.peliRB.setEnabled(false);
+			this.cineRB.setEnabled(false);
+			this.sesionRB.setEnabled(false);
+			this.todaProvinciaRB.setEnabled(false);
+			this.provinciasCombo.setEnabled(false);
+		}
 	}
+	
+	public void continua(){
+		System.out.println("Debería estar continuando");
+		
+	}
+	
 
 	/**
 	 * Pone el modo a película, y si es actualizar o reiniciar valores de la provincia
