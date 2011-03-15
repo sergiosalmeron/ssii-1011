@@ -118,6 +118,7 @@ public class Logica implements Runnable {
 		break;
 		default:break;
 		}
+		this.interfaz.finalizaProceso(true);
 	}
 	
 	

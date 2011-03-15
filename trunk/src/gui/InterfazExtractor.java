@@ -52,6 +52,7 @@ public class InterfazExtractor extends JFrame{
 	private boolean actualizar;
 	private ModoFuncionamiento funcionamiento;
 
+	//Utilizado para saber si se ha parado la ejecución, actualización Parada.
 	private boolean actParada;
 
 	private JButton butContinua;
@@ -405,12 +406,16 @@ public class InterfazExtractor extends JFrame{
 			progressBar.setValue(provincia);
 		}
 		if (paso==1){
-			indicador.setText("Procesando los cines de "+Provincia.values()[provincia]);
+			indicador.setText("Procesando los cines de "+ProvinciasGDO.getNombre(Provincia.values()[provincia]));
 			progressBar.setValue(totalExtracciones+provincia);
 		}
 		if (paso==2){
-			indicador.setText("Procesando las sesiones de "+Provincia.values()[provincia]);
+			indicador.setText("Procesando las sesiones de "+ProvinciasGDO.getNombre(Provincia.values()[provincia]));
 			progressBar.setValue(totalExtracciones+provincia);
+		}
+		if (paso==10){
+			indicador.setText("Pulse 'Inicio' para empezar...");
+			progressBar.setValue(0);
 		}
 	}
 	
@@ -442,6 +447,7 @@ public class InterfazExtractor extends JFrame{
 			this.sesionRB.setEnabled(true);
 			this.todaProvinciaRB.setEnabled(true);
 			this.provinciasCombo.setEnabled(true);
+			informa(0, 10);
 		}
 		else{
 			JOptionPane.showMessageDialog(this, "La ejecución ha sido interrumpida");
@@ -458,6 +464,9 @@ public class InterfazExtractor extends JFrame{
 	
 	public void continua(){
 		System.out.println("Debería estar continuando");
+		//Hay que llamar a los métodos que utilizan el fichero de texto, los get*Restantes.
+		//Estos métodos son de los procesadores(cartelera y cines). Hablar con Sergio porque igual
+		//hay que usar un helper(capa de cebolla) para ver cómo funcionan exactamente.
 		
 	}
 	
