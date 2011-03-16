@@ -4,6 +4,8 @@ import tads.ParamsConexionBD;
 import tads.ProvinciasGDO;
 import tads.ProvinciasGDO.Provincia;
 import utils.BD;
+import extractores.cines.ProcesadorCinesGDO;
+import extractores.peliculas.ProcesadorCarteleraGDO;
 
 public class PruebaFuncionamiento {
 
@@ -35,9 +37,11 @@ public class PruebaFuncionamiento {
 		
 		//Bucle que actualiza todas las provincias
 		Provincia[] arrProv=ProvinciasGDO.Provincia.values();
+		ProcesadorCinesGDO prCines=new ProcesadorCinesGDO();
+		ProcesadorCarteleraGDO prPelis=new ProcesadorCarteleraGDO();
 		for (ProvinciasGDO.Provincia prov : arrProv) {
 			if (prov.ordinal()>=Provincia.cantabria.ordinal() && prov.ordinal()<=Provincia.zaragoza.ordinal()){
-				bd.actualizaProvincia(p, prov, false);
+				bd.actualizaProvincia(prPelis, prCines,p, prov, false);
 				int a=3;
 				a++;
 			}

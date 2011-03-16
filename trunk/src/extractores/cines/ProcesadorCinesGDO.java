@@ -47,15 +47,20 @@ public class ProcesadorCinesGDO {
 		this.usandoTor =false;
 		this.stop=false;
 	}
-	/**
-	 * Constructor
-	 * @param usandoTor Especifica si las conexiones se hacen por medio de la clase ConecTor o no
-	 */
-	public ProcesadorCinesGDO(boolean usandoTor) {
-		super();
-		this.usandoTor = usandoTor;
-		this.stop=false;
+
+	public void setUsaTor(boolean usa){
+		this.usandoTor=usa;
 	}
+	
+//	/**
+//	 * Constructor
+//	 * @param usandoTor Especifica si las conexiones se hacen por medio de la clase ConecTor o no
+//	 */
+//	public ProcesadorCinesGDO(boolean usandoTor) {
+//		super();
+//		this.usandoTor = usandoTor;
+//		this.stop=false;
+//	}
 
 	/**
 	 * Método que devuelve un arraylist con los cines (y sus pases) de una provincia.

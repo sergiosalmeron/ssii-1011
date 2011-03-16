@@ -123,7 +123,7 @@ DROP TABLE IF EXISTS `ciudad`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `ciudad` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `Nombre` varchar(45) NOT NULL,
+  `Nombre` varchar(70) NOT NULL,
   `IDProvincia` int(11) DEFAULT NULL,
   PRIMARY KEY (`ID`),
   KEY `CiudadProvincia` (`IDProvincia`),

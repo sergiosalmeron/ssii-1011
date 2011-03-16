@@ -2,13 +2,8 @@ package gui;
 
 import extractores.cines.ProcesadorCinesGDO;
 import extractores.peliculas.ProcesadorCarteleraGDO;
-
-import java.util.ArrayList;
-
-import tads.Cine;
 import tads.ModoFuncionamiento;
 import tads.ParamsConexionBD;
-import tads.Pelicula;
 import tads.ProvinciasGDO;
 import tads.ProvinciasGDO.Provincia;
 import utils.BD;
@@ -17,7 +12,7 @@ public class Logica implements Runnable {
 
 	private static boolean interrumpir;
 
-	private static InterfazExtractor interfaz;
+	private InterfazExtractor interfaz;
 	
 	private ProcesadorCarteleraGDO procCarte;
 	private ProcesadorCinesGDO procCines;
@@ -43,6 +38,7 @@ public class Logica implements Runnable {
 		//String prov=this.interfaz.getProvinciaSeleccionada();
 		///Provincia provincia=ProvinciasGDO.getProvincia(this.interfaz.getNombreProvinciaSeleccionada());
 		Provincia provincia=this.interfaz.getProvinciaSeleccionada();
+
 		
 		if (provincia==null)
 			arrProv=Provincia.values();
@@ -52,73 +48,57 @@ public class Logica implements Runnable {
 		}
 		
 		switch (modo) {
-		case PELI:  ArrayList<Pelicula> pelis=new ArrayList<Pelicula>();
-					
+		case PELI:  					
 					//Actualiza desde esa provincia
 					for (ProvinciasGDO.Provincia provIterada : arrProv) {
-						/*TODO arreglar las condiciones, porque la parte derecha no puede ser provIterada, 
-						/* sino a partir de la que quiero iterar
-						 */ 
-						if (provIterada.ordinal()>=provIterada.ordinal() && (!interrumpir)){
-							interfaz.informa(provincia.ordinal(), 0);
-							//TODO Falta la actualización propiamente dicha
-							/*pelis.addAll(procCarte.getPeliculas(provincia));
+						if (!interrumpir){
+							interfaz.informa(provIterada.ordinal(), 0);
 							params=new ParamsConexionBD("userSSII","passSSII","jdbc:mysql://localhost:3306/ssii");
-							bd.actualizaPeliculas(params, provIterada, false);*/
-							params=new ParamsConexionBD("userSSII","passSSII","jdbc:mysql://localhost:3306/ssii");
-							bd.actualizaPeliculas(params, provIterada, false);
+							bd.actualizaPeliculas(procCarte, params, provIterada, false);
 						}
 					}
 		break;
-		case CINE:	ArrayList<Cine> cines=new ArrayList<Cine>();
-					
+		case CINE:						
 					//Actualiza desde esa provincia
 					for (ProvinciasGDO.Provincia provIterada : arrProv) {
-						/*TODO arreglar las condiciones, porque la parte derecha no puede ser provIterada, 
-						/* sino a partir de la que quiero iterar
-						 */
 						if (provIterada.ordinal()>=provIterada.ordinal() && (!interrumpir)){
-							interfaz.informa(provincia.ordinal(), 1);
-							//TODO Falta la actualización propiamente dicha
-							//cines.addAll(procCines.getCines(provincia));
+							interfaz.informa(provIterada.ordinal(), 1);
 							params=new ParamsConexionBD("userSSII","passSSII","jdbc:mysql://localhost:3306/ssii");
-							bd.actualizaCines(params, provIterada, false);
+							bd.actualizaCines(procCines, params, provIterada, false);
 						}
 					}
 			break;
-		case SESION:ArrayList<Cine> cinesSesion=new ArrayList<Cine>();
-					
+		case SESION: 					
 					//Actualiza desde esa provincia
 					for (ProvinciasGDO.Provincia provIterada : arrProv) {
-						/*TODO arreglar las condiciones, porque la parte derecha no puede ser provIterada, 
-						/* sino a partir de la que quiero iterar
-						 */
 						if (provIterada.ordinal()>=provIterada.ordinal() && (!interrumpir)){
-							interfaz.informa(provincia.ordinal(), 2);
+							interfaz.informa(provIterada.ordinal(), 2);
 							//TODO ¡¡Falta Todo!!!
 						}
 					}
 			break;
-		case PROVINCIA:	pelis=new ArrayList<Pelicula>();
-						cines=new ArrayList<Cine>();
-						
+		case PROVINCIA:							
 						for (ProvinciasGDO.Provincia provIterada : arrProv) {
-							//Actualiza desde esa provincia
-							/*TODO arreglar las condiciones, porque la parte derecha no puede ser provIterada, 
-							/* sino a partir de la que quiero iterar
-							 */
 							if (provIterada.ordinal()>=provIterada.ordinal() && (!interrumpir)){
-								interfaz.informa(provincia.ordinal(),0);
-								//TODO Falta la actualización propiamente dicha
-								//pelis.addAll(procCarte.getPeliculas(provincia));
+								interfaz.informa(provIterada.ordinal(),0);
 								params=new ParamsConexionBD("userSSII","passSSII","jdbc:mysql://localhost:3306/ssii");
-								bd.actualizaProvincia(params, provIterada, false);
+								bd.actualizaPeliculas(procCarte, params, provIterada, false);
+							}
+							if (provIterada.ordinal()>=provIterada.ordinal() && (!interrumpir)){
+								interfaz.informa(provIterada.ordinal(),1);
+								params=new ParamsConexionBD("userSSII","passSSII","jdbc:mysql://localhost:3306/ssii");
+								bd.actualizaCines(procCines, params, provIterada, false);
 							}
 						}
-		break;
+			break;
 		default:break;
 		}
-		this.interfaz.finalizaProceso(true);
+		if (interrumpir){
+			interrumpir=false;
+			//Aquí tengo que guardar la info sobre la ejecución
+			this.interfaz.finalizaProceso(false);
+		}
+		else this.interfaz.finalizaProceso(true);
 	}
 	
 	
@@ -126,7 +106,10 @@ public class Logica implements Runnable {
 		interrumpir=true;
 		procCarte.paralo();
 		procCines.paralo();
-		this.interfaz.finalizaProceso(false);
+	}
+	
+	public boolean consultaEjecucionPendiente(){
+		return ((procCarte.getProvinciaRestantes()!=null)||(procCines.getProvinciaRestantes()!=null));
 	}
 
 }

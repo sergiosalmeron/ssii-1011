@@ -24,6 +24,9 @@ import javax.swing.JRadioButton;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 
+import com.sun.jmx.trace.Trace;
+import com.sun.xml.internal.fastinfoset.tools.PrintTable;
+
 import tads.ModoFuncionamiento;
 import tads.ParamsConexionBD;
 import tads.ProvinciasGDO;
@@ -40,7 +43,7 @@ public class InterfazExtractor extends JFrame{
 	private JProgressBar progressBar;
 	private JLabel indicador,ultActCompleta,fechaUltActCompleta,
 			ultProvActualizada,provActualizada,pelis,cines,sesiones;
-	private JButton butInicio,butParada,butBorrarBD,butReiniciarBD;
+	private JButton butInicio,butParada,butBorrarBD,butReiniciarBD,butContinua;
 	private TransparentButton butActualizar;
 	private int totalExtracciones;
 	private ListenerGUI manejador;
@@ -54,8 +57,6 @@ public class InterfazExtractor extends JFrame{
 
 	//Utilizado para saber si se ha parado la ejecución, actualización Parada.
 	private boolean actParada;
-
-	private JButton butContinua;
 	
 
 	public void setProvActualizada(JLabel provActualizada) {
@@ -82,6 +83,7 @@ public class InterfazExtractor extends JFrame{
 		manejador=new ListenerGUI(this);
 		actualizar=false;
 		funcionamiento=ModoFuncionamiento.PELI;
+		actParada=logica.consultaEjecucionPendiente();
 		this.add(construyeInterfaz());
 		this.setMinimumSize(new Dimension(575,275));
 		this.pack();
@@ -164,21 +166,21 @@ public class InterfazExtractor extends JFrame{
 		
 		//Creación de etiquetas
 		ultActCompleta=new JLabel("Última actualización:");
-		cons=rellenaConstraints(1, 1, 1, 1, cons.WEST);
+		cons=rellenaConstraints(1, 1, 1, 1, GridBagConstraints.WEST);
 		panelInfo.add(ultActCompleta,cons);
 		
 		fechaUltActCompleta=new JLabel();
-		cons=rellenaConstraints(2,1,1,1,cons.EAST);
+		cons=rellenaConstraints(2,1,1,1,GridBagConstraints.EAST);
 		panelInfo.add(fechaUltActCompleta,cons);
 		
 		ultProvActualizada=new JLabel("Última provincia actualizada:");
-		cons=rellenaConstraints(1,2,1,1,cons.WEST);
+		cons=rellenaConstraints(1,2,1,1,GridBagConstraints.WEST);
 		cons.ipadx=15;
 	    panelInfo.add(ultProvActualizada,cons);
 		
 	    //TODO GUARDAR ÚLTIMA PROVINCIA ACTUALIZADA
 	    provActualizada=new JLabel("PENSAR CÓMO HACER ESTO");
-	    cons=rellenaConstraints(2,2,1,1,cons.EAST);
+	    cons=rellenaConstraints(2,2,1,1,GridBagConstraints.EAST);
 	    cons.ipadx=0;
 		panelInfo.add(provActualizada,cons);
 
@@ -198,18 +200,18 @@ public class InterfazExtractor extends JFrame{
 			actualizaCampos();
 			}
 		});
-		cons=rellenaConstraints(3,2,1,2,cons.WEST);
+		cons=rellenaConstraints(3,2,1,2,GridBagConstraints.WEST);
 		cons.ipadx=0;
 		panelInfo.add(butActualizar,cons);
 		
 		pelis=new JLabel();
-		cons=rellenaConstraints(1, 3, 1, 1, cons.WEST);
+		cons=rellenaConstraints(1, 3, 1, 1, GridBagConstraints.WEST);
 		panelInfo.add(pelis,cons);		
 		cines=new JLabel();
-		cons=rellenaConstraints(1, 4, 1, 1, cons.WEST);
+		cons=rellenaConstraints(1, 4, 1, 1, GridBagConstraints.WEST);
 		panelInfo.add(cines,cons);
 		sesiones=new JLabel();
-		cons=rellenaConstraints(1, 5, 1, 1, cons.WEST);
+		cons=rellenaConstraints(1, 5, 1, 1, GridBagConstraints.WEST);
 		panelInfo.add(sesiones,cons);
 		//Actualización de los campos, rellenando los valores
 		actualizaCampos();
@@ -217,15 +219,32 @@ public class InterfazExtractor extends JFrame{
 		//Creación de botones
 		JPanel panelBotonesAdm=new JPanel(gbl);
 		butBorrarBD=new JButton("Borrar BD");
-		cons=rellenaConstraints(1, 1, 1, 1, cons.WEST);
+		butBorrarBD.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				//TODO Poner un modal para preguntar antes de borrar la BBDD
+				eliminaBD();
+				actualizaCampos();
+			}
+		});
+		cons=rellenaConstraints(1, 1, 1, 1, GridBagConstraints.WEST);
 		panelBotonesAdm.add(butBorrarBD,cons);
 		
 		butReiniciarBD=new JButton("Eliminar entradas");
-		cons=rellenaConstraints(2,1,1,1,cons.EAST);
+		butReiniciarBD.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				//TODO Poner un modal para preguntar antes de resetear la BBDD
+				reseteaBD();
+				actualizaCampos();
+			}
+		});
+		cons=rellenaConstraints(2,1,1,1,GridBagConstraints.EAST);
 		panelBotonesAdm.add(butReiniciarBD,cons);
 				
-		JTextArea area=new JTextArea("Sólo el botón actualizar tiene funcionalidad");
-		cons=rellenaConstraints(1,2,2,1,cons.CENTER);
+		JTextArea area=new JTextArea("Borrar no tiene funcionalidad. Falta introducir los " +
+				"modales de confirmación");
+		cons=rellenaConstraints(1,2,2,2,GridBagConstraints.CENTER);
 		panelBotonesAdm.add(area,cons);
 		
 
@@ -244,6 +263,20 @@ public class InterfazExtractor extends JFrame{
 		actualizaNumPelis(bd.numPelis(p));
 		actualizaNumCines(bd.numCines(p));
 		actualizaNumSesiones(bd.numSesiones(p));
+	}
+	
+	private void eliminaBD(){
+		final BD bd=new BD();
+		final ParamsConexionBD p=new ParamsConexionBD("rootNuevo","passNuevo", "jdbc:mysql://localhost:3306/ssii");
+		//TODO no tiene funcionalidad, posiblemente quite el botón
+		System.out.println("No tiene funcionalidad");
+		//bd.borraBBDD(p);
+	}
+	
+	private void reseteaBD(){
+		final BD bd=new BD();
+		final ParamsConexionBD p=new ParamsConexionBD("rootNuevo","passNuevo", "jdbc:mysql://localhost:3306/ssii");
+		bd.resetBBDD(p);
 	}
 	
 	private void actualizaUltFecha(String fecha){
@@ -270,30 +303,33 @@ public class InterfazExtractor extends JFrame{
 				
 		GridBagConstraints cons=new GridBagConstraints();
 	    progressBar = new JProgressBar(0, 2*totalExtracciones);
-	    cons=rellenaConstraints(1,1,2,1,cons.NORTH);
+	    cons=rellenaConstraints(0,0,3,1,GridBagConstraints.NORTH);
 	    //cons.ipadx=80;
 	    panelProgreso.add(progressBar,cons);
 	    	    
 		indicador=new JLabel("Pulse 'Inicio' para empezar...");
-		cons=rellenaConstraints(1,2,2,1,cons.CENTER);
+		cons=rellenaConstraints(0,1,3,2,GridBagConstraints.CENTER);
 	    panelProgreso.add(indicador,cons);
 		
 		butInicio=new JButton();
 		butInicio.setText("Inicio");
 		butInicio.addActionListener(manejador);
-		cons=rellenaConstraints(1,3,1,1,cons.CENTER);
+		cons=rellenaConstraints(0,3,1,1,GridBagConstraints.WEST);
 	    panelProgreso.add(butInicio,cons);		
 
 		butParada=new JButton();
 		butParada.setText("Parada");
 		butParada.addActionListener(manejador);
 		butParada.setEnabled(false);
+		cons=rellenaConstraints(1,3,1,1,GridBagConstraints.CENTER);
+	    panelProgreso.add(butParada,cons);
+	    
 		butContinua=new JButton();
 		butContinua.setText("Continua");
 		butContinua.addActionListener(manejador);
-		butContinua.setVisible(false);
-		cons=rellenaConstraints(2,3,1,1,cons.CENTER);
-	    panelProgreso.add(butParada,cons);
+		//TODO función que me diga si hay o no una ejecución a medias, igualado a actParada.
+		butContinua.setEnabled(this.actParada);
+		cons=rellenaConstraints(2, 3, 1, 1, GridBagConstraints.EAST);
 	    panelProgreso.add(butContinua,cons);
 		
 	    
@@ -361,20 +397,20 @@ public class InterfazExtractor extends JFrame{
 	    grupo.add(todaProvinciaRB);
 	    
 	    
-	    cons=rellenaConstraints(1,1,1,1,cons.WEST);
+	    cons=rellenaConstraints(1,1,1,1,GridBagConstraints.WEST);
 	    panelSeleccion.add(peliRB,cons);
 		
-	    cons=rellenaConstraints(1,2,1,1,cons.WEST);
+	    cons=rellenaConstraints(1,2,1,1,GridBagConstraints.WEST);
 	    panelSeleccion.add(cineRB,cons);
 	    
-	    cons=rellenaConstraints(1,3,1,1,cons.WEST);
+	    cons=rellenaConstraints(1,3,1,1,GridBagConstraints.WEST);
 	    panelSeleccion.add(sesionRB,cons);
 	    
-	    cons=rellenaConstraints(1,4,1,1,cons.WEST);
+	    cons=rellenaConstraints(1,4,1,1,GridBagConstraints.WEST);
 	    panelSeleccion.add(todaProvinciaRB,cons);
 	    
 	    JLabel labelProv=new JLabel("Selecciona Provincia");
-	    cons=rellenaConstraints(2,1,1,1,cons.EAST);
+	    cons=rellenaConstraints(2,1,1,1,GridBagConstraints.EAST);
 	    panelSeleccion.add(labelProv,cons);
 	    
 	  //Creo un Array de Strings con todas las provincias;
@@ -384,7 +420,7 @@ public class InterfazExtractor extends JFrame{
         for (Provincia prov : provs)
 			provinciasEnumeradas.add(ProvinciasGDO.getNombre(prov));
 	    provinciasCombo= new JComboBox(provinciasEnumeradas);
-	    cons=rellenaConstraints(2,2,1,2,cons.EAST);
+	    cons=rellenaConstraints(2,2,1,2,GridBagConstraints.EAST);
 	    //cons.ipadx=25;
 	    panelSeleccion.add(provinciasCombo,cons);
 	    
@@ -417,11 +453,17 @@ public class InterfazExtractor extends JFrame{
 			indicador.setText("Pulse 'Inicio' para empezar...");
 			progressBar.setValue(0);
 		}
+		if (paso==11){
+			indicador.setText("Hay una ejecución pendiente");
+			progressBar.setValue(0);
+		}
 	}
 	
 	public void iniciaProceso(){
 		this.butInicio.setEnabled(false);
-		this.butParada.setEnabled(true); 
+		this.butParada.setEnabled(true);
+		this.butContinua.setEnabled(false);
+		configuraBotonesInterfaz(false);
 		thread = new Thread(logica); 
 		thread.setName("Extractor");
 		thread.start();
@@ -432,38 +474,47 @@ public class InterfazExtractor extends JFrame{
 		//finalizaProceso(false);
 	}
 	
+	/**
+	 * Configura los botones radiobuttons y comboBox según el valor
+	 * pasado por parámetro. Si recibe un true, lo pone en la configuración de inicio por defecto.
+	 * @param habilitaNormal Parámetro que indica de qué manera se deben comportar los botones
+	 */
+	private void configuraBotonesInterfaz(boolean habilitaNormal){		
+		this.peliRB.setEnabled(habilitaNormal);
+		this.cineRB.setEnabled(habilitaNormal);
+		this.sesionRB.setEnabled(habilitaNormal);
+		this.todaProvinciaRB.setEnabled(habilitaNormal);
+		this.provinciasCombo.setEnabled(habilitaNormal);
+	}
+	
+	
 	public void finalizaProceso(boolean ok){
 		if (ok){
 			JOptionPane.showMessageDialog(this, "La ejecución ha finalizado correctamente");
-			this.butContinua.setVisible(false);
-			this.butParada.setVisible(true);
-			
+			configuraBotonesInterfaz(ok);
 			this.butInicio.setEnabled(true);
 			this.butParada.setEnabled(false);
 			this.butContinua.setEnabled(false);
-			
-			this.peliRB.setEnabled(true);
-			this.cineRB.setEnabled(true);
-			this.sesionRB.setEnabled(true);
-			this.todaProvinciaRB.setEnabled(true);
-			this.provinciasCombo.setEnabled(true);
+			this.actParada=false;
 			informa(0, 10);
 		}
 		else{
 			JOptionPane.showMessageDialog(this, "La ejecución ha sido interrumpida");
+			configuraBotonesInterfaz(!ok);
+			this.butInicio.setEnabled(true);
+			this.butParada.setEnabled(false);
+			this.butContinua.setEnabled(true);
 			this.actParada=true;
-			this.butParada.setVisible(false);
-			this.butContinua.setVisible(true);
-			this.peliRB.setEnabled(false);
-			this.cineRB.setEnabled(false);
-			this.sesionRB.setEnabled(false);
-			this.todaProvinciaRB.setEnabled(false);
-			this.provinciasCombo.setEnabled(false);
+			informa(0,11);
 		}
+		//configuraBotonesInterfaz(ok);
 	}
 	
 	public void continua(){
 		System.out.println("Debería estar continuando");
+		//Tengo que saber si son todas las provincias o solo la actual y si son cine, cartelera o ambos.
+		
+		
 		//Hay que llamar a los métodos que utilizan el fichero de texto, los get*Restantes.
 		//Estos métodos son de los procesadores(cartelera y cines). Hablar con Sergio porque igual
 		//hay que usar un helper(capa de cebolla) para ver cómo funcionan exactamente.
