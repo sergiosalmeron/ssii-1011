@@ -13,18 +13,15 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import tads.Cine;
+import net.htmlparser.jericho.Element;
+import net.htmlparser.jericho.Segment;
+import net.htmlparser.jericho.Source;
 import tads.ParamsConexionBD;
 import tads.Pelicula;
 import tads.ProvinciasGDO;
 import tads.ProvinciasGDO.Provincia;
 import utils.BD;
 import utils.ConecTor;
-
-
-import net.htmlparser.jericho.Element;
-import net.htmlparser.jericho.Segment;
-import net.htmlparser.jericho.Source;
 
 
 
@@ -53,44 +50,53 @@ public class ProcesadorCarteleraGDO implements ProcesadorCartelera{
 		this.usandoTor = false;
 		this.stop=false;
 	}
+	
+	public void setBBDD(BD bd, ParamsConexionBD p){
+		this.bd = bd;
+		this.p = p;
+	}
+	
+	public void usaTor(boolean torr){
+		this.usandoTor=torr;
+	}
 
 	
 	/**
 	 * Constructora
 	 * @param usandoTor Indica si las conexiones se realizarán con TOR (true) o sin él (false)
 	 */
-	public ProcesadorCarteleraGDO(boolean usandoTor) {
-		super();
-		this.usandoTor = usandoTor;
-		this.stop=false;
-	}
-
-	/**
-	 * Constructora
-	 * @param bd La bbdd
-	 * @param p los parámetros de conexión a la bbdd
-	 */
-	public ProcesadorCarteleraGDO(BD bd, ParamsConexionBD p) {
-		super();
-		this.usandoTor = false;
-		this.bd = bd;
-		this.p = p;
-		this.stop=false;
-	}
-	
-	/**
-	 * Constructora
-	 * @param usandoTor Indica si las conexiones se realizarán con TOR (true) o sin él (false)
-	 * @param bd La bbdd
-	 * @param p los parámetros de conexión a la bbdd
-	 */
-	public ProcesadorCarteleraGDO(boolean usandoTor, BD bd, ParamsConexionBD p) {
-		super();
-		this.usandoTor = usandoTor;
-		this.bd = bd;
-		this.p = p;
-		this.stop=false;
-	}
+//	public ProcesadorCarteleraGDO(boolean usandoTor) {
+//		super();
+//		this.usandoTor = usandoTor;
+//		this.stop=false;
+//	}
+//
+//	/**
+//	 * Constructora
+//	 * @param bd La bbdd
+//	 * @param p los parámetros de conexión a la bbdd
+//	 */
+//	public ProcesadorCarteleraGDO(BD bd, ParamsConexionBD p) {
+//		super();
+//		this.usandoTor = false;
+//		this.bd = bd;
+//		this.p = p;
+//		this.stop=false;
+//	}
+//	
+//	/**
+//	 * Constructora
+//	 * @param usandoTor Indica si las conexiones se realizarán con TOR (true) o sin él (false)
+//	 * @param bd La bbdd
+//	 * @param p los parámetros de conexión a la bbdd
+//	 */
+//	public ProcesadorCarteleraGDO(boolean usandoTor, BD bd, ParamsConexionBD p) {
+//		super();
+//		this.usandoTor = usandoTor;
+//		this.bd = bd;
+//		this.p = p;
+//		this.stop=false;
+//	}
 
 	//Las películas están limitadas por las etiquetas:
 	//Etiqueta Inicio: <div class="gridType06 ftl clear">

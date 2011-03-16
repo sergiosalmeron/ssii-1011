@@ -3,14 +3,18 @@ package gui;
 import java.awt.AlphaComposite;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Color;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 
 
 class TransparentButton extends JButton {
-        public TransparentButton() {
+        /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+		public TransparentButton() {
             //super(text);
             setOpaque(false);
             setContentAreaFilled(false);

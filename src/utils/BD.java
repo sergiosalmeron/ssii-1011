@@ -431,7 +431,7 @@ public class BD {
 		boolean exito=false;
 		Connection con;
 		ArrayList<Proyeccion> arrProyecciones=cine.getPases();
-		
+		con=dameConexion(p);
 		for (Proyeccion proyeccion : arrProyecciones) {
 			//Saco el ID de la película a la que voy a meter los pases
 			String urlPeli=proyeccion.getDirWebPelicula();
@@ -439,7 +439,6 @@ public class BD {
 //			System.out.println(consultaID);
 			int codPeli=0;
 			//No hago un while porque sólo hay una pelicula con esa Url
-			con=dameConexion(p);
 			ResultSet rs=ejecuta(consultaID,con);
 		    try {
 				rs.next();
@@ -489,6 +488,7 @@ public class BD {
 			}
 			
 		}
+		desconecta();
 		return exito;
 	}
 	
@@ -594,11 +594,12 @@ public class BD {
             "IDENTIFIED BY '"+pass+"';";
 			stmt.executeUpdate(consulta);
 			System.out.println("Usuario creado");
-			desconecta();
+			//desconecta();
 		}catch (SQLException e){
 			System.err.println("Fallo al crear un nuevo administrador ");
 			System.err.println(e.getMessage());
 		}	
+		desconecta();
 	}
 
 	/**
@@ -649,6 +650,7 @@ public class BD {
 			System.err.println(e.getMessage());
 			System.err.println(consulta);
 		}
+		desconecta();
 		return fecha;
 	}
 	
@@ -658,7 +660,7 @@ public class BD {
 	 * @return Fecha de última actualización de la BBDD (pero no sé la tabla).
 	 */
 	public String dameFechaUltAct(ParamsConexionBD p){
-		String fecha = null;
+		String fecha = "N/D";
 		Connection con=dameConexion(p);
 		String consulta="SELECT MAX(Fecha) FROM actualizado;";
 		try{
@@ -672,6 +674,7 @@ public class BD {
 			System.err.println(e.getMessage());
 			System.err.println(consulta);
 		}
+		desconecta();
 		return fecha;
 	}
 	
@@ -698,6 +701,7 @@ public class BD {
 			System.err.println(e.getMessage());
 			System.err.println(consulta);
 		}
+		desconecta();
 		return existe;
 	}
 	
@@ -740,10 +744,10 @@ public class BD {
 	 * @param usaTor Cierto si debe emplarse Tor en la actualización.
 	 * @see utils.bd#introduceProvincia  IntroduceProvincia
 	 */
-	public void actualizaProvincia(ParamsConexionBD p, Provincia prov,boolean usaTor){
+	public void actualizaProvincia(ProcesadorCarteleraGDO prPelis, ProcesadorCinesGDO prCines, ParamsConexionBD p, Provincia prov,boolean usaTor){
 		System.out.println("El sistema está actualizando los datos de "+ProvinciasGDO.getNombre(prov));
-		actualizaPeliculas(p,prov,usaTor);
-		actualizaCines(p, prov,usaTor);
+		actualizaPeliculas(prPelis, p,prov,usaTor);
+		actualizaCines(prCines, p, prov,usaTor);
 	}
 
 	
@@ -753,10 +757,19 @@ public class BD {
 	 * @param prov Provincia a actualizar
 	 * @param usaTor Cierto si debe emplarse Tor en la actualización.
 	 */
-	public void actualizaPeliculas(ParamsConexionBD p, Provincia prov, boolean usaTor){
+	/*public void actualizaPeliculas(ProcesadorCartelera procesador,ParamsConexionBD p, Provincia prov, boolean usaTor){
 		System.out.println("Procesando las peliculas. Por favor, espere...");
 		//ProcesadorCarteleraGDO prPelis=new ProcesadorCarteleraGDO(usaTor);
 		ProcesadorCarteleraGDO prPelis=new ProcesadorCarteleraGDO(usaTor, this, p);
+		ArrayList<Pelicula> arrPelis= prPelis.getPeliculas(prov);
+		introducePelicula(arrPelis, p);
+		System.out.println("Fin del procesado de peliculas.");
+	}*/
+	public void actualizaPeliculas(ProcesadorCarteleraGDO prPelis,ParamsConexionBD p, Provincia prov, boolean usaTor){
+		System.out.println("Procesando las peliculas. Por favor, espere...");
+		//ProcesadorCarteleraGDO prPelis=new ProcesadorCarteleraGDO(usaTor);
+		prPelis.setBBDD(this, p);
+		prPelis.usaTor(usaTor);
 		ArrayList<Pelicula> arrPelis= prPelis.getPeliculas(prov);
 		introducePelicula(arrPelis, p);
 		System.out.println("Fin del procesado de peliculas.");
@@ -770,9 +783,10 @@ public class BD {
 	 * @param usaTor Cierto si debe emplarse Tor en la actualización.
 	 * @see utils.bd#introduceProvincia  IntroduceProvincia
 	 */
-	public void actualizaCines(ParamsConexionBD p, Provincia prov, boolean usaTor){
+	public void actualizaCines(ProcesadorCinesGDO prCines, ParamsConexionBD p, Provincia prov, boolean usaTor){
 		System.out.println("Procesando los cines. Por favor, espere...");
-		ProcesadorCinesGDO prCines=new ProcesadorCinesGDO(usaTor);
+		//ProcesadorCinesGDO prCines=new ProcesadorCinesGDO(usaTor);
+		prCines.setUsaTor(usaTor);
 		ArrayList<Cine> arrCines=prCines.getCines(prov);
 		introduceCine(arrCines, p);
 		System.out.println("Fin del procesado de cines.");
@@ -783,7 +797,47 @@ public class BD {
 		System.out.println("Fin del procesado de pases.");
 	}
 	
+	/**
+	 * Elimina la BBDD.
+	 * Precondición: La BBDD tiene que existir
+	 * @param p Parámetros de conexión. El usuario debe tener permisos de eliminación de la BBDD.
+	 */
+	/*public void borraBBDD(ParamsConexionBD p){
+		//String consulta="DROP SCHEMA `ssii`";
+		String consulta="DROP TABLE IF EXISTS sesion, cine, actuan, descripcion" +
+				", dirigen, ciudad, pelicula, provincia, actualizado;";
+		Connection con=dameConexion(p);
+		try{
+			stmt=con.createStatement();
+			stmt.executeUpdate(consulta);
+		}catch (SQLException e) {
+			System.err.println("Error al eliminar la BBDD");
+			System.err.println(e.getMessage());
+			System.err.println(consulta);
+		}
+		desconecta();
+	}*/
 	
+	/**
+	 * Elimina las tablas de la bbdd y vuelve a crearlas, sin registros.
+	 * Precondición: La BBDD tiene que existir
+	 * @param p Parámetros de conexión. El usuario debe tener permisos de eliminación y creación de tablas.
+	 */
+	public void resetBBDD(ParamsConexionBD p){
+		String consulta="DROP TABLE IF EXISTS sesion, cine, actuan, descripcion" +
+				", dirigen, ciudad, pelicula, provincia, actualizado;";
+		Connection con=dameConexion(p);
+		try{
+			stmt=con.createStatement();
+			stmt.executeUpdate(consulta);
+		}catch (SQLException e) {
+			System.err.println("Error al eliminar la BBDD");
+			System.err.println(e.getMessage());
+			System.err.println(consulta);
+		}
+		creaTablas(p);
+		//desconecta();
+	}
 	
 	
 	
@@ -807,6 +861,7 @@ public class BD {
 			System.err.println(e.getMessage());
 			System.err.println(consulta);
 		}
+		desconecta();
 		return numCines;
 	}
 	
@@ -830,6 +885,7 @@ public class BD {
 			System.err.println(e.getMessage());
 			System.err.println(consulta);
 		}
+		desconecta();
 		return numPelis;
 	}
 	
@@ -854,6 +910,7 @@ public class BD {
 			System.err.println(e.getMessage());
 			System.err.println(consulta);
 		}
+		desconecta();
 		return numSesiones;
 	}
 	
