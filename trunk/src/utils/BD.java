@@ -818,6 +818,11 @@ public class BD {
 		desconecta();
 	}*/
 	
+	
+	
+	
+	
+	
 	/**
 	 * Elimina las tablas de la bbdd y vuelve a crearlas, sin registros.
 	 * Precondición: La BBDD tiene que existir
