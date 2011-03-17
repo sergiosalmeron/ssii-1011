@@ -2,6 +2,15 @@ package gui;
 
 import extractores.cines.ProcesadorCinesGDO;
 import extractores.peliculas.ProcesadorCarteleraGDO;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import tads.ModoFuncionamiento;
 import tads.ParamsConexionBD;
 import tads.ProvinciasGDO;
@@ -18,6 +27,7 @@ public class Logica implements Runnable {
 	private ProcesadorCinesGDO procCines;
 	private ParamsConexionBD params;
 	private final BD bd=new BD();
+	private static final String config="enlaces/config.txt";
 
 
 	
@@ -110,6 +120,78 @@ public class Logica implements Runnable {
 	
 	public boolean consultaEjecucionPendiente(){
 		return ((procCarte.getProvinciaRestantes()!=null)||(procCines.getProvinciaRestantes()!=null));
+	}
+
+
+	public void guardaParamsFuncionamiento(ModoFuncionamiento funcionamiento,
+			Provincia prov) {
+		
+		System.out.println("Guardando configuración de la ejecución parada...");
+		File fic = new File(config);
+		boolean ok=true;
+		if (fic.exists()){
+			fic.delete();
+		}try {
+			fic.createNewFile();
+			if (fic.exists()){
+				BufferedWriter bw = new BufferedWriter(new FileWriter(fic));
+				if (prov!=null)
+					bw.write(prov.toString()+"\n");
+				else
+					bw.write("todas\n");
+				bw.write(funcionamiento.toString()+"\n");
+				bw.close();
+			}
+		} catch (IOException e) {
+			ok=false;
+			System.err.println("Error exportanto la configuración de la ejecucion parada.");
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if (ok)
+			System.out.println("Finalizado con éxito el proceso de guardado de la configuración de la ejecución parada");
+		else
+			System.out.println("No se pudo guardar la configuración de la ejecución parada");
+	}
+		
+
+	/**
+	 * Pone en la interfaz el modo de funcionamiento en que estaba la aplicación cuando se paró una ejecución,
+	 * e informa si se estaba ejecutando sobre una provincia o sobre todas.
+	 * @return Cierto si estaba ejecutandose sobre todas las provincias, falso en caso contrario.
+	 */
+	public boolean cargaParamsFuncionamiento(){
+		File fic = new File(config);
+		boolean todas=false;
+		if (fic.exists()){
+			try {
+				BufferedReader bf = new BufferedReader(new FileReader(fic));
+				String modo;
+				String provincia;
+				provincia=bf.readLine();
+				if (provincia.equalsIgnoreCase("todas"))
+					todas=true;
+				modo=bf.readLine();
+				
+				if (modo.equalsIgnoreCase("PELI"))
+					interfaz.setPeli(true);
+				else if (modo.equalsIgnoreCase("CINE"))
+					interfaz.setCine(true);
+				else if (modo.equalsIgnoreCase("SESION"))
+					interfaz.setSesion(true);
+				else if (modo.equalsIgnoreCase("PROVINCIA"))
+					interfaz.setProvincia(true);
+				
+				bf.close();
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
+		}
+		return todas;
 	}
 
 }

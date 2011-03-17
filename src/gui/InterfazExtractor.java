@@ -7,6 +7,11 @@ import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -27,6 +32,7 @@ import javax.swing.JTextArea;
 import com.sun.jmx.trace.Trace;
 import com.sun.xml.internal.fastinfoset.tools.PrintTable;
 
+import tads.Cine;
 import tads.ModoFuncionamiento;
 import tads.ParamsConexionBD;
 import tads.ProvinciasGDO;
@@ -43,7 +49,7 @@ public class InterfazExtractor extends JFrame{
 	private JProgressBar progressBar;
 	private JLabel indicador,ultActCompleta,fechaUltActCompleta,
 			ultProvActualizada,provActualizada,pelis,cines,sesiones;
-	private JButton butInicio,butParada,butBorrarBD,butReiniciarBD,butContinua;
+	private JButton butInicio,butParada,butBorrarBD,butReiniciarBD,butContinua,butCrearBD;
 	private TransparentButton butActualizar;
 	private int totalExtracciones;
 	private ListenerGUI manejador;
@@ -218,7 +224,7 @@ public class InterfazExtractor extends JFrame{
 		
 		//Creación de botones
 		JPanel panelBotonesAdm=new JPanel(gbl);
-		butBorrarBD=new JButton("Borrar BD");
+		/*butBorrarBD=new JButton("Borrar BD");
 		butBorrarBD.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -228,7 +234,22 @@ public class InterfazExtractor extends JFrame{
 			}
 		});
 		cons=rellenaConstraints(1, 1, 1, 1, GridBagConstraints.WEST);
-		panelBotonesAdm.add(butBorrarBD,cons);
+		panelBotonesAdm.add(butBorrarBD,cons);*/
+		
+		
+		butCrearBD=new JButton("Crear BD");
+		butCrearBD.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				//TODO Poner un modal para preguntar antes de borrar la BBDD
+				final BD bd=new BD();
+				final ParamsConexionBD p=new ParamsConexionBD("userSSII","passSSII", "jdbc:mysql://localhost:3306/ssii");
+				bd.creaTablas(p);
+				System.out.println("¡No hace nada!");
+			}
+		});
+		cons=rellenaConstraints(1, 1, 1, 1, GridBagConstraints.WEST);
+		panelBotonesAdm.add(butCrearBD,cons);
 		
 		butReiniciarBD=new JButton("Eliminar entradas");
 		butReiniciarBD.addActionListener(new ActionListener(){
@@ -501,6 +522,7 @@ public class InterfazExtractor extends JFrame{
 		else{
 			JOptionPane.showMessageDialog(this, "La ejecución ha sido interrumpida");
 			configuraBotonesInterfaz(!ok);
+			this.logica.guardaParamsFuncionamiento(getFuncionamiento(),getProvinciaSeleccionada());
 			this.butInicio.setEnabled(true);
 			this.butParada.setEnabled(false);
 			this.butContinua.setEnabled(true);
@@ -513,8 +535,38 @@ public class InterfazExtractor extends JFrame{
 	public void continua(){
 		System.out.println("Debería estar continuando");
 		//Tengo que saber si son todas las provincias o solo la actual y si son cine, cartelera o ambos.
+		boolean todas;
+		todas=this.logica.cargaParamsFuncionamiento();
 		
-		
+		switch (this.funcionamiento) {
+		case PELI: 
+				if (!todas){//Sólo la prov actual, modo pelicula
+				}
+				else
+					//Todas las provincias, modo película
+			break;
+		case CINE: 
+			if (!todas){//Sólo la prov actual, modo cine
+			}
+			else
+				//Todas las provincias, modo cine
+		break;
+		case SESION: 
+			if (!todas){//Sólo la prov actual, modo sesion
+			}
+			else
+				//Todas las provincias, modo sesion
+		break;
+		case PROVINCIA: 
+			if (!todas){//Sólo la prov actual, modo provincia
+			}
+			else
+				//Todas las provincias, modo provincia
+		break;
+				
+		default:
+			break;
+		}
 		//Hay que llamar a los métodos que utilizan el fichero de texto, los get*Restantes.
 		//Estos métodos son de los procesadores(cartelera y cines). Hablar con Sergio porque igual
 		//hay que usar un helper(capa de cebolla) para ver cómo funcionan exactamente.
@@ -522,6 +574,7 @@ public class InterfazExtractor extends JFrame{
 	}
 	
 
+	
 	/**
 	 * Pone el modo a película, y si es actualizar o reiniciar valores de la provincia
 	 * @param actualizar Cierto si quiere actualizar, falso si quiere borrar los valores y volver a cargarlos 
@@ -577,6 +630,10 @@ public class InterfazExtractor extends JFrame{
 		else
 			return Provincia.values()[num];
 	}
+	
+	
+	
+	
 	
 
 }
