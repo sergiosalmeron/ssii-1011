@@ -456,7 +456,7 @@ public class BD {
 //			System.out.println(consultaID);
 			int codCine=0;
 			//No hago un while porque sólo hay un cine con esa Url
-			con=dameConexion(p);
+			//con=dameConexion(p);
 			rs=ejecuta(consultaID,con);
 		    try {
 				rs.next();
@@ -547,7 +547,7 @@ public class BD {
 	public void creaTablas(ParamsConexionBD p){
 		String consulta="";
 		String textAux="";
-		File f= new File("src/bbdd/crea_tablas_FK.sql");
+		File f= new File("src/bbdd/crea_tablas_usersFK.sql");
 		System.out.println("Creando base de datos desde el archivo "+f.getAbsolutePath().toString());
 		BufferedReader entrada=null;
 		//Leo el archivo de texto
@@ -574,7 +574,7 @@ public class BD {
 		System.out.println("Base de datos y tablas creadas con éxito");
 		desconecta();
 	}
-	
+
 	
 	/**
 	 * Crea un usuario con derechos totales sobre la base de datos
