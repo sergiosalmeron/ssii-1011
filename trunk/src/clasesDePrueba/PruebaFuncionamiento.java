@@ -11,8 +11,8 @@ public class PruebaFuncionamiento {
 
 	public static void main(String args[]){
 		BD bd= new BD();
-		//ParamsConexionBD p=new ParamsConexionBD("root", "ssiipass", "jdbc:mysql://localhost:3306/mysql");
-		ParamsConexionBD p=new ParamsConexionBD("root", "", "jdbc:mysql://localhost:3306/mysql");
+		ParamsConexionBD p=new ParamsConexionBD("root", "ssiipass", "jdbc:mysql://localhost:3306/mysql");
+		//ParamsConexionBD p=new ParamsConexionBD("root", "", "jdbc:mysql://localhost:3306/mysql");
 		ParamsConexionBD p2=new ParamsConexionBD("rootNuevo","passNuevo","jdbc:mysql://localhost:3306/ssii");
 		//Crea administrador
 		bd.creaNuevoAdministrador(p,p2);
@@ -36,7 +36,7 @@ public class PruebaFuncionamiento {
 		
 		
 		//Bucle que actualiza todas las provincias
-		Provincia[] arrProv=ProvinciasGDO.Provincia.values();
+		/*Provincia[] arrProv=ProvinciasGDO.Provincia.values();
 		ProcesadorCinesGDO prCines=new ProcesadorCinesGDO();
 		ProcesadorCarteleraGDO prPelis=new ProcesadorCarteleraGDO();
 		for (ProvinciasGDO.Provincia prov : arrProv) {
@@ -45,7 +45,7 @@ public class PruebaFuncionamiento {
 				int a=3;
 				a++;
 			}
-		}
+		}*/
 		
 	}
 }

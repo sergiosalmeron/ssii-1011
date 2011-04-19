@@ -1,7 +1,6 @@
 CREATE DATABASE  IF NOT EXISTS `ssii` /*!40100 DEFAULT CHARACTER SET utf8 */;
 USE `ssii`;
 
-
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
@@ -21,7 +20,7 @@ CREATE TABLE `actualizado` (
   `tabla` varchar(11) NOT NULL,
   `fecha` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`tabla`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Tabla que guarda cuÃ¡ndo fuÃ© actualizada cada tabla por Ãºltim';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Tabla que guarda cuándo fué actualizada cada tabla por últim';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 
@@ -41,7 +40,7 @@ CREATE TABLE `pelicula` (
   PRIMARY KEY (`ID`),
   UNIQUE KEY `Url_UNIQUE` (`Url`),
   KEY `TITULO_PELI` (`Titulo`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='InformaciÃ³n de las pelÃ­culas. Id, TÃ­tulo, AÃ±o, GÃ©nero, Durac';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Información de las películas. Id, Título, Año, Género, Durac';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 
@@ -77,7 +76,7 @@ CREATE TABLE `descripcion` (
   PRIMARY KEY (`IDPelicula`),
   KEY `DESCRIPCION_PELICULA` (`IDPelicula`),
   CONSTRAINT `DESCRIPCION_PELICULA` FOREIGN KEY (`IDPelicula`) REFERENCES `pelicula` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='DescripciÃ³n (sinopsis) de la pelicula';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Descripción (sinopsis) de la pelicula';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 
@@ -94,7 +93,7 @@ CREATE TABLE `sesion` (
   KEY `CINE_EXHIBIDO` (`IDCine`),
   CONSTRAINT `CINE_EXHIBIDO` FOREIGN KEY (`IDCine`) REFERENCES `cine` (`ID`) ON UPDATE CASCADE,
   CONSTRAINT `PELI_EXHIBIDA` FOREIGN KEY (`IDPelicula`) REFERENCES `pelicula` (`ID`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Relaciona pelÃ­culas con los cines en que se exhiben.';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Relaciona películas con los cines en que se exhiben.';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 
@@ -115,7 +114,7 @@ CREATE TABLE `cine` (
   KEY `CIUDAD_CINE` (`IDCiudad`),
   CONSTRAINT `CIUDAD_CINE` FOREIGN KEY (`IDCiudad`) REFERENCES `ciudad` (`ID`) ON UPDATE CASCADE,
   CONSTRAINT `PROV_CINE` FOREIGN KEY (`IDProvincia`) REFERENCES `provincia` (`ID`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='InformaciÃ³n de los cines. Nombre, DirecciÃ³n y Provincia';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Información de los cines. Nombre, Dirección y Provincia';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 DROP TABLE IF EXISTS `ciudad`;
@@ -128,7 +127,7 @@ CREATE TABLE `ciudad` (
   PRIMARY KEY (`ID`),
   KEY `CiudadProvincia` (`IDProvincia`),
   CONSTRAINT `CiudadProvincia` FOREIGN KEY (`IDProvincia`) REFERENCES `provincia` (`ID`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='InformaciÃ³n de las ciudades. ID, Nombre y Provincia en la que se encuentra';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Información de las ciudades. ID, Nombre y Provincia en la que se encuentra';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 DROP TABLE IF EXISTS `dirigen`;
@@ -140,7 +139,39 @@ CREATE TABLE `dirigen` (
   PRIMARY KEY (`IDPelicula`,`Director`),
   KEY `DIRIGEN_PELICULA` (`IDPelicula`),
   CONSTRAINT `DIRIGEN_PELICULA` FOREIGN KEY (`IDPelicula`) REFERENCES `pelicula` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Directores de pelÃ­culs.Generalmente es uno,pueden ser varios';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Directores de películs.Generalmente es uno,pueden ser varios';
+
+
+
+
+CREATE DATABASE  IF NOT EXISTS `usersFB` /*!40100 DEFAULT CHARACTER SET utf8 */;
+USE `usersFB`;
+
+
+DROP TABLE IF EXISTS `users`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `users` (
+  `ID` int(15) NOT NULL AUTO_INCREMENT,
+  `Nombre` varchar(50) NOT NULL,
+  `IDProvincia` int(11) DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  CONSTRAINT `PROV_USER` FOREIGN KEY (`IDProvincia`) REFERENCES `ssii`.`provincia` (`ID`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='ID, nombre y provincia de users registrados en la app de FB';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+DROP TABLE IF EXISTS `temperamentos`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `temperamentos` (
+  `IDUser` int(15) NOT NULL,
+  `TempGuardian` DECIMAL(6,4) NOT NULL,
+  `TempArtesano` DECIMAL(6,4) NOT NULL,
+  `TempIdealista` DECIMAL(6,4) NOT NULL,
+  `TempRacional` DECIMAL(6,4) NOT NULL,
+  PRIMARY KEY (`IDUser`),
+  CONSTRAINT `TEMP_USER` FOREIGN KEY (`IDUser`) REFERENCES `users` (`ID`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='ID y temperamentos de los usuarios';
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
