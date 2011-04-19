@@ -547,7 +547,7 @@ public class BD {
 	public void creaTablas(ParamsConexionBD p){
 		String consulta="";
 		String textAux="";
-		File f= new File("src/bbdd/crea_tablas_usersFK.sql");
+		File f= new File("src/bbdd/crea_tablas_FK.sql");
 		System.out.println("Creando base de datos desde el archivo "+f.getAbsolutePath().toString());
 		BufferedReader entrada=null;
 		//Leo el archivo de texto
