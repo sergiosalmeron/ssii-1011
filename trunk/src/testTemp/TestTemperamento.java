@@ -159,6 +159,27 @@ public class TestTemperamento {
 		return aux;
 	}
 	
+	public ArrayList<Double> dameArrayListResultado(){
+		ArrayList<Double> resultado=new ArrayList<Double>();
+		double total=preguntas.size();
+		for (Pregunta p: preguntas){
+			suma(p.dameResultado());
+		}
+		double a=(ar/total)*100;
+		resultado.add(a);
+		
+		a=(gu/total)*100;
+		resultado.add(a);
+		
+		a=(id/total)*100;
+		resultado.add(a);
+		
+		a=(ra/total)*100;
+		resultado.add(a);
+		
+		return resultado;
+	}
+	
 	private void suma(Temperamento t){
 		switch(t){
 		case Artesano: ar++; break;
