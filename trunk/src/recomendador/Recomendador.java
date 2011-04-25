@@ -4,10 +4,10 @@ import testTemp.Temperamento;
 
 public class Recomendador {
 	
-	private TablaGeneroTemperamento tabla;
+	private TablaGeneroTemperamento3 tabla;
 	
 	public Recomendador(){
-		tabla=new TablaGeneroTemperamento();
+		tabla=new TablaGeneroTemperamento3();
 	}
 	
 	public double getPuntuación(Usuario u, PeliGeneros p){
