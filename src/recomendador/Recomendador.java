@@ -10,7 +10,7 @@ public class Recomendador {
 		tabla=new TablaGeneroTemperamento3();
 	}
 	
-	public double getPuntuación(Usuario u, PeliGeneros p){
+	public double getPuntuacion(Usuario u, PeliGeneros p){
 		double artesano=u.getPorcentajeArtesano();
 		double idealista=u.getPorcentajeIdealista();
 		double guardian=u.getPorcentajeGuardian();
@@ -32,8 +32,54 @@ public class Recomendador {
 			aux=aux+racional*tabla.getValorTabla(genero, Temperamento.Racional);
 			acum=acum+porcentaje*aux;
 		}
-		return acum;
+		return acum*100;
+		
+	}
+	
+	public double getPuntuacionAnimo(Usuario u, PeliGeneros p, EstadosAnimo e) {
+		double puntuacion = 0;
+		double limite = 0.15;
+		switch (e) {
+		case Alegre:
+			if (p.getCantidadGenero(Generos.Comedia) > limite)
+				puntuacion =modificaPunt(puntuacion, u, p, p.getCantidadGenero(Generos.Comedia));
+			break;
+		case Triste:
+			if (p.getCantidadGenero(Generos.Drama) > limite)
+				puntuacion =modificaPunt(puntuacion, u, p, p.getCantidadGenero(Generos.Drama));
+			break;
+		case Sorprendido:
+			if (p.getCantidadGenero(Generos.Accion)>limite || p.getCantidadGenero(Generos.Aventuras)>limite){
+				puntuacion =modificaPunt(puntuacion, u, p, p.getCantidadGenero(Generos.Accion));
+				puntuacion =modificaPunt(puntuacion, u, p, p.getCantidadGenero(Generos.Aventuras));
+			}
+			break;
+		case Asustado:
+			if (p.getCantidadGenero(Generos.Terror)>limite || p.getCantidadGenero(Generos.Thriller)>limite){
+				puntuacion =modificaPunt(puntuacion, u, p, p.getCantidadGenero(Generos.Terror));
+				puntuacion =modificaPunt(puntuacion, u, p, p.getCantidadGenero(Generos.Thriller));
+			}
+			break;
+		case Relajado:
+			if (p.getCantidadGenero(Generos.Documental)>limite || p.getCantidadGenero(Generos.Romántica)>limite){
+				puntuacion =modificaPunt(puntuacion, u, p, p.getCantidadGenero(Generos.Documental));
+				puntuacion =modificaPunt(puntuacion, u, p, p.getCantidadGenero(Generos.Romántica));
+			}
+			break;
+
+		}
+		return puntuacion;
+	}
+
+	private double modificaPunt(double punt,Usuario u, PeliGeneros p, double cantidadGenero) {
+		double factor=1.2;
+		if (punt==0)
+			punt=getPuntuacion(u,p);
+		
+		return punt+(cantidadGenero*factor);
 		
 	}
 
+	
+	
 }
