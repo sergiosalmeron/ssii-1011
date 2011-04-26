@@ -18,6 +18,9 @@ public class PorcentajeGenero {
 		return porcentaje;
 	}
 	
+	public String toString(){
+		return genero+" "+porcentaje+"%; ";
+	}
 	
 	
 

@@ -37,6 +37,11 @@ public class Usuario {
 		return racional;
 	}
 	
+	public String toString(){
+		return nombre+" -> Artesano: "+artesano+"; Guardián: "+guardian+"; Idealista: "+idealista+"; Racional: "+racional;
+		
+	}
+	
 	
 
 }

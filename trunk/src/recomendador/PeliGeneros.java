@@ -29,6 +29,28 @@ public class PeliGeneros {
 		return generos.get(i).getGenero();
 	}
 	
+	public double getCantidadGenero(Generos g){
+		double cantidad=0;
+		int i=0;
+		boolean encontrado=false;
+		while (!encontrado && i<generos.size()){
+			if (g==generos.get(i).getGenero()){
+				cantidad=generos.get(i).getPorcentaje();
+				encontrado=true;
+			}
+			i++;
+		}
+		return cantidad;
+	}
+	
+	public String toString(){
+		String aux=titulo+"-> ";
+		for (PorcentajeGenero p: generos){
+			aux=aux+p;
+		}
+		return aux;
+	}
+	
 	
 
 }
