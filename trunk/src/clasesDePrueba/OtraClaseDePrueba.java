@@ -3,6 +3,7 @@ package clasesDePrueba;
 import java.io.IOException;
 import tads.ProvinciasGDO.Provincia;
 import extractores.cines.ProcesadorCinesGDO;
+import extractores.peliculas.ProcesadorCarteleraGDO;
 
 public class OtraClaseDePrueba {
 
@@ -19,12 +20,13 @@ public class OtraClaseDePrueba {
 				cines.addAll(procCines.getCines(provincias[i]));
 			//}
 		}*/
-		//ProcesadorCarteleraGDO a=new ProcesadorCarteleraGDO();
+		ProcesadorCarteleraGDO a=new ProcesadorCarteleraGDO();
+		a.getPeliculas(Provincia.palencia);
 		//a.getPeliculasRestantes(null);
 		
-		ProcesadorCinesGDO a = new ProcesadorCinesGDO();
+		//ProcesadorCinesGDO a = new ProcesadorCinesGDO();
 		//a.getCines(Provincia.granada);
-		a.getCines(Provincia.granada);
+		//a.getCines(Provincia.granada);
 		//a.getCinesRestantes(Provincia.granada);
 	}
 	

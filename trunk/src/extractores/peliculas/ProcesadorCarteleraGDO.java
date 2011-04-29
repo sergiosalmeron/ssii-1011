@@ -1,14 +1,18 @@
 package extractores.peliculas;
 
+import java.awt.Image;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -38,7 +42,9 @@ public class ProcesadorCarteleraGDO implements ProcesadorCartelera{
 	private BD bd;
 	private ParamsConexionBD p;
 	
+	private static final String urlBase="http://www.guiadelocio.com/";
 	private static final String toDos="enlaces/pelis.txt";
+	private static final String dirImgs="carteles/";
 	
 
 	
@@ -154,9 +160,9 @@ public class ProcesadorCarteleraGDO implements ProcesadorCartelera{
 		Source source=null;
 		try {
 			if (usandoTor)
-				direccion = ConecTor.getURL("http://www.guiadelocio.com/cartelera/"+ProvinciasGDO.getCodigo(provincia)+"?vista=3");
+				direccion = ConecTor.getURL(urlBase+"cartelera/"+ProvinciasGDO.getCodigo(provincia)+"?vista=3");
 			else
-				direccion = new URL("http://www.guiadelocio.com/cartelera/"+ProvinciasGDO.getCodigo(provincia)+"?vista=3");
+				direccion = new URL(urlBase+"cartelera/"+ProvinciasGDO.getCodigo(provincia)+"?vista=3");
 			source=new Source(direccion);
 		} catch (MalformedURLException e) {
 			return null;
@@ -222,6 +228,9 @@ public class ProcesadorCarteleraGDO implements ProcesadorCartelera{
 		Pelicula peli=creaPelicula(titulo, procesaInfoPelicula(source));
 		peli.setDirWeb(direccion.toString());
 		setSinopsis(peli, source);
+		
+		peli.setRutaImg(getImagen(peli.getTitulo(), source));
+		
 		return peli;
 	}
 	
@@ -366,6 +375,38 @@ public class ProcesadorCarteleraGDO implements ProcesadorCartelera{
 		}
 	}
 	
+	private String getImagen(String ident, Source source){
+		String urlImg = source.getFirstElementByClass("ftl shadow").getFirstElement("img").getAttributeValue("src");// .getElementById("main-content").getFirstElement("h2").getTextExtractor().toString();
+		String[] aaa=urlImg.split("/");
+		String nombreFichero=aaa[aaa.length-1];
+		try{
+			downloadImagen(urlBase+urlImg, nombreFichero);
+			return dirImgs+nombreFichero;
+		}catch (Exception e){
+			return "";
+		}		
+	}
+	
+	private void downloadImagen(String urlIm, String titulo) throws IOException {
+			URL url=null;
+			if (usandoTor)
+				url = ConecTor.getURL(urlIm);
+			else
+				url = new URL(urlIm);
+			URLConnection urlCon = (URLConnection) url.openConnection();
+			InputStream is = urlCon.getInputStream();
+			FileOutputStream fos = new FileOutputStream(dirImgs+titulo);
+			byte[] array = new byte[1000]; // buffer temporal de lectura.
+			int leido = is.read(array);
+			while (leido > 0) {
+				fos.write(array, 0, leido);
+				leido = is.read(array);
+			}
+			is.close();
+			fos.close();
+	}
+	
+	
 	public void paralo(){
 		stop=true;
 	}
@@ -442,6 +483,8 @@ public class ProcesadorCarteleraGDO implements ProcesadorCartelera{
 		}
 		return resultado;
 	}
+	
+	
 
 
 	

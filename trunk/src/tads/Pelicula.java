@@ -19,7 +19,16 @@ public class Pelicula {
 	//Si es -1: película pendiente de calificar
 	private int calificacion;
 	private String sinopsis;
+	private String rutaImg;
 	
+	public String getRutaImg() {
+		return rutaImg;
+	}
+
+	public void setRutaImg(String rutaImg) {
+		this.rutaImg = rutaImg;
+	}
+
 	public String getSinopsis() {
 		return sinopsis;
 	}
