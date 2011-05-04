@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 import recomendador.Generos;
 import recomendador.PeliGeneros;
+import recomendador.Usuario;
 import tads.Cine;
 import tads.ParamsConexionBD;
 import tads.Pelicula;
@@ -119,6 +120,35 @@ public class BD {
 			System.err.println(e.getMessage());
 		}
 	}
+	
+	
+	//TODO Arreglar esto para no tener un método igual
+	/**
+	 * Crea un usuario con privilegios de seleccionar, insertar, actualizar y
+	 * borrar registros en la base de datos.
+	 * No puede crear ni eliminar tablas.
+	 * @param p Parámetros de conexión a la base de datos. Debe tener permiso de crear y otorgar derechos a otros usuarios.
+	 * @param newUser String con el login del nuevo usuario
+	 * @param newPass String con la contraseña del nuevo usuario
+	 */
+	public void creaUserDerechosFB(ParamsConexionBD p, String newUser, String newPass){
+		System.out.println("Creando usuario con derechos para la base de datos SSII");
+		Connection con=dameConexion(p);
+		try{
+			stmt=con.createStatement();
+			String consulta="GRANT SELECT,INSERT,UPDATE,DELETE" +
+            " ON USERSFB.* TO '"+newUser+"'@'localhost'"+
+            "IDENTIFIED BY '"+newPass+"';";
+			stmt.executeUpdate(consulta);
+			System.out.println("Usuario creado");
+			desconecta();
+		}catch (SQLException e){
+			System.err.println("Fallo al crear el usuario "+newUser+" con privilegios" +
+					"para seleccionar, insertar, actualizar y borrar registros");
+			System.err.println(e.getMessage());
+		}
+	}
+	
 	
 	
 	/**
@@ -1010,8 +1040,79 @@ public class BD {
 			//System.out.println(consulta);
 		}
 		b.desconecta();
-			
 	}
+
+	
+	//Dado un id de usuario, devuelve su id y su temperamento
+	public static Usuario dameUsuario(String userID){
+		Usuario u;
+		ParamsConexionBD params=new ParamsConexionBD("userfb","ssiipass", "jdbc:mysql://localhost:3306/usersfb");
+		//ParamsConexionBD params=new ParamsConexionBD("userSSII","passSSII", "jdbc:mysql://localhost:3306/ssii");
+		BD b=new BD();
+		Connection con=b.dameConexion(params);
+		String consulta="SELECT * FROM TEMPERAMENTOS WHERE IDUSER='"+userID+"';";
+		try{
+			ResultSet rs;
+			Statement stmt=con.createStatement();
+			rs=stmt.executeQuery(consulta);
+			double guardian = 0, artesano = 0,racional = 0,idealista = 0;
+			if (rs.next()){
+				guardian=rs.getDouble("TempGuardian");
+				artesano=rs.getDouble("TempArtesano");
+				idealista=rs.getDouble("TempIdealista");
+				racional=rs.getDouble("TempRacional");
+			}
+			u=new Usuario(userID,artesano,idealista,guardian,racional);
+		}catch (SQLException e) {
+			System.err.println("Error al consultar el temperamento del usuario");
+			System.err.println(e.getMessage());
+			System.err.println(consulta);
+			u=new Usuario("-1",0,0,0,0);
+		}
+		b.desconecta();
+		return u;
+	}
+	
+	
+	//Devuelve la tabla de películas con sus género
+	public static ArrayList<PeliGeneros> dameTablaGeneros(){
+		ArrayList<PeliGeneros> arrPeliculas=new ArrayList<PeliGeneros>();
+		ParamsConexionBD params=new ParamsConexionBD("userSSII","passSSII", "jdbc:mysql://localhost:3306/ssii");
+		BD b=new BD();
+		Connection con=b.dameConexion(params);
+		String consulta="SELECT * FROM GENEROPELICULA;";
+		String idPeli="";
+		double valor;
+		Generos genero=null;
+		try{
+			ResultSet rs;
+			Statement stmt=con.createStatement();
+			rs=stmt.executeQuery(consulta);
+			while (rs.next()){
+				idPeli=rs.getString("IDPelicula");
+				PeliGeneros p=new PeliGeneros(idPeli);
+				for (int i=2;i<13;i++){
+					valor=rs.getDouble(i);
+					if (valor!=0){
+						genero=Generos.getGenero(i-2);
+						p.addGenero(genero, valor);
+					}
+				}
+				arrPeliculas.add(p);
+			}
+		}catch (SQLException e) {
+			System.err.println("Error al consultar la tabla de géneros");
+			System.err.println(e.getMessage());
+			System.err.println(consulta);
+		}
+		b.desconecta();
+		return arrPeliculas;
+	}
+
+	
+	
+	
+	
 	
 
 }//clase
