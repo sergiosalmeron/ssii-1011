@@ -17,6 +17,12 @@ public class PeliGeneros {
 		generos.add(p);
 	}
 	
+	
+	
+	public String getTitulo() {
+		return titulo;
+	}
+
 	public int getCantidadGeneros(){
 		return generos.size();
 	}

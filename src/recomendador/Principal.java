@@ -11,7 +11,7 @@ public class Principal {
 		PeliGeneros p=new PeliGeneros("Película Documental");
 		p.addGenero(Generos.Comedia, 0.6);
 		p.addGenero (Generos.Accion, 0.3);
-		p.addGenero(Generos.Romántica, 0.1);
+		p.addGenero(Generos.Romantica, 0.1);
 		
 		//Usuario u=new Usuario("Aleix", 0.3125, 0.375, 0.0625, 0.25);
 		Usuario u=new Usuario("Mr. Patata", 0.01, 0.1, 0.04, 0.85);

@@ -136,17 +136,17 @@ DROP TABLE IF EXISTS `generoPelicula`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `generoPelicula` (
   `IDPelicula` int(11) NOT NULL AUTO_INCREMENT,
-  `Accion` DECIMAL(6,4) NOT NULL,
-  `Animacion` DECIMAL(6,4) NOT NULL,
-  `Aventuras` DECIMAL(6,4) NOT NULL,
-  `Comedia` DECIMAL(6,4) NOT NULL,
-  `Documental` DECIMAL(6,4) NOT NULL,
-  `Drama` DECIMAL(6,4) NOT NULL,
-  `Fantastica` DECIMAL(6,4) NOT NULL,
-  `Romantica` DECIMAL(6,4) NOT NULL,
-  `Terror` DECIMAL(6,4) NOT NULL,
-  `Thriller` DECIMAL(6,4) NOT NULL,
-  `CienciaFiccion` DECIMAL(6,4) NOT NULL,
+  `Accion` DECIMAL(6,4) NOT NULL DEFAULT '0',
+  `Animacion` DECIMAL(6,4) NOT NULL DEFAULT '0',
+  `Aventuras` DECIMAL(6,4) NOT NULL DEFAULT '0',
+  `Comedia` DECIMAL(6,4) NOT NULL DEFAULT '0',
+  `Documental` DECIMAL(6,4) NOT NULL DEFAULT '0',
+  `Drama` DECIMAL(6,4) NOT NULL DEFAULT '0',
+  `Fantasia` DECIMAL(6,4) NOT NULL DEFAULT '0',
+  `Romantica` DECIMAL(6,4) NOT NULL DEFAULT '0',
+  `Terror` DECIMAL(6,4) NOT NULL DEFAULT '0',
+  `Thriller` DECIMAL(6,4) NOT NULL DEFAULT '0',
+  `CienciaFiccion` DECIMAL(6,4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`IDPelicula`),
   CONSTRAINT `PELI_GENERO` FOREIGN KEY (`IDPelicula`) REFERENCES `pelicula` (`ID`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Relación de cada película con los géneros.';
