@@ -11,6 +11,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import recomendador.Generos;
+import recomendador.PeliGeneros;
 import tads.Cine;
 import tads.ParamsConexionBD;
 import tads.Pelicula;
@@ -942,4 +944,74 @@ public class BD {
 		return numSesiones;
 	}
 	
+	public static ArrayList<String> damePeliculas(){
+		//TODO meter provincia
+		ParamsConexionBD params=new ParamsConexionBD("userSSII","passSSII", "jdbc:mysql://localhost:3306/ssii");
+		BD b=new BD();
+		Connection con=b.dameConexion(params);
+		//int numProvincia=p.ordinal();
+		//String consulta="SELECT d.IDPelicula, d.Descripcion FROM PELICULA p, DESCRIPCION d " +
+			//	"WHERE p.ID=d.IDPelicula";
+		String consulta="SELECT d.IDPelicula, d.Descripcion FROM ssii.DESCRIPCION d;";
+		int IDPeli=0;
+		String desc;
+		ArrayList<String> arrayDevolucion=new ArrayList<String>();
+		try{
+			ResultSet rs;
+			Statement stmt=con.createStatement();
+			rs=stmt.executeQuery(consulta);
+			while (rs.next()){
+				IDPeli=rs.getInt(1);
+				desc=rs.getString(2);
+				String pelitotal=new String(IDPeli+">"+desc);
+				System.out.println(pelitotal);
+				arrayDevolucion.add(pelitotal);
+			}
+		}catch (SQLException e) {
+			System.err.println("Error al consultar el número de sesiones existente");
+			System.err.println(e.getMessage());
+			System.err.println(consulta);
+		}
+		b.desconecta();
+		return arrayDevolucion;
+	}
+	
+	public static void introduceGenerosPelicula(ArrayList<PeliGeneros> arrPelis){
+		ParamsConexionBD params=new ParamsConexionBD("userSSII","passSSII", "jdbc:mysql://localhost:3306/ssii");
+		BD b=new BD();
+		Connection con=b.dameConexion(params);
+		String consulta;
+		String idPelicula;
+		for (PeliGeneros peliGeneros : arrPelis) {
+			int numGenerosPeli=peliGeneros.getCantidadGeneros();
+			idPelicula=peliGeneros.getTitulo();
+			String generosString="";
+			String valuesString="";
+			for (int i=0;i<numGenerosPeli;i++){
+				generosString=generosString+","+peliGeneros.getGenero(i).toString();
+				valuesString=valuesString+","+Double.toString(peliGeneros.getPorcentaje(i));
+			}
+			//int lastComa=valuesString.lastIndexOf(',');
+			valuesString=valuesString.substring(1);
+			//lastComa=generosString.lastIndexOf(',');
+			generosString=generosString.substring(1);
+			consulta="INSERT INTO generopelicula("+generosString+") VALUES ("+
+			valuesString+");";
+			try{
+				Statement stmt;
+				stmt=con.createStatement();
+				stmt.executeUpdate(consulta);
+			}catch (SQLException e) {
+				System.err.println("Error al insertar los generos de peliculas");
+				System.err.println(e.getMessage());
+				System.err.println(consulta);
+			}
+			
+			//System.out.println(consulta);
+		}
+		b.desconecta();
+			
+	}
+	
+
 }//clase

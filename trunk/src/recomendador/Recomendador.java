@@ -61,9 +61,9 @@ public class Recomendador {
 			}
 			break;
 		case Relajado:
-			if (p.getCantidadGenero(Generos.Documental)>limite || p.getCantidadGenero(Generos.Romántica)>limite){
+			if (p.getCantidadGenero(Generos.Documental)>limite || p.getCantidadGenero(Generos.Romantica)>limite){
 				puntuacion =modificaPunt(puntuacion, u, p, p.getCantidadGenero(Generos.Documental));
-				puntuacion =modificaPunt(puntuacion, u, p, p.getCantidadGenero(Generos.Romántica));
+				puntuacion =modificaPunt(puntuacion, u, p, p.getCantidadGenero(Generos.Romantica));
 			}
 			break;
 

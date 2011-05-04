@@ -16,8 +16,8 @@ public class TablaGeneroTemperamento {
 		meteGenero(Generos.Comedia,0.25,0.25,0.3167,0.1833);
 		meteGenero(Generos.Documental,0.1167,0.3667,0.2,0.3167);
 		meteGenero(Generos.Drama,0.1,0.3167,0.35,0.2333);
-		meteGenero(Generos.Fantasía,0.3,0.2267,0.3,0.1733);
-		meteGenero(Generos.Romántica,0.1333,0.2833,0.4,0.1833);
+		meteGenero(Generos.Fantasia,0.3,0.2267,0.3,0.1733);
+		meteGenero(Generos.Romantica,0.1333,0.2833,0.4,0.1833);
 		meteGenero(Generos.Terror,0.3167,0.24,0.2433,0.2);
 		meteGenero(Generos.Thriller,0.1333,0.3833,0.2833,0.2);
 		meteGenero(Generos.CienciaFiccion,0.1,0.2167,0.2833,0.4);
