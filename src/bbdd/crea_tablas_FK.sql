@@ -37,6 +37,7 @@ CREATE TABLE `pelicula` (
   `Calificacion` varchar(45) DEFAULT 'No disponible',
   `Nacionalidad` varchar(45) DEFAULT 'No disponible',
   `Url` varchar(150) NOT NULL,
+  `RutaImg` varchar(150) NOT NULL,
   PRIMARY KEY (`ID`),
   UNIQUE KEY `Url_UNIQUE` (`Url`),
   KEY `TITULO_PELI` (`Titulo`) USING BTREE
@@ -129,6 +130,28 @@ CREATE TABLE `ciudad` (
   CONSTRAINT `CiudadProvincia` FOREIGN KEY (`IDProvincia`) REFERENCES `provincia` (`ID`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Información de las ciudades. ID, Nombre y Provincia en la que se encuentra';
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+DROP TABLE IF EXISTS `generoPelicula`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `generoPelicula` (
+  `IDPelicula` int(11) NOT NULL AUTO_INCREMENT,
+  `Accion` DECIMAL(6,4) NOT NULL,
+  `Animacion` DECIMAL(6,4) NOT NULL,
+  `Aventuras` DECIMAL(6,4) NOT NULL,
+  `Comedia` DECIMAL(6,4) NOT NULL,
+  `Documental` DECIMAL(6,4) NOT NULL,
+  `Drama` DECIMAL(6,4) NOT NULL,
+  `Fantastica` DECIMAL(6,4) NOT NULL,
+  `Romantica` DECIMAL(6,4) NOT NULL,
+  `Terror` DECIMAL(6,4) NOT NULL,
+  `Thriller` DECIMAL(6,4) NOT NULL,
+  `CienciaFiccion` DECIMAL(6,4) NOT NULL,
+  PRIMARY KEY (`IDPelicula`),
+  CONSTRAINT `PELI_GENERO` FOREIGN KEY (`IDPelicula`) REFERENCES `pelicula` (`ID`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Relación de cada película con los géneros.';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
 
 DROP TABLE IF EXISTS `dirigen`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
