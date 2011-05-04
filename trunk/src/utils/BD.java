@@ -182,8 +182,12 @@ public class BD {
 		String calificacion=calculaCalificacion(peli.getCalificacion());
 		String nacionalidad=peli.getNacionalidad();
 		String url=peli.getDirWeb();
-		String consulta="INSERT INTO pelicula (Titulo,Anyo,Genero,Duracion,Calificacion,Nacionalidad,Url)" +
-				" VALUES ('"+titulo+"','"+anyo+"','"+genero+"','"+durString+"','"+calificacion+"','"+nacionalidad+"','"+url+"');";
+		String rutaImg=peli.getRutaImg();
+//		System.out.println(rutaImg);
+		
+		String consulta="INSERT INTO pelicula (Titulo,Anyo,Genero,Duracion,Calificacion,Nacionalidad,Url,RutaImg)" +
+				" VALUES ('"+titulo+"','"+anyo+"','"+genero+"','"+durString+"','"+calificacion+
+				"','"+nacionalidad+"','"+url+"','"+rutaImg+"');";
 //		System.out.println(consulta);
 		boolean introducida=false;
 		try{
@@ -252,35 +256,50 @@ public class BD {
 			}
 			}
 			
+			/*TODO Falta por introducir los géneros de la película.
+			 * Se haría aquí, al terminar, o justo después de los actores.
+			 * Sería interesante hacerlo con un thread aparte, para hacer la llamada al evaluador(JColibri)
+			 * en ese hilo, y al volver, introducirlo. Para eso igual hace falta otro usuario.
+			 * Dejo escrito el insert.
+			 * String consulta="INSERT INTO generopelicula (IDPelicula,Accion,Animacion,
+			 * Aventuras,Comedia,Documental,Drama,Fantastica,Romantica,Terror,Thriller,CienciaFiccion)" +
+				" VALUES ('"+codPelicula+"','"+accion+"','"+animacion+"','"+aventuras+"','"+comedia+
+				"','"+documental+"','"+drama+"','"+fantastica+"','"+romantica+
+				"','"+terror+"','"+thriller+"','"+cienciaFiccion+"');";
+			 */
+			
+			
 			//Introduzco los actores
 			//TODO Estoy suponiendo que existen actores...
 			if (peli.getDirector()!=null){
-			String actoresAux=peli.getInterpretes();
-			String[] actores;
-			if (actoresAux!=null){
-				actoresAux=actoresAux.replaceAll(" y ", ", ");
-				actores=actoresAux.split(", ");
-			}
-			else	
-				actores=new String[0];
-
-			
-			consulta="INSERT INTO Actuan (IDPelicula, Actor)" +
-			" VALUES ('"+codPelicula+"','";
-			try {
-				for (int i=0;i<actores.length;i++){
-					String consultaAux=consulta+actores[i]+"');";
-//					System.out.println(consultaAux);
-					con.createStatement().executeUpdate(consultaAux);
+				String actoresAux=peli.getInterpretes();
+				String[] actores;
+				if (actoresAux!=null){
+					actoresAux=actoresAux.replaceAll(" y ", ", ");
+					actores=actoresAux.split(", ");
 				}
-				actualizaFechaTabla(con, "Actuan");
-				exito=true;
-			}catch (SQLException e) {
-				System.err.println("Error al insertar los actores de la película "+titulo);
-				System.err.println(e.getMessage());
-//				System.err.println(consulta);
-			}}
+				else	
+					actores=new String[0];
+	
+				
+				consulta="INSERT INTO Actuan (IDPelicula, Actor)" +
+				" VALUES ('"+codPelicula+"','";
+				try {
+					for (int i=0;i<actores.length;i++){
+						String consultaAux=consulta+actores[i]+"');";
+	//					System.out.println(consultaAux);
+						con.createStatement().executeUpdate(consultaAux);
+					}
+					actualizaFechaTabla(con, "Actuan");
+					exito=true;
+				}catch (SQLException e) {
+					System.err.println("Error al insertar los actores de la película "+titulo);
+					System.err.println(e.getMessage());
+	//				System.err.println(consulta);
+				}
+			}
 		}
+		
 		return exito;
 	}
 	
@@ -432,14 +451,36 @@ public class BD {
 		Connection con;
 		ArrayList<Proyeccion> arrProyecciones=cine.getPases();
 		con=dameConexion(p);
+		//Saco el ID del cine al que voy a meter los pases. Lo hago fuera porque es igual para toads las películas.		
+		String urlCine=cine.getDirWebGDO();
+		String consultaID="SELECT ID FROM cine WHERE Url='"+urlCine+"';";
+//		System.out.println(consultaID);
+		int codCine=0;
+		//No hago un while porque sólo hay un cine con esa Url
+		//con=dameConexion(p);
+		ResultSet rs=ejecuta(consultaID,con);
+	    try {
+			rs.next();
+			codCine= rs.getInt("ID");
+		} catch (SQLException e) {
+			System.err.println("Fallo al sacar el ID del cine mientras se introducían " +
+					"las proyecciones del cine "+cine.getNombre()+" de la provincia "+cine.getProvincia());
+			System.err.println(e.getMessage());
+			System.err.println(consultaID);
+		}
+//		System.out.println("ID de cine: "+codCine);
+		
+		/*TODO Ahora debería hacer una transacción que elimine las proyecciones de este cine que estén en
+		la BBDD e introduzca a continuación todas estas.*/
+		
 		for (Proyeccion proyeccion : arrProyecciones) {
 			//Saco el ID de la película a la que voy a meter los pases
 			String urlPeli=proyeccion.getDirWebPelicula();
-			String consultaID="SELECT ID FROM pelicula WHERE Url='"+urlPeli+"';";
+			consultaID="SELECT ID FROM pelicula WHERE Url='"+urlPeli+"';";
 //			System.out.println(consultaID);
 			int codPeli=0;
 			//No hago un while porque sólo hay una pelicula con esa Url
-			ResultSet rs=ejecuta(consultaID,con);
+			rs=ejecuta(consultaID,con);
 		    try {
 				rs.next();
 				codPeli= rs.getInt("ID");
@@ -450,24 +491,6 @@ public class BD {
 			}
 //			System.out.println("ID de película: "+codPeli);
 			
-			//Saco el ID del cine al que voy a meter los pases
-			String urlCine=cine.getDirWebGDO();
-			consultaID="SELECT ID FROM cine WHERE Url='"+urlCine+"';";
-//			System.out.println(consultaID);
-			int codCine=0;
-			//No hago un while porque sólo hay un cine con esa Url
-			//con=dameConexion(p);
-			rs=ejecuta(consultaID,con);
-		    try {
-				rs.next();
-				codCine= rs.getInt("ID");
-			} catch (SQLException e) {
-				System.err.println("Fallo al sacar el ID del cine mientras se introducían " +
-						"las proyecciones del cine "+cine.getNombre()+" de la provincia "+cine.getProvincia());
-				System.err.println(e.getMessage());
-				System.err.println(consultaID);
-			}
-//			System.out.println("ID de cine: "+codCine);
 			
 			//E inserto en la BBDD
 			if (codCine!=0 && codPeli!=0){
