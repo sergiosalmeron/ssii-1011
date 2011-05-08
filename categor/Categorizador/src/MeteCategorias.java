@@ -53,8 +53,10 @@ public class MeteCategorias {
 			} catch (ExecutionException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
+				System.err.println("Error en la peli "+id);
 			}
 			String s2=c.getCategoriaAsignada();
+			s2=s2.replace("No se ha encontrado ninguna", "Acción 0% Fantasia 0");
 			trataAsignadas(id, s2, pG);
 			for (PeliGeneros pelicul: pG){
 				System.out.println(pelicul);

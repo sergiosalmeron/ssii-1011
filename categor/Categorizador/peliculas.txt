@@ -36,35 +36,35 @@ Durante la invasión de Normandía, en plena Segunda Guerra Mundial, a un grupo de
 <pelicula>
 El mago de Oz
 <genero>
-Aventura
+Aventuras
 Fantasía
 <sinopsis>
 Dorothy anhela viajar "más allá del arco iris" a una tierra diferente, y su deseo se hace realidad cuando un tornado se la lleva con su perrito al mundo de Oz. Pero la aventura sólo acaba de comenzar; Dorothy, tras ofender a la Malvada Bruja del Oeste (Margaret Hamilton), y por sugerencia de la Bruja Buena del Norte, (Billie Burke), se dirige por el camino amarillo hacia la Ciudad Esmeralda, donde vive el todopoderoso Mago de Oz, que puede ayudar a la niña a regresar a Kansas. Por el camino, se hace amiga del Espantapájaros (Ray Bolger), el Hombre de Hojalata (Jack Haley) y el León Cobarde (Bert Lahr). El Espantapájaros ansía un cerebro, el Hombre de Hojalata quiere un corazón y el León desea el coraje que le falta; como creen que el Mago les puede ayudar a ellos también, deciden unirse a Dorothy en su odisea hasta la Ciudad Esmeralda.
 <pelicula>
 Regreso al futuro
 <genero>
-Aventura
+Aventuras
 CienciaFiccion
 <sinopsis>
 El adolescente Marty McFly es amigo de Doc, un científico al que todos toman por loco. Cuando Doc crea una máquina para viajar en el tiempo, un error fortuito hace que Marty llegue a 1955, año en el que sus futuros padres aún no se habían conocido. Después de impedir su primer encuentro, deberá conseguir que se conozcan y se casen; de lo contrario, su existencia no sería posible.
 <pelicula>
 Los siete samuráis
 <genero>
-Aventura
+Aventuras
 Drama
 <sinopsis>
 En el Japón del siglo XVI, los campesinos de un pueblo deciden contratar a siete samuráis para que los protejan de una banda de ladrones que se llevan sus cosechas.
 <pelicula>
 Lawrence de Arabia
 <genero>
-Aventura
+Aventuras
 Drama
 <sinopsis>
 El Cairo, 1917. Durante la Gran Guerra, un conflictivo y enigmático oficial británico, T.E. Lawrence, es enviado al desierto para participar en la campaña de ayuda a Arabia contra Turquía. Y, junto a su amigo Sherif Alí, pondrá en esta misión todo su empeño. Los nativos consideran a Lawrence un amante del desierto y del pueblo árabe. En cambio, sus superiores británicos creen que se ha vuelto loco. Cuando los planes de Lawrence se ven coronados por el éxito, su sueño de una Arabia independiente fracasará.
 <pelicula>
 Alien El octavo pasajero
 <genero>
-Aventura
+Aventuras
 Terror
 CienciaFiccion
 <sinopsis>
@@ -73,7 +73,7 @@ De regreso a la Tierra, la nave de carga Nostromo interrumpe su viaje y despiert
 Los viajes de Sullivan
 <genero>
 Comedia
-Aventura
+Aventuras
 <sinopsis>
 El director de cine John L. Sullivan sueña con rodar una película que aborde el sufrimiento de los menesterosos, así que convence a los ejecutivos del estudio de que le permitan recorrer el país disfrazado de vagabundo. Después de trabajar como peón para una viuda que tiene pensado para él algo más que cortar leña, se escabulle de casa de ésta por la noche, pero el camión que le recoge le lleva de vuelta a Hollywood. Frustrado por su fracaso, Sully entra en una cafetería y conoce a una actriz rubia, que decide vestirse de hombre y unirse a él en el experimento, viviendo como auténticos vagabundos.
 <pelicula>
@@ -156,7 +156,7 @@ Año 1838. En la ciudad de Wisborg viven felices el joven Hutter y su mujer Ellen
 Avatar
 <genero>
 Fantasía
-Aventura
+Aventuras
 <sinopsis>
 Año 2154. Jake Sully (Sam Worthington), un ex-marine condenado a vivir en una silla de ruedas, sigue siendo, a pesar de ello, un auténtico guerrero. Precisamente por ello ha sido designado para ir a Pandora, donde algunas empresas están extrayendo un mineral extraño que podría resolver la crisis energética de la Tierra. Para contrarrestar la toxicidad de la atmósfera de Pandora, se ha creado el programa Avatar, gracias al cual los humanos "conductores" mantienen sus conciencias unidas a un avatar: un cuerpo biológico controlado de forma remota que puede sobrevivir en el aire letal. Esos cuerpos han sido creados con ADN humano, mezclado con ADN de los nativos de Pandora, los Na'vi. Convertido en avatar, Jake puede caminar otra vez. Su misión consiste en infiltrarse entre los Na'vi, que se han convertido en el mayor obstáculo para la extracción del mineral. Pero cuando Neytiri, una bella Na'vi (Zoe Saldana), salva la vida de Jake, todo cambia: Jake es admitido en su clan, tras superar muchas pruebas. Mientras, los hombres esperan que la información obtenida por Jake les sea útil.
 <pelicula>

@@ -15,10 +15,13 @@ import jcolibri.cbrcore.CBRCaseBase;
 import jcolibri.cbrcore.CBRQuery;
 import jcolibri.exception.ExecutionException;
 import jcolibri.extensions.textual.IE.common.StopWordsDetector;
+import jcolibri.extensions.textual.IE.common.StopWordsDetectorSpanish;
 import jcolibri.extensions.textual.IE.common.TextStemmer;
+import jcolibri.extensions.textual.IE.common.TextStemmerSpanish;
 import jcolibri.extensions.textual.IE.opennlp.OpennlpPOStagger;
 import jcolibri.extensions.textual.IE.opennlp.OpennlpPOStaggerSpanish;
 import jcolibri.extensions.textual.IE.opennlp.OpennlpSplitter;
+import jcolibri.extensions.textual.IE.opennlp.OpennlpSplitterSpanish;
 import jcolibri.extensions.textual.IE.representation.IEText;
 import jcolibri.extensions.textual.IE.representation.Token;
 import jcolibri.extensions.textual.lucene.LuceneIndexSpanish;
@@ -102,7 +105,8 @@ public class ClasificaSinopsis implements StandardCBRApplication{
 			}
 			double global=0;
 			double porcentaje=0;
-			generoAsignado=" No se ha encontrado ninguna";
+			//generoAsignado="No se ha encontrado ninguna";
+			generoAsignado="Acción 0%";
 			for (int i=0;i<categorias.size();i++){
 				global=global+categorias.get(i).getPeso();
 				}
@@ -136,11 +140,10 @@ public class ClasificaSinopsis implements StandardCBRApplication{
 		_caseBase.init(_connector);
 		luceneIndex = jcolibri.method.precycle.LuceneIndexCreatorSpanish.createLuceneIndex(_caseBase);
 		Collection<CBRCase> cases = _caseBase.getCases();
-		OpennlpSplitter.split(cases);
-		StopWordsDetector.detectStopWords(cases);
-		TextStemmer.stem(cases);
-		OpennlpPOStagger.tag(cases);
-		//OpennlpPOStagger.tag(cases);
+		OpennlpSplitterSpanish.split(cases);
+		StopWordsDetectorSpanish.detectStopWords(cases);
+		TextStemmerSpanish.stem(cases);
+		OpennlpPOStaggerSpanish.tag(cases);
 		extractMainTokens(cases);
 		return _caseBase;
 		
