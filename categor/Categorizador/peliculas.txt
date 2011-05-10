@@ -1,35 +1,35 @@
 <pelicula>
 Origen
 <genero>
-Acción
+Accion
 Thriller
 <sinopsis>
 Dom Cobb (DiCaprio) es un experto en el arte de apropiarse, durante el sueño, de los secretos del subconsciente ajeno. La extraña habilidad de Cobb le ha convertido en un hombre muy cotizado en el mundo del espionaje, pero también lo ha condenado a ser un fugitivo y, por consiguiente, a renunciar a llevar una vida normal. Su única oportunidad para cambiar de vida será hacer exactamente lo contrario de lo que ha hecho siempre: la incepción, que consiste en implantar una idea en el subconsciente en lugar de sustraerla. Sin embargo, su plan se complica debido a la intervención de alguien que parece predecir cada uno de sus movimientos, alguien a quien sólo Cobb podrá descubrir.
 <pelicula>
 La guerra de las galaxias
 <genero>
-Acción
+Accion
 CienciaFiccion
 <sinopsis>
 La princesa Leia, líder del movimiento rebelde que desea reinstaurar la República en la galaxia en los tiempos ominosos del Imperio, es capturada por las Fuerzas Imperiales, capitaneadas por el implacable Darth Vader, el sirviente más fiel del Emperador. El intrépido y joven Luke Skywalker, ayudado por Han Solo, capitán de la nave espacial "El Halcón Milenario", y los androides, R2D2 y C3PO, serán los encargados de luchar contra el enemigo y e intentar rescatar a la princesa para volver a instaurar la justicia en el seno de la galaxia.
 <pelicula>
 El señor de los anillos: El retorno del rey
 <genero>
-Acción
-Fantasía
+Accion
+Fantasia
 <sinopsis>
 Las fuerzas de Saruman han sido destruidas, y su fortaleza sitiada. Ha llegado el momento de que se decida el destino de la Tierra Media, y por primera vez en mucho tiempo, parece que hay una pequeña esperanza. La atención del señor oscuro Sauron se centra ahora en Gondor, el último reducto de los hombres, y del cual Aragorn tendrá que reclamar el trono para ocupar su puesto de Rey. Pero las fuerzas de Sauron ya se preparan para lanzar el último y definitivo ataque contra el reino de Gondor, la batalla que decidirá el destino de todos. Mientras tanto, Frodo y Sam continuan su camino hacia Mordor, a la espera de que Sauron no repare en que dos pequeños Hobbits se acercan cada día más al final de su camino, el Monte del Destino. 
 <pelicula>
 En busca del arca perdida
 <genero>
-Acción
+Accion
 Aventuras
 <sinopsis>
 Año 1936. Indiana Jones es un profesor de arqueología, dispuesto a correr peligrosas aventuras con tal de conseguir valiosas reliquias históricas. Después de una infructuosa misión en Sudamérica, el gobierno estadounidense le encarga la búsqueda del Arca de la Alianza, donde se conservan las Tablas de la Ley que Dios entregó a Moisés. Según la leyenda, quien las posea tendrá un poder absoluto, razón por la cual también la buscan los nazis.
 <pelicula>
 Salvar al soldado Ryan
 <genero>
-Acción
+Accion
 Drama
 <sinopsis>
 Durante la invasión de Normandía, en plena Segunda Guerra Mundial, a un grupo de soldados americanos se le encomienda una peligrosa misión: poner a salvo al soldado James Ryan. Los hombres de la patrulla del capitán John Miller deben arriesgar sus vidas para encontrar a este soldado, cuyos tres hermanos han muerto en la guerra. Lo único que se sabe del soldado Ryan es que se lanzó con su escuadrón de paracaidistas detrás de las líneas enemigas. 
@@ -37,7 +37,7 @@ Durante la invasión de Normandía, en plena Segunda Guerra Mundial, a un grupo de
 El mago de Oz
 <genero>
 Aventuras
-Fantasía
+Fantasia
 <sinopsis>
 Dorothy anhela viajar "más allá del arco iris" a una tierra diferente, y su deseo se hace realidad cuando un tornado se la lleva con su perrito al mundo de Oz. Pero la aventura sólo acaba de comenzar; Dorothy, tras ofender a la Malvada Bruja del Oeste (Margaret Hamilton), y por sugerencia de la Bruja Buena del Norte, (Billie Burke), se dirige por el camino amarillo hacia la Ciudad Esmeralda, donde vive el todopoderoso Mago de Oz, que puede ayudar a la niña a regresar a Kansas. Por el camino, se hace amiga del Espantapájaros (Ray Bolger), el Hombre de Hojalata (Jack Haley) y el León Cobarde (Bert Lahr). El Espantapájaros ansía un cerebro, el Hombre de Hojalata quiere un corazón y el León desea el coraje que le falta; como creen que el Mago les puede ayudar a ellos también, deciden unirse a Dorothy en su odisea hasta la Ciudad Esmeralda.
 <pelicula>
@@ -80,7 +80,7 @@ El director de cine John L. Sullivan sueña con rodar una película que aborde el 
 Amelie 
 <genero>
 Comedia
-Romántica
+Romantica
 <sinopsis>
 Amelie no es una chica como las demás. Ha visto a su pez de colores deslizarse hacia las alcantarillas municipales, a su madre morir en la plaza de Notre-Dame y a su padre dedicar todo su afecto a un gnomo de jardín. De repente, a sus veintidós años, descubre su objetivo en la vida: arreglar la vida de los demás. A partir de entonces, inventa toda clase de estrategias para intervenir, sin que se den cuenta, en la existencia de varias personas de su entorno. Entre ellas está su portera, que pasa los días bebiendo vino de Oporto; Georgette, una estanquera hipocondríaca: o "el hombre de cristal", un vecino que sólo ve el mundo a través de la reproducción de un cuadro de Renoir.
 <pelicula>
@@ -94,28 +94,28 @@ Convencido de que los comunistas están contaminando los Estados Unidos, un gener
 Atrapado en el tiempo
 <genero>
 Comedia
-Fantasía
+Fantasia
 <sinopsis>
 Phil, hombre del tiempo de una cadena de televisión, es enviado un año más a Punxstawnwey, a cubrir la información del festival de El día de la marmota. En el viaje de regreso, Phil y su equipo se ven sorprendidos por una tormenta que les obliga a regresar a la pequeña ciudad. A la mañana siguiente, al levantarse, Phil escucha en el radiodespertador el mismo programa que la mañana anterior.
 <pelicula>
 Hora punta
 <genero>
 Comedia
-Acción
+Accion
 <sinopsis>
 Dos detectives diferentes son asignados en un mismo caso. Ambos tendrán que adaptarse a las costumbres del otro para poder concluir su trabajo con éxito, pero no va a ser una tarea fácil. El detective inspector Lee (Jackie Chan) es el rey de las artes marciales y pertenece a la Royal Hong Kong Police. Su pupila preferida es la hija de once años del Cónsul chino, de la cual el inspector Lee es su guardaespaldas y su mejor amigo. Esta muchacha es capturada y llevada a los Estados Unidos por un peligroso grupo criminal. Hasta allí tendrá que viajar el inspector y, donde se unirá a la investigación con un departamento del FBI y, concretamente, al detective James Carter (Tucker), un arrogante e impulsivo agente de policía. La explosiva pareja tendrá que enfrentarse a una banda de criminales muy peligrosa, y contarán con la ayuda de Tania Johnson (Elizabeth Peña), una experta en artefactos explosivos.
 <pelicula>
 Forrest Gump
 <genero>
 Drama
-Romántica
+Romantica
 <sinopsis>
 Forrest Gump (Tom Hanks) es un chico que sufre un cierto retraso mental. A pesar de todo, gracias a su tenacidad y a su buen corazón será protagonista de acontecimientos cruciaLes de su país. Jenny, su gran amor desde la infancia, será la persona más importante de su vida. 
 <pelicula>
 El club de la lucha
 <genero>
 Drama
-Acción
+Accion
 <sinopsis>
 Jack es un personaje insomne y desesperado por escapar de su fatal y aburrida vida. En un viaje en avión conoce a Tyler Durden, un carismático vendedor de jabón con una filosofía muy particular; Tyler cree que el perfeccionismo es para los débiles y que es la destrucción de uno mismo lo que realmente hace que la vida merezca la pena. Jack y Tyler forman un club de lucha secreto que se convierte en un éxito arrollador.
 <pelicula>
@@ -135,75 +135,75 @@ El Departamento de Policía de Massachussets se enfrenta a la mayor banda de crim
 ¡Qué bello es vivir!
 <genero>
 Drama
-Fantasía
+Fantasia
 <sinopsis>
 George Bailey (James Stewart) es un honrado y modesto ciudadano que dirige y mantiene a flote un pequeño banco familiar, a pesar de los intentos de un poderoso banquero por arruinarlo. El dia de Nochebuena de 1945, abrumado por la repentina desaparición de una importante suma de dinero, que supondría no solo la quiebra de su banco, sino también un gran escándalo, decide suicidarse, pero cuando está a punto de hacerlo ocurre algo extraordinario.
 <pelicula>
 Big Fish
 <genero>
-Fantasía
+Fantasia
 Drama
 <sinopsis>
 Tras regresar a casa para estar al lado de su padre moribundo, y sentarse al lado de su cama, William Bloom se ve forzado a escuchar las interminables historias de la juventud de su padre. Asi, el joven Will tratará de saber más de su padre moribundo, separando los hechos de la ficción, a través de los mitos e historias que su padre le narraba... en un intento por desvelar la verdadera realidad.
 <pelicula>
 Nosferatu el vampiro
 <genero>
-Fantasía
+Fantasia
 Terror
 <sinopsis>
 Año 1838. En la ciudad de Wisborg viven felices el joven Hutter y su mujer Ellen, hasta que el oscuro agente inmobiliario Knock decide enviar a Hutter a Transilvania para cerrar un negocio con el conde Orlok. Se trata de la venta de una finca de Wisborg, que linda con la casa de Hutter. Durante el largo viaje, Hutter pernocta en una posada, donde ojea un viejo tratado sobre vampiros que encuentra en su habitación. Una vez en el castillo, es recibido por el siniestro conde. Al día siguiente, Hutter amanece con dos pequeñas marcas en el cuello, que interpreta como picaduras de mosquito. Una vez firmado el contrato, descubre que el conde es, en realidad, un vampiro. Al verle partir hacia su nuevo hogar, Hutter teme por Ellen.
 <pelicula>
 Avatar
 <genero>
-Fantasía
+Fantasia
 Aventuras
 <sinopsis>
 Año 2154. Jake Sully (Sam Worthington), un ex-marine condenado a vivir en una silla de ruedas, sigue siendo, a pesar de ello, un auténtico guerrero. Precisamente por ello ha sido designado para ir a Pandora, donde algunas empresas están extrayendo un mineral extraño que podría resolver la crisis energética de la Tierra. Para contrarrestar la toxicidad de la atmósfera de Pandora, se ha creado el programa Avatar, gracias al cual los humanos "conductores" mantienen sus conciencias unidas a un avatar: un cuerpo biológico controlado de forma remota que puede sobrevivir en el aire letal. Esos cuerpos han sido creados con ADN humano, mezclado con ADN de los nativos de Pandora, los Na'vi. Convertido en avatar, Jake puede caminar otra vez. Su misión consiste en infiltrarse entre los Na'vi, que se han convertido en el mayor obstáculo para la extracción del mineral. Pero cuando Neytiri, una bella Na'vi (Zoe Saldana), salva la vida de Jake, todo cambia: Jake es admitido en su clan, tras superar muchas pruebas. Mientras, los hombres esperan que la información obtenida por Jake les sea útil.
 <pelicula>
 El viaje de Chihiro
 <genero>
-Fantasía
+Fantasia
 <sinopsis>
 Chihiro es una niña de 10 años que viaja en coche con sus padres. Después de atravesar un tunel, llegan a un mundo fantástico, en el que no hay lugar para los humanos, sólo existen dioses de primera y segunda clase. Cuando descubre que sus padres han sido convertidos en cerdos, Chihiro se siente muy sola y asustada.
 <pelicula>
 Déjame entrar
 <genero>
-Fantasía
-Romántica
+Fantasia
+Romantica
 <sinopsis>
 Oskar, un niño tímido de 12 años, acosado en el colegio por unos compañeros, se hace amigo de Eli, una misteriosa nueva vecina de su edad, cuya llegada coincide con una serie de inexplicables muertes. A pesar de que Oskar piensa que ella es un vampiro, intenta que su amistad esté por encima de su miedo.
 <pelicula>
 Secretos de un matrimonio
 <genero>
-Romántica
+Romantica
 Drama
 <sinopsis>
 El matrimonio formado por Johan, profesor de psicología, y Marianne, abogada, recibe una noche en su casa la visita de sus amigos Peter y Katerina. Al poco tiempo de estar juntos, sus amigos empiezan una fuerte discusión en la que Johan y Marianne intentan mediar, sin éxito alguno. Cuando se quedan solos, Johan y Marianne piensan en todo lo que a ellos les pasa, en su matrimonio que ya dura diez años.
 <pelicula>
 Cantando bajo la lluvia
 <genero>
-Romántica
+Romantica
 Comedia
 <sinopsis>
 Antes de conocer a la aspirante a actriz Kathy Selden (Debbie Reynolds), el ídolo del cine mudo Don Lockwood (Gene Kelly) pensaba que lo tenía todo: fama, fortuna y éxito. Pero, tras conocerla, se da cuenta de que ella es lo que realmente faltaba en su vida. Con el nacimiento del cine sonoro, Don quiere filmar los musicales con Kathy, pero entre ambos se interpone la reina del cine mudo Lina Lamont (Jean Hagen).
 <pelicula>
 La ventana indiscreta
 <genero>
-Romántica
+Romantica
 Thriller
 <sinopsis>
 Un reportero fotográfico (Stewart) se ve obligado a permanecer en reposo con una pierna escayolada. A pesar de la compañía de su bella novia (Kelly) y su enfermera (Ritter), procura escapar al tedio de su convalecencia mirando desde la ventana de su apartamento las viviendas de enfrente. Desde allí, observa meticulosamente la vida de sus vecinos a través de unos prismáticos. Un conjunto de pequeños pero extraños incidentes lo llevan a sospechar de un vecino cuya mujer ha desaparecido misteriosamente.
 <pelicula>
 Wall-E
 <genero>
-Romántica
-Fantasía
+Romantica
+Fantasia
 <sinopsis>
 En el año 2700, en un planeta Tierra devastado y sin vida, tras cientos de solitarios años haciendo aquello para lo que fue construido -limpiar el planeta de basura- el pequeño robot WALL-E (acrónimo de Waste Allocation Load Lifter Earth-Class) descubre una nueva misión en su vida (además de recolectar cosas inservibles) cuando se encuentra con una moderna y lustrosa robot exploradora llamada EVE. Ambos viajarán a lo largo de la galaxia y vivirán una emocionante e inolvidable aventura.
 <pelicula>
 Lo que el viento se llevó
 <genero>
-Romántica
+Romantica
 Drama
 <sinopsis>
 Georgia, 1861. En la elegante mansión sureña de Tara vive Scarlett O'Hara, la más bella, caprichosa y egoísta joven de la región. Ella suspira por el amor de Ashley, pero él está enamorado y prometido con su prima, la dulce y bondadosa Melanie. Corren todavía tiempos felices en Tara, pero por poco tiempo, porque la Guerra de Secesión está a punto de estallar. En la última fiesta, celebrada antes del comienzo de las hostilidades entre el norte y el sur, Scarlett conoce al simpático y apuesto Rhett Butler, un vividor arrogante y aventurero, que sólo piensa en si mismo y que no tiene ninguna intención de participar en el conflicto. Lo que él desea es hacerse rico y conquistar el corazón de la hermosa Scarlett.
@@ -231,7 +231,7 @@ Una joven secretaria, tras cometer un robo en su empresa, huye de la ciudad y, d
 Zombi
 <genero>
 Terror
-Acción
+Accion
 <sinopsis>
 La radiación de un satélite causa el despertar de los muertos, que salen de sus tumbas y atacan a los seres vivos para alimentarse. La acción se sitúa en el campo de Pennsylvania, donde Barbara es inicialmente atacada en el cementerio por un muerto viviente y huye hacía una granja. Allí se encuentra con Ben, y ambos construirán barricadas para sobrevivir a la temerosa noche, ya que fuera hay una multitud de despiadados zombies que sólo pueden ser vencidos con un golpe en la cabeza.
 <pelicula>
@@ -264,7 +264,7 @@ El FBI busca a un asesino en serie, apodado Buffalo Bill, que mata a sus víctima
 Sin City
 <genero>
 Thriller
-Acción
+Accion
 <sinopsis>
 Bienvenidos a Sin City, ciudad de policías corruptos, atractivas damas y vigilantes desesperados. Unos están buscando venganza, otros, redención y los hay que buscan ambas cosas. Sin City es una ciudad que vive entre la luz y la oscuridad, llena de personajes singulares: Marv (Mickey Rourke) es un superviviente que busca vengar la muerte de su único amor, Dwight (Clive Owen) es un investigador privado que intenta resolver sus problemas. Tras el asesinato de un policía, Dwight intentará proteger a sus amigos. Finalmente, está la historia de Hartigan (Bruce Willis), el último policía honrado de Sin City, que va tras la pista de una joven que está en manos del sádico hijo de un senador.
 <pelicula>
@@ -291,7 +291,7 @@ Nueva entrega de la mítica saga de Star Trek, dirigida por el creador de la seri
 Terminator 2
 <genero>
 CienciaFiccion
-Acción
+Accion
 <sinopsis>
 Sarah Connor, la madre soltera del rebelde John Connor, está ingresada en un psiquiátrico. Algunos años antes, un viajero del tiempo le había revelado que su hijo sería el salvador de la humanidad en un futuro dominado por las máquinas. Se convirtió entonces en una especie de guerrera y educó a su hijo John en tácticas de supervivencia. Esta es la razón por la que está recluida en un manicomio. Cuando un nuevo androide mejorado, un T-1000, llega del futuro para asesinar a John, un viejo modelo T-800 será enviado para protegerle.
 <pelicula>

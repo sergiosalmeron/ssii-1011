@@ -5,8 +5,6 @@ package sinopsis;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import recomendador.PeliGeneros;
-
 import jcolibri.casebase.LinealCaseBase;
 import jcolibri.cbraplications.StandardCBRApplication;
 import jcolibri.cbrcore.Attribute;
@@ -18,7 +16,6 @@ import jcolibri.extensions.textual.IE.common.StopWordsDetector;
 import jcolibri.extensions.textual.IE.common.StopWordsDetectorSpanish;
 import jcolibri.extensions.textual.IE.common.TextStemmer;
 import jcolibri.extensions.textual.IE.common.TextStemmerSpanish;
-import jcolibri.extensions.textual.IE.opennlp.OpennlpPOStagger;
 import jcolibri.extensions.textual.IE.opennlp.OpennlpPOStaggerSpanish;
 import jcolibri.extensions.textual.IE.opennlp.OpennlpSplitter;
 import jcolibri.extensions.textual.IE.opennlp.OpennlpSplitterSpanish;
@@ -31,6 +28,9 @@ import jcolibri.method.retrieve.NNretrieval.NNScoringMethod;
 import jcolibri.method.retrieve.NNretrieval.similarity.global.Average;
 import jcolibri.method.retrieve.NNretrieval.similarity.local.textual.LuceneTextSimilaritySpanish;
 import jcolibri.method.retrieve.selection.SelectCases;
+import recomendador.Generos;
+import recomendador.PeliGeneros;
+import utils.BD;
 
 public class ClasificaSinopsis implements StandardCBRApplication{
 	
@@ -39,6 +39,9 @@ public class ClasificaSinopsis implements StandardCBRApplication{
 	private LinealCaseBase _caseBase;
 	private LuceneIndexSpanish luceneIndex ;
 	private String generoAsignado;
+	
+	//private ArrayList<PeliGeneros> generosPeliculasBBDD;
+	private GeneroYEntero genDefecto; 
 
 	public String getCategoriaAsignada() {
 		return generoAsignado;
@@ -80,6 +83,9 @@ public class ClasificaSinopsis implements StandardCBRApplication{
 		//ArrayList<String> categorias= new ArrayList<String>();
 		ArrayList<GeneroYEntero> categorias=new ArrayList<GeneroYEntero>();
 		ArrayList<PeliGeneros> pG=new ArrayList<PeliGeneros>();
+		//Metemos a capón el género de la base de datos
+		categorias.add(genDefecto);
+		//Y tratamos el resto de casos
 		for(RetrievalResult nse: eval)
 		{
 			String s= nse.get_case().getSolution().toString();
@@ -110,6 +116,7 @@ public class ClasificaSinopsis implements StandardCBRApplication{
 			for (int i=0;i<categorias.size();i++){
 				global=global+categorias.get(i).getPeso();
 				}
+			
 			if (global>0){
 				generoAsignado="";
 				for (int i=0;i<categorias.size();i++){
@@ -122,6 +129,7 @@ public class ClasificaSinopsis implements StandardCBRApplication{
 				System.out.println(categorias.get(i).toString());*/
 				}
 			}
+			
 	
 		}
 
@@ -145,6 +153,9 @@ public class ClasificaSinopsis implements StandardCBRApplication{
 		TextStemmerSpanish.stem(cases);
 		OpennlpPOStaggerSpanish.tag(cases);
 		extractMainTokens(cases);
+		
+		//generosPeliculasBBDD=BD.dameTablaGenerosBBDD();
+		
 		return _caseBase;
 		
 	}
@@ -183,6 +194,16 @@ public class ClasificaSinopsis implements StandardCBRApplication{
 				if(t.getStem()!=null)
 					verbs.add(t.getStem());
 		}
+	}
+
+
+
+	//ID es el identificador de la pelicula
+	//Consulta a la BBDD el genero de la pelicula id y lo inserta en el atributo genDefecto.
+	public void generoDefecto(String id) {
+		Generos g=BD.dameGeneroBBDD(Integer.parseInt(id));
+		genDefecto=new GeneroYEntero(g.toString(), 1);
+		
 	}
 
 }
