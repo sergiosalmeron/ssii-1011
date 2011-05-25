@@ -65,9 +65,9 @@ public class ClasificaSinopsis implements StandardCBRApplication{
 		Attribute textualAttribute = new Attribute("texto", DescripcionSinopsis.class);
 		simConfig.addMapping(textualAttribute, new LuceneTextSimilaritySpanish(luceneIndex,query,textualAttribute, true));
 		simConfig.addMapping(textualAttribute, new LuceneTextSimilaritySpanish(luceneIndex,query,textualAttribute, true));
-		OpennlpSplitter.split(query);
-		StopWordsDetector.detectStopWords(query);
-		TextStemmer.stem(query);
+		OpennlpSplitterSpanish.split(query);
+		StopWordsDetectorSpanish.detectStopWords(query);
+		TextStemmerSpanish.stem(query);
 		OpennlpPOStaggerSpanish.tag(query);
 		//OpennlpPOStagger.tag(query);
 		extractMainTokens(query);

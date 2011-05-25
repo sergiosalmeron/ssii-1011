@@ -45,11 +45,12 @@ public class MeteCategorias {
 			sinopsis = sinopsis.replaceAll("'", "");
 			sinopsis = sinopsis.replaceAll("!", "");
 			sinopsis = sinopsis.replaceAll("¡", "");
-
+			
 			CBRQuery query = new CBRQuery();
 			DescripcionSinopsis a = new DescripcionSinopsis();
 			a.setTexto(new Text(sinopsis));
 			query.setDescription(a);
+			
 			try {
 				c.generoDefecto(id);
 				c.cycle(query);
