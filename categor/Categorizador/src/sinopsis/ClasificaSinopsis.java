@@ -84,7 +84,8 @@ public class ClasificaSinopsis implements StandardCBRApplication{
 		ArrayList<GeneroYEntero> categorias=new ArrayList<GeneroYEntero>();
 		ArrayList<PeliGeneros> pG=new ArrayList<PeliGeneros>();
 		//Metemos a capón el género de la base de datos
-		categorias.add(genDefecto);
+		if (!genDefecto.getGenero().equals("null"))
+			categorias.add(genDefecto);
 		//Y tratamos el resto de casos
 		for(RetrievalResult nse: eval)
 		{
@@ -202,7 +203,10 @@ public class ClasificaSinopsis implements StandardCBRApplication{
 	//Consulta a la BBDD el genero de la pelicula id y lo inserta en el atributo genDefecto.
 	public void generoDefecto(String id) {
 		Generos g=BD.dameGeneroBBDD(Integer.parseInt(id));
-		genDefecto=new GeneroYEntero(g.toString(), 1);
+		if (g!=null)
+			genDefecto=new GeneroYEntero(g.toString(), 1);
+		else
+			genDefecto=new GeneroYEntero("null", 0);
 		
 	}
 
