@@ -1,0 +1,1 @@
+Proyecto de sistemas informáticos. Recomendador en java de películas que se encuentran en la cartelera de Madrid, basado en el temperamento del usuario y en base a la información extraida de una base de datos de películas.
